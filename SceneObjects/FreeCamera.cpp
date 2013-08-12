@@ -3,7 +3,7 @@
 #include "../Services/ServiceLocator.h"
 #include "../Services/InputEnums.h"
 
-FreeCamera::FreeCamera(void):m_MovementSpeed(0.5f),m_RotationSpeed(static_cast<float>(D3DX_PI / 10))
+FreeCamera::FreeCamera(void):m_MovementSpeed(0.5f),m_RotationSpeed(static_cast<float>(D3DX_PI / 10)), m_Yaw(0), m_Pitch(0)
 {
 	auto pTransform = new TransformComponent();
 	SetComponent<TransformComponent>(pTransform);
@@ -57,17 +57,12 @@ void FreeCamera::Update(const tt::GameContext& context)
 		return;
 
 	auto mouseMoveDir = pInputService->GetMouseMovement();
-	auto rotationVec = tt::Vector3(mouseMoveDir.x, mouseMoveDir.y, 0) * m_RotationSpeed * .016f;
-	
-	D3DXMATRIX yawRotationMat, pitchRotationMat, finalRotMat;
-	D3DXVECTOR3 transformedRight;
-	D3DXMatrixRotationAxis(&yawRotationMat, &D3DXVECTOR3(0,1,0), rotationVec.x);
-	D3DXVec3TransformCoord(&transformedRight,&D3DXVECTOR3(1,0,0),&yawRotationMat);
-	D3DXMatrixRotationAxis(&pitchRotationMat, &transformedRight, rotationVec.y);
-	finalRotMat = yawRotationMat * pitchRotationMat;
+	m_Yaw += mouseMoveDir.x * m_RotationSpeed * .016f;
+	m_Pitch += mouseMoveDir.y * m_RotationSpeed * .016f;
 
-	D3DXQUATERNION finalQuat;
-	D3DXQuaternionRotationMatrix(&finalQuat, &finalRotMat);
+	tt::Quaternion yawQuat(tt::Vector3(0,1,0), m_Yaw);
+	tt::Vector3 rotatedRight = tt::Vector3(1,0,0).TransformCoord(yawQuat);
+	tt::Quaternion pitchQuat(rotatedRight, m_Pitch);
 
-	pTransform->Rotate( tt::Quaternion(finalQuat) );
+	pTransform->Rotate(yawQuat * pitchQuat);
 }

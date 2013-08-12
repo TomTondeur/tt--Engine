@@ -101,7 +101,8 @@ namespace tt
 		static Vector3 Normalize(const Vector3& vec);
 		float Length(void) const;
 		float LengthSq(void) const;
-		Vector3 TransformCoord(Matrix4x4 matTransform) const;
+		Vector3 TransformCoord(const Matrix4x4& matTransform) const;
+		Vector3 TransformCoord(const Quaternion& rotQuat) const;
 		Vector3 Cross(const Vector3& v) const;
 	};
 	
@@ -148,6 +149,8 @@ namespace tt
 		static Matrix4x4 Identity(void);
 		static Matrix4x4 Translation(Vector3 displacement);
 		static Matrix4x4 Rotation(Quaternion rotationQuaternion);
+		static Matrix4x4 Rotation(tt::Vector3 axis, float angle);
+		static Matrix4x4 Rotation(tt::Vector3 yawPitchRoll);
 		static Matrix4x4 Scale(Vector3 scale);
 		static Matrix4x4 Scale(float scale);
 
@@ -173,6 +176,7 @@ namespace tt
 		Quaternion(void);
 		Quaternion(const Quaternion& quat);
 		Quaternion(float _x, float _y, float _z, float _w);
+		Quaternion(const Vector3& axis, float angle);
 		Quaternion(D3DXQUATERNION quat);
 		
 		Quaternion operator*(const Quaternion& quat) const;
@@ -184,8 +188,14 @@ namespace tt
 		static Quaternion Identity(void);
 		static Quaternion FromEuler(const Vector3& eulerAngles);
 		static Quaternion FromEuler(float yaw, float pitch, float roll);
+		static Quaternion FromRotationMatrix(Matrix4x4 rotMat);
 		
 		operator D3DXQUATERNION(void) const;
+
+		Vector3 GetAxis(void) const;
+		float GetAngle(void) const;
+		Vector3 GetYawPitchRoll(void) const;
+		Quaternion& Normalize(void);
 	};
 
 	struct ViewportInfo{

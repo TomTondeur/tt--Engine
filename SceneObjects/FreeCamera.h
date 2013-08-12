@@ -19,6 +19,7 @@ public:
 private:
 	//Datamembers
 	float m_MovementSpeed, m_RotationSpeed;
+	float m_Yaw, m_Pitch;
 
 	//Disabling default copy constructor & assignment operator
 	FreeCamera(const FreeCamera& src);

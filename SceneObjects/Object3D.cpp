@@ -23,3 +23,8 @@ void Object3D::Initialize(void)
 {
 	GetComponent<ModelComponent>()->SetMaterial( MyServiceLocator::GetInstance()->GetService<ResourceService>()->Load<Material>( _T("BasicMaterial") ) );
 }
+
+void Object3D::Update(const tt::GameContext& context)
+{
+	//GetComponent<TransformComponent>()->Rotate(D3DX_PI * 0.016f, D3DX_PI * 0.016f, D3DX_PI * 0.016f);
+}

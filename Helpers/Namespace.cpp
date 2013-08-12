@@ -342,27 +342,41 @@ float Vector3::LengthSq(void) const
 	return x*x + y*y + z*z;
 }
 
-Vector3 Vector3::TransformCoord(Matrix4x4 matTransform) const
-{
+Vector3 Vector3::TransformCoord(const Matrix4x4& matTransform) const
+{/*
 	Vector3 out;
 	float w = x*matTransform._14 + y*matTransform._24 + z*matTransform._34 + matTransform._44;
 	out.x = (x*matTransform._11 + y*matTransform._21 + z*matTransform._31 + matTransform._41) / w;
 	out.y = (x*matTransform._12 + y*matTransform._22 + z*matTransform._32 + matTransform._42) / w;
 	out.z = (x*matTransform._13 + y*matTransform._23 + z*matTransform._33 + matTransform._43) / w;
 	return out;
+	*/
+	D3DXVECTOR3 vec;
+	D3DXVec3TransformCoord(&vec, &static_cast<D3DXVECTOR3>(*this), &matTransform.To_DxMatrix());
+	return static_cast<Vector3>(vec);
+}
+
+Vector3 Vector3::TransformCoord(const Quaternion& rotQuat) const
+{
+	auto rotMat = Matrix4x4::Rotation(rotQuat);
+	return TransformCoord(rotMat);
 }
 
 Vector3 Vector3::Cross(const Vector3& v) const
-{
+{/*
 	//Cross product calculation: http://en.wikipedia.org/wiki/Cross_product#Matrix_notation
 	//(v1.y * v2*z - v1.z * v2.y) * i + (v1.x * v2.z + v1.z * v2.x) * j + (v1.x * v2.y + v1.y * v2.x) * k
+	//Find determinant using cofactor expansion
 	Vector3 i(1,0,0);
 	Vector3 j(0,1,0);
 	Vector3 k(0,0,1);
 	i *= y*v.z - z*v.y;
 	j *= x*v.z - z*v.x;
 	k *= x*v.y - y*v.x;
-	return i-j+k;
+	return i-j+k;*/
+	D3DXVECTOR3 vec;
+	D3DXVec3Cross(&vec, &static_cast<D3DXVECTOR3>(*this), &static_cast<D3DXVECTOR3>(v));
+	return static_cast<Vector3>(vec);
 }
 
 //--------
@@ -461,13 +475,16 @@ Vector4::operator D3DXVECTOR4(void) const
 }
 
 Vector4& Vector4::Normalize(void)
-{
+{/*
 	float len = Length();
 	x /= len;
 	y /= len;
 	z /= len;
 	w /= len;
-	return (*this);
+	return (*this);*/
+	D3DXVECTOR4 vec;
+	D3DXVec4Normalize(&vec, &static_cast<D3DXVECTOR4>(*this));
+	return *this = static_cast<Vector4>(vec);
 }
 
 Vector4 Vector4::Normalize(const Vector4& vec)
@@ -530,22 +547,40 @@ Matrix4x4 Matrix4x4::Translation(Vector3 displacement)
 	return out;
 }
 
-Matrix4x4 Matrix4x4::Rotation(Quaternion rot)
+Matrix4x4 Matrix4x4::Rotation(Quaternion q)
 {
-	//Calculations found at http://renderfeather.googlecode.com/hg-history/034a1900d6e8b6c92440382658d2b01fc732c5de/Doc/optimized%2520Matrix%2520quaternion%2520conversion.pdf
-	auto out = Matrix4x4::Identity();
-	out._11 = 1 - 2*rot.y*rot.y - 2*rot.z*rot.z;
-	out._12 = 2*rot.x*rot.y + 2*rot.w*rot.z;
-	out._13 = 2*rot.x*rot.z - 2*rot.w*rot.y;
+	D3DXMATRIX mat;
+	D3DXMatrixRotationQuaternion(&mat, &static_cast<D3DXQUATERNION>(q));
+	return Matrix4x4(mat);
+}
 
-	out._21 = 2*rot.x*rot.y - 2*rot.w*rot.z;
-	out._22 = 1 - 2*rot.x*rot.x - 2*rot.z*rot.z;
-	out._23 = 2*rot.y*rot.z + 2*rot.w*rot.x;
+Matrix4x4 Matrix4x4::Rotation(tt::Vector3 yawPitchRoll)
+{
+	D3DXMATRIX mat;
+	D3DXMatrixRotationYawPitchRoll(&mat, yawPitchRoll.x, yawPitchRoll.y, yawPitchRoll.z);
+	return Matrix4x4(mat);
+}
 
-	out._31 = 2*rot.x*rot.z + 2*rot.w*rot.y;
-	out._32 = 2*rot.y*rot.z - 2*rot.w*rot.x;
-	out._33 = 1 - 2*rot.x*rot.w - 2*rot.y*rot.y;
-	return out;
+Matrix4x4 Matrix4x4::Rotation(tt::Vector3 axis, float angle)
+{/*
+	//Calculations found at http://inside.mines.edu/~gmurray/ArbitraryAxisRotation/
+	axis.Normalize();
+	Matrix4x4 out = Matrix4x4::Identity();
+	out._11 = axis.x*axis.x + (axis.y*axis.y + axis.z*axis.z) * cosf(angle);
+	out._12 = axis.x*axis.y * (1 - cosf(angle)) + axis.z * sinf(angle);
+	out._13 = axis.x*axis.z * (1 - cosf(angle)) - axis.y * sinf(angle);
+	
+	out._21 = axis.x*axis.y * (1 - cosf(angle)) - axis.z * sinf(angle);
+	out._22 = axis.y*axis.y + (axis.x*axis.x + axis.z*axis.z) * cosf(angle);
+	out._23 = axis.y*axis.z * (1 - cosf(angle)) + axis.x * sinf(angle);
+	
+	out._31 = axis.x*axis.z * (1 - cosf(angle)) + axis.y * sinf(angle);
+	out._32 = axis.y*axis.z * (1 - cosf(angle)) - axis.x * sinf(angle);
+	out._33 = axis.z*axis.z + (axis.x*axis.x + axis.y*axis.y) * cosf(angle);
+	return out;*/
+	D3DXMATRIX mat;
+	D3DXMatrixRotationAxis(&mat, &static_cast<D3DXVECTOR3>(axis), angle);
+	return static_cast<Matrix4x4>(mat);
 }
 
 Matrix4x4 Matrix4x4::Scale(Vector3 scale)
@@ -567,30 +602,7 @@ Matrix4x4 Matrix4x4::Scale(float scale)
 }
 
 Matrix4x4 Matrix4x4::operator*(const Matrix4x4& mat) const
-{/*
-	Matrix4x4 out;
-	
-	out._11 = _11 * mat._11 + _12 * mat._21 + _13 * mat._31 + _14 * mat._41;
-	out._12 = _11 * mat._12 + _12 * mat._22 + _13 * mat._32 + _14 * mat._42;
-	out._13 = _11 * mat._13 + _12 * mat._23 + _13 * mat._33 + _14 * mat._43;
-	out._14 = _11 * mat._14 + _12 * mat._24 + _13 * mat._34 + _14 * mat._44;
-	
-	out._21 = _21 * mat._21 + _22 * mat._21 + _23 * mat._31 + _24 * mat._41;
-	out._22 = _21 * mat._22 + _22 * mat._22 + _23 * mat._32 + _24 * mat._42;
-	out._23 = _21 * mat._23 + _22 * mat._23 + _23 * mat._33 + _24 * mat._43;
-	out._24 = _21 * mat._24 + _22 * mat._24 + _23 * mat._34 + _24 * mat._44;
-	
-	out._31 = _31 * mat._31 + _32 * mat._21 + _33 * mat._31 + _34 * mat._41;
-	out._32 = _31 * mat._32 + _32 * mat._22 + _33 * mat._32 + _34 * mat._42;
-	out._33 = _31 * mat._33 + _32 * mat._23 + _33 * mat._33 + _34 * mat._43;
-	out._34 = _31 * mat._34 + _32 * mat._24 + _33 * mat._34 + _34 * mat._44;
-	
-	out._41 = _41 * mat._41 + _42 * mat._21 + _43 * mat._31 + _44 * mat._41;
-	out._42 = _41 * mat._42 + _42 * mat._22 + _43 * mat._32 + _44 * mat._42;
-	out._43 = _41 * mat._43 + _42 * mat._23 + _43 * mat._33 + _44 * mat._43;
-	out._44 = _41 * mat._44 + _42 * mat._24 + _43 * mat._34 + _44 * mat._44;
-	*/
-	
+{
     D3DXMATRIX matT;
     D3DXMatrixMultiply(&matT, &this->To_DxMatrix(), &mat.To_DxMatrix());
     
@@ -656,6 +668,18 @@ Quaternion::Quaternion(float _x, float _y, float _z, float _w)
 	w = _w;
 }
 
+Quaternion::Quaternion(const Vector3& axis, float angle)
+{/*
+	float s = sinf(angle * .5f);
+	x = s * axis.x;
+	y = s * axis.y;
+	z = s * axis.z;
+	w = cosf(angle * .5f);*/
+	D3DXQUATERNION quat;
+	D3DXQuaternionRotationAxis(&quat, &static_cast<D3DXVECTOR3>(axis), angle);
+	*this = static_cast<Quaternion>(quat);
+}
+
 Quaternion::Quaternion(D3DXQUATERNION quat)
 {
 	x = quat.x;
@@ -665,16 +689,18 @@ Quaternion::Quaternion(D3DXQUATERNION quat)
 }
 
 Quaternion Quaternion::operator*(const Quaternion& quat) const
-{
+{/*
 	Quaternion out;
 	
 	//Quaternion multiplication: http://www.euclideanspace.com/maths/algebra/realNormedAlgebra/quaternions/code/index.htm#mul
 	out.x =  x * quat.w + y * quat.z - z * quat.y + w * quat.x;
 	out.y = -x * quat.z + y * quat.w + z * quat.x + w * quat.y;
 	out.z =  x * quat.y - y * quat.x + z * quat.w + w * quat.z;
-	out.w = -x * quat.x - y * quat.y - z * quat.z + w * quat.w;
+	out.w = -x * quat.x - y * quat.y - z * quat.z + w * quat.w;*/
+	D3DXQUATERNION outQuat;
+	D3DXQuaternionMultiply(&outQuat, &static_cast<D3DXQUATERNION>(*this), &static_cast<D3DXQUATERNION>(quat));
 
-	return out;
+	return static_cast<Quaternion>(outQuat);
 }
 
 Quaternion& Quaternion::operator*=(const Quaternion& quat)
@@ -699,18 +725,9 @@ Quaternion Quaternion::Identity(void)
 
 Quaternion Quaternion::FromEuler(const Vector3& eulerAngles)
 {
-	float yawCos = cosf(eulerAngles.x * .5f);
-	float pitchCos = cosf(eulerAngles.y * .5f);
-	float rollCos = cosf(eulerAngles.z * .5f);
-
-	float yawSin = sinf(eulerAngles.x * .5f);
-	float pitchSin = sinf(eulerAngles.y * .5f);
-	float rollSin = sinf(eulerAngles.z * .5f);
-
-	return Quaternion(yawSin * pitchCos * rollCos - yawCos * pitchSin * rollSin
-					 ,yawCos * pitchSin * rollCos + yawSin * pitchCos * rollSin
-					 , yawCos * pitchCos * rollCos + yawSin * pitchSin * rollSin
-					 , yawCos * pitchCos * rollSin - yawSin * pitchSin * rollCos);
+	D3DXQUATERNION quat;
+	D3DXQuaternionRotationYawPitchRoll(&quat, eulerAngles.x, eulerAngles.y, eulerAngles.z);
+	return Quaternion(quat);
 }
 
 Quaternion Quaternion::FromEuler(float yaw, float pitch, float roll)
@@ -718,9 +735,61 @@ Quaternion Quaternion::FromEuler(float yaw, float pitch, float roll)
 	return Quaternion::FromEuler(Vector3(yaw,pitch,roll));
 }
 
+Quaternion Quaternion::FromRotationMatrix(Matrix4x4 rotMat)
+{ /*
+	Quaternion out;
+	out.w = sqrtf( max(.0f, 1 + rotMat._11 + rotMat._22 + rotMat._33) ) * .5f;
+	out.x = sqrtf( max(.0f, 1 + rotMat._11 - rotMat._22 - rotMat._33) ) * .5f;
+	out.y = sqrtf( max(.0f, 1 - rotMat._11 + rotMat._22 - rotMat._33) ) * .5f;
+	out.z = sqrtf( max(.0f, 1 - rotMat._11 - rotMat._22 + rotMat._33) ) * .5f;
+	out.x = static_cast<float>( _copysign(static_cast<double>(out.x), static_cast<double>(rotMat._23 - rotMat._32) ) );
+	out.y = static_cast<float>( _copysign(static_cast<double>(out.y), static_cast<double>(rotMat._31 - rotMat._13) ) );
+	out.z = static_cast<float>( _copysign(static_cast<double>(out.z), static_cast<double>(rotMat._12 - rotMat._21) ) );
+	return out;*/
+	D3DXQUATERNION quat;
+	D3DXQuaternionRotationMatrix(&quat, &rotMat.To_DxMatrix());
+	return static_cast<Quaternion>(quat);
+} 
+
 Quaternion::operator D3DXQUATERNION(void) const
 {
 	return D3DXQUATERNION(x,y,z,w);
+}
+/*
+Vector3 Quaternion::GetAxis(void) const
+{
+	return Vector3(x,y,z);
+}
+
+float Quaternion::GetAngle(void) const
+{
+	return w;
+}
+*/
+
+Vector3 Quaternion::GetYawPitchRoll(void) const
+{
+	//http://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
+	Vector3 out;
+	out.x = atan2( 2 * (w*z + x*y), 1 - 2 * (y*y + z*z) ); //Yaw
+	out.y = asin( 2 * (w*y - z*x) ); //Pitch
+	out.z = atan2( 2 * (w*x + y*z), 1 - 2 * (x*x + y*y) ); //Roll
+	return out;
+}
+
+Quaternion& Quaternion::Normalize(void)
+{/*
+	float invMag = 1.0f/sqrtf(x*x + y*y + z*z + w*w);
+	x *= invMag;
+	y *= invMag;
+	z *= invMag;
+	w *= invMag;
+	return *this;
+	*/
+	D3DXQUATERNION quat;
+	D3DXQuaternionNormalize(&quat, &static_cast<D3DXQUATERNION>(*this));
+	*this = static_cast<Quaternion>(quat);
+	return *this;
 }
 
 //------------

@@ -34,13 +34,13 @@ void TransformComponent::CheckForUpdate(bool bForce)
 	}
 
 	if(m_DeltaRotation != idQuat){
-		m_WorldRotation *= m_DeltaRotation;
+		m_WorldRotation = m_DeltaRotation;
 		m_DeltaRotation = idQuat;
 		transformed = true;
 	}
 
 	if(m_DeltaScale != zeroVec){
-		m_WorldScale += m_DeltaScale;
+		m_WorldScale *= m_DeltaScale;
 		m_DeltaScale = zeroVec;
 		transformed = true;
 	}

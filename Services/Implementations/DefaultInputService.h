@@ -27,7 +27,7 @@ public:
 private:
 	static const unsigned short sc_MilliSecondsUntilHeld = 1000;
 	tt::Timer m_UpdateTimer;
-	tt::Vector2 m_OldMousePosition, m_MousePosition;
+	tt::Vector2 m_OldMousePosition, m_MousePosition, m_MouseMovement;
 
 	std::map<InputActionId, InputAction> m_ActionsToMonitor;
 

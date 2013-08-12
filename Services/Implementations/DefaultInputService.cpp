@@ -62,6 +62,8 @@ void DefaultInputService::Update(const tt::GameContext& context)
 
 	m_MousePosition.x = static_cast<float>(mouseCoords.x);
 	m_MousePosition.y = static_cast<float>(mouseCoords.y);
+
+	m_MouseMovement = m_MousePosition - m_OldMousePosition;
 }
 	
 void DefaultInputService::AddInputAction(InputActionId action, unsigned char key, KeyState state)
