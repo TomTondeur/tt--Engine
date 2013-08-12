@@ -1,0 +1,404 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{072EE9AE-A65E-4D24-A726-B6C9B420EBD8}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>TTengine</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v120_CTP_Nov2012</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v120_CTP_Nov2012</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v110</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v110</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <IncludePath>C:\Program Files %28x86%29\NVIDIA Corporation\NVIDIA PhysX SDK\v2.8.3\SDKs\Physics\include;C:\Program Files %28x86%29\NVIDIA Corporation\NVIDIA PhysX SDK\v2.8.3\SDKs\NxCharacter\include;C:\Program Files %28x86%29\NVIDIA Corporation\NVIDIA PhysX SDK\v2.8.3\SDKs\Cooking\include;C:\Program Files %28x86%29\NVIDIA Corporation\NVIDIA PhysX SDK\v2.8.3\SDKs\PhysXLoader\include;C:\Program Files %28x86%29\NVIDIA Corporation\NVIDIA PhysX SDK\v2.8.3\SDKs\Foundation\include;$(DXSDK_DIR)\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(DXSDK_DIR)\lib\x86;C:\Program Files %28x86%29\NVIDIA Corporation\NVIDIA PhysX SDK\v2.8.3\SDKs\lib\Win32;C:\Program Files %28x86%29\NVIDIA Corporation\NVIDIA PhysX SDK\v2.8.3\SDKs\lib\win64;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <IncludePath>C:\Program Files %28x86%29\NVIDIA Corporation\NVIDIA PhysX SDK\v2.8.3\SDKs\Physics\include;C:\Program Files %28x86%29\NVIDIA Corporation\NVIDIA PhysX SDK\v2.8.3\SDKs\NxCharacter\include;C:\Program Files %28x86%29\NVIDIA Corporation\NVIDIA PhysX SDK\v2.8.3\SDKs\Cooking\include;C:\Program Files %28x86%29\NVIDIA Corporation\NVIDIA PhysX SDK\v2.8.3\SDKs\PhysXLoader\include;C:\Program Files %28x86%29\NVIDIA Corporation\NVIDIA PhysX SDK\v2.8.3\SDKs\Foundation\include;$(DXSDK_DIR)\include;$(IncludePath);$(DXSDK_DIR)Include</IncludePath>
+    <LibraryPath>$(DXSDK_DIR)\lib\x86;C:\Program Files %28x86%29\NVIDIA Corporation\NVIDIA PhysX SDK\v2.8.3\SDKs\lib\Win32;C:\Program Files %28x86%29\NVIDIA Corporation\NVIDIA PhysX SDK\v2.8.3\SDKs\lib\win64;$(LibraryPath);$(DXSDK_DIR)Lib\x64</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="AbstractGame.h" />
+    <ClInclude Include="Components\CameraComponent.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Components\ModelComponent.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Components\ParticleEmitterComponent.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Components\Physics\Colliders\BoxColliderComponent.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Components\Physics\Colliders\CapsuleColliderComponent.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Components\Physics\Colliders\MeshColliderComponent.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Components\Physics\Colliders\SphereColliderComponent.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Components\Physics\ControllerComponent.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Components\Physics\RigidBodyComponent.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Components\PickComponent.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Components\SpriteComponent.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Components\TransformComponent.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Diagnostics\Exceptions.h" />
+    <ClInclude Include="SceneObjects\FreeCamera.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Graphics\EffectTechnique.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Graphics\GraphicsDevice.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Graphics\Material.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Graphics\Model3D.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Graphics\Window.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Helpers\BinaryReader.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Helpers\Credits.h" />
+    <ClInclude Include="Helpers\D3DUtil.h" />
+    <ClInclude Include="Helpers\Namespace.h" />
+    <ClInclude Include="Helpers\TemplateUtil.h" />
+    <ClInclude Include="Managers\PhysicsManager.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="SceneObjects\Object3D.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Services\InputEnums.h" />
+    <ClInclude Include="TTscene.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Services\Implementations\DefaultGraphicsService.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Helpers\stdafx.h" />
+    <ClInclude Include="Helpers\targetver.h" />
+    <ClInclude Include="Helpers\resrc_ptr.hpp">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Scenegraph\GameScene.h" />
+    <ClInclude Include="Scenegraph\ObjectComponent.h" />
+    <ClInclude Include="Scenegraph\SceneObject.h" />
+    <ClInclude Include="Services\Implementations\DefaultInputService.h" />
+    <ClInclude Include="Services\Interfaces\DebugService.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Services\Interfaces\IGraphicsService.h" />
+    <ClInclude Include="Services\Interfaces\IInputService.h" />
+    <ClInclude Include="Services\Interfaces\ResourceService.h" />
+    <ClInclude Include="Services\ServiceIncludes.h" />
+    <ClInclude Include="Services\Interfaces\Service.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Services\ServiceLocator.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Services\Interfaces\IAudioService.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Timer.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="TTgame.h" />
+    <ClInclude Include="TTengine.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="AbstractGame.cpp" />
+    <ClCompile Include="Components\CameraComponent.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Components\ModelComponent.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Components\ParticleEmitterComponent.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Components\Physics\Colliders\BoxColliderComponent.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Components\Physics\Colliders\CapsuleColliderComponent.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Components\Physics\Colliders\MeshColliderComponent.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Components\Physics\Colliders\SphereColliderComponent.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Components\Physics\ControllerComponent.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Components\Physics\RigidBodyComponent.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Components\PickComponent.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Components\SpriteComponent.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Components\TransformComponent.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="SceneObjects\FreeCamera.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Graphics\EffectTechnique.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Graphics\GraphicsDevice.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Graphics\Material.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Graphics\Model3D.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Graphics\Window.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Helpers\BinaryReader.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Helpers\Namespace.cpp" />
+    <ClCompile Include="Entrypoint.cpp" />
+    <ClCompile Include="Scenegraph\GameScene.cpp" />
+    <ClCompile Include="Managers\PhysicsManager.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Scenegraph\ObjectComponent.cpp" />
+    <ClCompile Include="Scenegraph\SceneObject.cpp" />
+    <ClCompile Include="SceneObjects\Object3D.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Services\Implementations\MaterialLoader.cpp" />
+    <ClCompile Include="Services\Implementations\ShaderRVLoader.cpp" />
+    <ClCompile Include="TTscene.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Services\Implementations\DefaultGraphicsService.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Services\Implementations\EffectLoader.cpp" />
+    <ClCompile Include="Services\Implementations\Model3DLoader.cpp" />
+    <ClCompile Include="Services\Interfaces\DebugService.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Services\Implementations\DefaultInputService.cpp" />
+    <ClCompile Include="Services\ServiceLocator.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Timer.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="TTgame.cpp" />
+    <ClCompile Include="TTengine.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Properties.rc" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
