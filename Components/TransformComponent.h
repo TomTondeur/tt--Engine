@@ -25,17 +25,17 @@ public:
 	void Scale(float x, float y, float z, bool bRelative=false);
 
 	//Accessors
-	tt::Vector3 GetWorldPosition() const;
-	tt::Quaternion GetWorldRotation() const;
-	tt::Vector3 GetWorldScale() const;
-	tt::Matrix4x4 GetWorldMatrix() const;
+	tt::Vector3 GetWorldPosition(void) const;
+	tt::Quaternion GetWorldRotation(void) const;
+	tt::Vector3 GetWorldScale(void) const;
+	tt::Matrix4x4 GetWorldMatrix(void) const;
 
-	tt::Vector3 GetForward() const;
-	tt::Vector3 GetRight() const;
-	tt::Vector3 GetUp() const;
-	tt::Vector3 GetBackward() const;
-	tt::Vector3 GetLeft() const;
-	tt::Vector3 GetDown() const;
+	tt::Vector3 GetForward(void) const;
+	tt::Vector3 GetRight(void) const;
+	tt::Vector3 GetUp(void) const;
+	tt::Vector3 GetBackward(void) const;
+	tt::Vector3 GetLeft(void) const;
+	tt::Vector3 GetDown(void) const;
 
 private:
 	//Datamembers

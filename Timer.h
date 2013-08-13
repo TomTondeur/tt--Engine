@@ -24,8 +24,8 @@ namespace tt
 		void Start(void);
 		void Tick(void);
 
-		float GetElapsedSeconds(void);
-		float GetTotalSeconds(void);
+		float GetElapsedSeconds(void) const;
+		float GetTotalSeconds(void) const;
 
 	private:
 		LARGE_INTEGER m_CountsAtStart, m_CountsLatestTick, m_CountsPreviousTick;

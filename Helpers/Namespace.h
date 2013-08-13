@@ -11,6 +11,7 @@
 #pragma once
 #include "stdafx.h"
 #include "D3DUtil.h"
+#include "../Timer.h"
 
 class AbstractGame;
 
@@ -99,11 +100,19 @@ namespace tt
 
 		Vector3& Normalize(void);
 		static Vector3 Normalize(const Vector3& vec);
+
 		float Length(void) const;
 		float LengthSq(void) const;
+		
 		Vector3 TransformCoord(const Matrix4x4& matTransform) const;
 		Vector3 TransformCoord(const Quaternion& rotQuat) const;
+		
 		Vector3 Cross(const Vector3& v) const;
+		float Dot(const Vector3& v) const;
+		
+		static const Vector3 i;
+		static const Vector3 j;
+		static const Vector3 k;
 	};
 	
 	//Vector consisting of 4 float components, support for common mathematical operations is provided
@@ -209,6 +218,7 @@ namespace tt
 	{
 		ViewportInfo vpInfo;
 		AbstractGame* pGame;
+		Timer GameTimer;
 		//Viewport size
 		//DeltaTime
 		//Camera

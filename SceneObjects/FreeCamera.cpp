@@ -56,12 +56,13 @@ void FreeCamera::Update(const tt::GameContext& context)
 	if(!pInputService->IsActionTriggered(InputActionId::CameraUnlockRotation))
 		return;
 
-	auto mouseMoveDir = pInputService->GetMouseMovement();
-	m_Yaw += mouseMoveDir.x * m_RotationSpeed * .016f;
-	m_Pitch += mouseMoveDir.y * m_RotationSpeed * .016f;
+	auto mouseMovement = pInputService->GetMouseMovement();
+	mouseMovement *= m_RotationSpeed * context.GameTimer.GetElapsedSeconds();
+	m_Yaw += mouseMovement.x;
+	m_Pitch += mouseMovement.y;
 
-	tt::Quaternion yawQuat(tt::Vector3(0,1,0), m_Yaw);
-	tt::Vector3 rotatedRight = tt::Vector3(1,0,0).TransformCoord(yawQuat);
+	tt::Quaternion yawQuat(tt::Vector3::j, m_Yaw);
+	tt::Vector3 rotatedRight = tt::Vector3::i.TransformCoord(yawQuat);
 	tt::Quaternion pitchQuat(rotatedRight, m_Pitch);
 
 	pTransform->Rotate(yawQuat * pitchQuat);

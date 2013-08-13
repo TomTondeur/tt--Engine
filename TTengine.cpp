@@ -89,6 +89,7 @@ DWORD TTengine::GameLoop(void)
 	m_pGame->Initialize();
 	m_pGame->InitializeGame();
 	m_GameContext.pGame = m_pGame;
+	m_GameContext.GameTimer.Start();
 
 	auto pGraphicsDevice = MyServiceLocator::GetInstance()->GetService<IGraphicsService>()->GetGraphicsDevice();
 	
@@ -100,6 +101,8 @@ DWORD TTengine::GameLoop(void)
 		m_pGame->Draw(m_GameContext);
 		m_pGame->DrawGame(m_GameContext);
 		pGraphicsDevice->Present();
+
+		m_GameContext.GameTimer.Tick();
 	}
 
 	m_bProgramTerminated = false;

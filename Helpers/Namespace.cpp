@@ -184,6 +184,10 @@ float Vector2::LengthSq(void) const
 //--------
 // Vector3
 //--------
+const Vector3 Vector3::i = Vector3(1,0,0);
+const Vector3 Vector3::j = Vector3(0,1,0);
+const Vector3 Vector3::k = Vector3(0,0,1);
+
 Vector3::Vector3(void)
 {
 	x = 0;
@@ -377,6 +381,11 @@ Vector3 Vector3::Cross(const Vector3& v) const
 	D3DXVECTOR3 vec;
 	D3DXVec3Cross(&vec, &static_cast<D3DXVECTOR3>(*this), &static_cast<D3DXVECTOR3>(v));
 	return static_cast<Vector3>(vec);
+}
+
+float Vector3::Dot(const Vector3& v) const
+{
+	return D3DXVec3Dot(&static_cast<D3DXVECTOR3>(*this), &static_cast<D3DXVECTOR3>(v));
 }
 
 //--------

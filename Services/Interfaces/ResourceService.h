@@ -26,12 +26,12 @@ public:
 	virtual ~ResourceService(void){};
 	
 	//Methods
-	template <typename T> resource_ptr<T> Load(std::tstring filePath)
+	template <typename T> resource_ptr<T> Load(std::tstring filePath, bool bForceReload = false)
 	{
-		return ResourceLoader<T>::Load(filePath);
+		return ResourceLoader<T>::Load(filePath, bForceReload);
 	}
 	
-	//This template is specialized in the corresponding .cpp file
+	//This template is specialized in the corresponding .cpp file, do not call this function manually, use the Load function instead
 	template <typename T> static std::unique_ptr<T> LoadResource(std::tstring filePath);
 
 private:
@@ -44,11 +44,11 @@ template<typename T>
 class ResourceLoader
 {
 public:
-	static resource_ptr<T> Load(std::tstring filename)
+	static resource_ptr<T> Load(std::tstring filename, bool bForceReload)
 	{
 		auto it = m_Resources.find(filename);
 		
-		if(it != m_Resources.end())
+		if(it != m_Resources.end() && !bForceReload)
 			return resource_ptr<T>(it->second);
 		
 		std::unique_ptr<T>& pResrc = m_Resources.insert(make_pair(filename, ResourceService::LoadResource<T>(filename) ) ).first->second;

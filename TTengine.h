@@ -14,6 +14,7 @@
 // Includes
 //------------
 #include "Helpers/Namespace.h"
+#include "Timer.h"
 
 //Forward declarations
 class AbstractGame;

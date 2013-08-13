@@ -45,12 +45,12 @@ void Timer::Tick(void)
 		MyServiceLocator::GetInstance()->GetService<DebugService>()->LogWin32Error(GetLastError(),__LINE__, __FILE__);
 }
 
-float Timer::GetElapsedSeconds(void)
+float Timer::GetElapsedSeconds(void) const
 {
 	return static_cast<float>((m_CountsLatestTick.QuadPart - m_CountsPreviousTick.QuadPart) / (double)m_Frequency.QuadPart);
 }
 
-float Timer::GetTotalSeconds(void)
+float Timer::GetTotalSeconds(void) const
 {
 	return static_cast<float>((m_CountsLatestTick.QuadPart - m_CountsAtStart.QuadPart) / (double)m_Frequency.QuadPart);
 }
