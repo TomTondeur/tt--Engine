@@ -3,6 +3,7 @@
 using namespace tt;
 
 TransformComponent::TransformComponent(void):m_WorldPosition(0),m_WorldRotation(Quaternion::Identity()),m_WorldScale(1),m_World(Matrix4x4::Identity())
+											,m_NewPosition(0),m_NewRotation(Quaternion::Identity()),m_NewScale(0)
 											,m_DeltaPosition(0),m_DeltaRotation(Quaternion::Identity()),m_DeltaScale(0)
 											,m_Forward(0,0,1),m_Right(1,0,0),m_Up(0,1,0)
 {
@@ -25,27 +26,42 @@ void TransformComponent::CheckForUpdate(bool bForce)
 {
 	auto zeroVec = Vector3(0);
 	auto idQuat = Quaternion::Identity();
-	bool transformed = false;
+	bool bTransformed = false;
 
+	if(m_NewPosition != zeroVec){
+		m_WorldPosition = m_NewPosition;		
+		m_NewPosition = zeroVec;		
+		bTransformed = true;
+	}
 	if(m_DeltaPosition != zeroVec){
 		m_WorldPosition += m_DeltaPosition;
 		m_DeltaPosition = zeroVec;
-		transformed = true;
+		bTransformed = true;
 	}
 
+	if(m_NewRotation != idQuat){
+		m_WorldRotation = m_NewRotation;		
+		m_NewRotation = idQuat;		
+		bTransformed = true;
+	}
 	if(m_DeltaRotation != idQuat){
-		m_WorldRotation = m_DeltaRotation;
+		m_WorldRotation *= m_DeltaRotation;
 		m_DeltaRotation = idQuat;
-		transformed = true;
+		bTransformed = true;
 	}
 
+	if(m_NewScale != zeroVec){
+		m_WorldScale = m_NewScale;
+		m_NewScale = zeroVec;		
+		bTransformed = true;
+	}
 	if(m_DeltaScale != zeroVec){
 		m_WorldScale *= m_DeltaScale;
 		m_DeltaScale = zeroVec;
-		transformed = true;
+		bTransformed = true;
 	}
 	
-	if(!transformed && !bForce)
+	if(!bTransformed && !bForce)
 		return;	
 	
 	auto matTrans = Matrix4x4::Translation(m_WorldPosition);
@@ -59,34 +75,43 @@ void TransformComponent::CheckForUpdate(bool bForce)
 	m_Up = m_Forward.Cross(m_Right).Normalize();
 }
 
-void TransformComponent::Translate(Vector3 translation)
+void TransformComponent::Translate(Vector3 translation, bool bRelative)
 {
-	m_DeltaPosition += translation;
+	if(bRelative)
+		m_DeltaPosition += translation;
+	else
+		m_NewPosition = translation;
 }
 
-void TransformComponent::Translate(float x, float y, float z)
+void TransformComponent::Translate(float x, float y, float z, bool bRelative)
 {
-	Translate(Vector3(x,y,z));
+	Translate(Vector3(x,y,z), bRelative);
 }
 
-void TransformComponent::Rotate(Quaternion rotation)
+void TransformComponent::Rotate(Quaternion rotation, bool bRelative)
 {
-	m_DeltaRotation *= rotation;
+	if(bRelative)
+		m_DeltaRotation *= rotation;
+	else
+		m_NewRotation = rotation;
 }
 
-void TransformComponent::Rotate(float x, float y, float z)
+void TransformComponent::Rotate(float x, float y, float z, bool bRelative)
 {
-	Rotate(Quaternion::FromEuler(x,y,z));
+	Rotate(Quaternion::FromEuler(x,y,z), bRelative);
 }
 
-void TransformComponent::Scale(Vector3 scale)
+void TransformComponent::Scale(Vector3 scale, bool bRelative)
 {
-	m_DeltaScale *= scale;
+	if(bRelative)
+		m_DeltaScale *= scale;
+	else
+		m_NewScale = scale;
 }
 
-void TransformComponent::Scale(float x, float y, float z)
+void TransformComponent::Scale(float x, float y, float z, bool bRelative)
 {
-	Scale(Vector3(x,y,z));
+	Scale(Vector3(x,y,z), bRelative);
 }
 
 Vector3 TransformComponent::GetWorldPosition() const

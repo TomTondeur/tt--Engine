@@ -36,22 +36,22 @@ void FreeCamera::Update(const tt::GameContext& context)
 	auto pTransform = GetComponent<TransformComponent>();
 	
 	if(pInputService->IsActionTriggered(InputActionId::CameraMoveForward))
-		pTransform->Translate(pTransform->GetForward() * m_MovementSpeed);
+		pTransform->Translate(pTransform->GetForward() * m_MovementSpeed, true);
 	
 	if(pInputService->IsActionTriggered(InputActionId::CameraMoveBack))
-		pTransform->Translate(pTransform->GetBackward() * m_MovementSpeed);
+		pTransform->Translate(pTransform->GetBackward() * m_MovementSpeed, true);
 	
 	if(pInputService->IsActionTriggered(InputActionId::CameraMoveLeft))
-		pTransform->Translate(pTransform->GetLeft() * m_MovementSpeed);
+		pTransform->Translate(pTransform->GetLeft() * m_MovementSpeed, true);
 	
 	if(pInputService->IsActionTriggered(InputActionId::CameraMoveRight))
-		pTransform->Translate(pTransform->GetRight() * m_MovementSpeed);
+		pTransform->Translate(pTransform->GetRight() * m_MovementSpeed, true);
 
 	if(pInputService->IsActionTriggered(InputActionId::CameraMoveUp))
-		pTransform->Translate(pTransform->GetUp() * m_MovementSpeed);
+		pTransform->Translate(pTransform->GetUp() * m_MovementSpeed, true);
 	
 	if(pInputService->IsActionTriggered(InputActionId::CameraMoveDown))
-		pTransform->Translate(pTransform->GetDown() * m_MovementSpeed);
+		pTransform->Translate(pTransform->GetDown() * m_MovementSpeed, true);
 
 	if(!pInputService->IsActionTriggered(InputActionId::CameraUnlockRotation))
 		return;

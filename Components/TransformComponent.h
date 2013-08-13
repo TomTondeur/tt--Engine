@@ -15,14 +15,14 @@ public:
 	//Methods
 	void Update(const tt::GameContext& context) override;
 
-	void Translate(tt::Vector3 translation);
-	void Translate(float x, float y, float z);
+	void Translate(tt::Vector3 translation, bool bRelative=false);
+	void Translate(float x, float y, float z, bool bRelative=false);
 
-	void Rotate(tt::Quaternion rotation);
-	void Rotate(float x, float y, float z);
+	void Rotate(tt::Quaternion rotation, bool bRelative=false);
+	void Rotate(float x, float y, float z, bool bRelative=false);
 
-	void Scale(tt::Vector3 scale);
-	void Scale(float x, float y, float z);
+	void Scale(tt::Vector3 scale, bool bRelative=false);
+	void Scale(float x, float y, float z, bool bRelative=false);
 
 	//Accessors
 	tt::Vector3 GetWorldPosition() const;
@@ -39,9 +39,9 @@ public:
 
 private:
 	//Datamembers
-	tt::Vector3 m_WorldPosition, m_DeltaPosition;
-	tt::Quaternion m_WorldRotation, m_DeltaRotation;
-	tt::Vector3 m_WorldScale, m_DeltaScale;
+	tt::Vector3		m_WorldPosition, m_NewPosition, m_DeltaPosition;
+	tt::Quaternion	m_WorldRotation, m_NewRotation, m_DeltaRotation;
+	tt::Vector3		m_WorldScale,	 m_NewScale,	m_DeltaScale;
 	tt::Matrix4x4 m_World;
 
 	tt::Vector3 m_Forward, m_Right, m_Up;
