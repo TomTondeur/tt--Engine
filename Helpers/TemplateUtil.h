@@ -45,35 +45,47 @@ public:
 	{
 		delete pFirstType;
 	}
+	
+	template<typename T, size_t index>
+	//DON'T CALL THIS
+	T* Get_Unsafe(void)
+	{
+		if(std::is_same<FirstType, T>::value){
+			if(index == 0)
+				return reinterpret_cast<T*>( pFirstType );
+			else 
+				return reinterpret_cast<T*>( tailTuple.Get_Unsafe<T, index - 1>() );
+		}
+		else
+			return reinterpret_cast<T*>( tailTuple.Get_Unsafe<T, index>() );
+	}
 
 	template<typename T, size_t index=0>
 	T* Get(void)
 	{
 		static_assert(contains_same<T, FirstType, Tail...>::value,"This Tuple does not contain a variable of type T");
-
+		return Get_Unsafe<T, index>();
+	}
+		
+	template<typename T, size_t index>
+	//DON'T CALL THIS
+	void Set_Unsafe(T* value)
+	{
 		if(std::is_same<FirstType, T>::value){
 			if(index == 0)
-				return reinterpret_cast<T*>( pFirstType );
+				pFirstType = reinterpret_cast<FirstType*>(value);
 			else 
-				return reinterpret_cast<T*>( tailTuple.Get<T, index - 1>() );
+				tailTuple.Set_Unsafe<T, index - 1>(value);
 		}
 		else
-			return reinterpret_cast<T*>( tailTuple.Get<T, index>() );
+			tailTuple.Set_Unsafe<T, index>(value);
 	}
 
 	template<typename T, size_t index=0>
 	void Set(T* value)
 	{
 		static_assert(contains_same<T, FirstType, Tail...>::value,"This Tuple does not contain a variable of type T");
-
-		if(std::is_same<FirstType, T>::value){
-			if(index == 0)
-				pFirstType = reinterpret_cast<FirstType*>(value);
-			else 
-				tailTuple.Set<T, index - 1>(value);
-		}
-		else
-			tailTuple.Set<T, index>(value);
+		Set_Unsafe<T, index>(value);
 	}
 	
 	template <typename... Types, typename _Fn>
@@ -97,11 +109,25 @@ public:
 	{
 		delete pData;
 	}
-	 
+	
+	template<typename T, size_t index>
+	//DON'T CALL THIS
+	MyType* Get_Unsafe(void)
+	{
+		return pData;
+	}
+
 	template<typename T, size_t index=0>
 	MyType* Get(void)
 	{
 		return pData;
+	}
+		
+	template<typename T, size_t index>
+	//DON'T CALL THIS
+	void Set_Unsafe(T* value)
+	{
+		pData = reinterpret_cast<MyType*>(value);
 	}
 
 	template<typename T, size_t index=0>

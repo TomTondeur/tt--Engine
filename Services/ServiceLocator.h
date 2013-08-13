@@ -22,24 +22,25 @@ public:
 	//Default constructor & destructor
 	ServiceLocator()
 	{
-		m_Services.Allocate<SupportedServiceInterfaces...>();
+
 	}
 
 	virtual ~ServiceLocator()
 	{
-		m_Services.Release<SupportedServiceInterfaces...>();
+
 	}
 
 	//Methods
 	template<typename T>
 	T* GetService()
 	{
-		return m_Services.GetMember<T, SupportedServiceInterfaces...>();
+		return m_Services.Get<T>();
 	}
 
 	template<typename Interface, typename Implementation>
 	void SetService()
 	{
+		/*
 		Interface* pInterface = m_Services.GetMember<Interface>();
 		Interface* pImplementation = nullptr;
 		vector<Interface*> ptrs;
@@ -55,19 +56,19 @@ public:
 			m_Services.SetMember<Interface,0,SupportedServiceInterfaces...>(pInterface);
 		else
 			DEBUG_BREAK
+			*/
 	}
 	
 protected:
 	template<typename T>
 	void AddService(T* pService)
 	{
-		m_Services.AddMember<T, SupportedServiceInterfaces...>(pService);
+		m_Services.Set<T>(pService);
 	}
 
 private:
 	//Datamembers
-	MemberMapper<Service> m_Services;
-
+	Tuple<SupportedServiceInterfaces...> m_Services;
 
 	//Disabling default copy constructor & assignment operator
 	ServiceLocator(const ServiceLocator& src);// = delete;
