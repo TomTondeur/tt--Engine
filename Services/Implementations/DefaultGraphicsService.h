@@ -16,11 +16,13 @@ public:
 
 	virtual GraphicsDevice* GetGraphicsDevice(void) const override;
 	virtual Window* GetWindow(void) const override;
+	virtual SpriteBatch* GetSpriteBatch(void) const override;
 
 private:
 	//Datamembers
 	GraphicsDevice* m_pGraphicsDevice;
 	Window* m_pWindow;
+	SpriteBatch* m_pSpriteBatch;
 
 	//Disabling default copy constructor & assignment operator
 	DefaultGraphicsService(const DefaultGraphicsService& src);

@@ -133,6 +133,7 @@ namespace tt
 		Vector4& operator*=(float f);
 		Vector4 operator/(float f) const;
 		Vector4& operator/=(float f);
+		operator D3DXCOLOR(void) const;
 		operator D3DXVECTOR4(void) const;
 
 		Vector4& Normalize(void);

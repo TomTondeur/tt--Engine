@@ -483,6 +483,11 @@ Vector4::operator D3DXVECTOR4(void) const
 	return D3DXVECTOR4(x,y,z,w);
 }
 
+Vector4::operator D3DXCOLOR(void) const
+{
+	return D3DXCOLOR(x,y,z,w);
+}
+
 Vector4& Vector4::Normalize(void)
 {/*
 	float len = Length();

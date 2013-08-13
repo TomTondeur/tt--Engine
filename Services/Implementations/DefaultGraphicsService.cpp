@@ -4,8 +4,11 @@
 #include "../../Graphics/Model3D.h"
 #include "../../Graphics/Material.h"
 #include "../../Graphics/EffectTechnique.h"
+#include "../../Graphics/SpriteBatch.h"
 
-DefaultGraphicsService::DefaultGraphicsService(void):m_pGraphicsDevice(nullptr),m_pWindow(nullptr)
+DefaultGraphicsService::DefaultGraphicsService(void):m_pGraphicsDevice(nullptr)
+													,m_pWindow(nullptr)
+													,m_pSpriteBatch(nullptr)
 {
 
 }
@@ -14,6 +17,7 @@ DefaultGraphicsService::~DefaultGraphicsService(void)
 {
 	delete m_pGraphicsDevice;
 	delete m_pWindow;
+	delete m_pSpriteBatch;
 }
 
 //Methods
@@ -23,7 +27,7 @@ void DefaultGraphicsService::Draw(resource_ptr<Model3D> pModel, const tt::Matrix
 	auto pD3DDevice = m_pGraphicsDevice->GetDevice();
 
 	//Update shader variables
-	pMat->UpdateEffectVariables(context, worldMat);
+	pMat->Update(context, worldMat);
 
 	// Set input layout	
 	pD3DDevice->IASetInputLayout( pMat->GetInputLayout()->pInputLayout );
@@ -63,9 +67,16 @@ void DefaultGraphicsService::InitWindow(int windowWidth, int windowHeight, TTeng
 	m_pWindow->Create(pEngine);
 	m_pGraphicsDevice = new GraphicsDevice(m_pWindow->GetHandle(),windowWidth, windowHeight);
 	m_pGraphicsDevice->Initialize();
+	m_pSpriteBatch = new SpriteBatch();
+	m_pSpriteBatch->Initialize();
 }
 
 Window* DefaultGraphicsService::GetWindow(void) const
 {
 	return m_pWindow;
+}
+
+SpriteBatch* DefaultGraphicsService::GetSpriteBatch(void) const
+{
+	return m_pSpriteBatch;
 }

@@ -35,6 +35,8 @@ namespace std
 
 template <typename T>
 class resource_ptr{
+	template <typename U> friend class resource_ptr;
+
 public:
 	resource_ptr(void) : pData(nullptr) {}
 	resource_ptr(const std::unique_ptr<T>& masterPtr) : pData(&masterPtr) {}
@@ -44,7 +46,7 @@ public:
 		return pData->get();
 	}
 
-	T* get(void)
+	T* get(void) const
 	{
 		return pData->get();
 	}
@@ -67,6 +69,15 @@ public:
 	bool operator!=(const resource_ptr<T>& ptr) const
 	{
 		return pData->get() != *ptr->pData;
+	}
+
+	template<typename U>
+	operator resource_ptr<U>(void)
+	{
+		static_assert(std::is_base_of<U, T>::value, "Cannot cast to resource_ptr of non-Base type.");
+		resource_ptr<U> output;
+		output.pData = reinterpret_cast<const std::unique_ptr<U>*>(pData);
+		return output;
 	}
 
 private:

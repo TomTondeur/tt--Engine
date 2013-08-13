@@ -189,6 +189,18 @@
       </SubType>
     </ClInclude>
     <ClInclude Include="Diagnostics\Exceptions.h" />
+    <ClInclude Include="Graphics\Materials\Object3DMaterial.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Graphics\Materials\SpriteMaterial.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Graphics\SpriteBatch.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="SceneObjects\FreeCamera.h">
       <SubType>
       </SubType>
@@ -326,6 +338,18 @@
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="Graphics\Materials\Object3DMaterial.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Graphics\Materials\SpriteMaterial.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Graphics\SpriteBatch.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="SceneObjects\FreeCamera.cpp">
       <SubType>
       </SubType>
@@ -367,8 +391,9 @@
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Services\Implementations\MaterialLoader.cpp" />
+    <ClCompile Include="Services\Implementations\Object3DMaterialLoader.cpp" />
     <ClCompile Include="Services\Implementations\ShaderRVLoader.cpp" />
+    <ClCompile Include="Services\Implementations\SpriteMaterialLoader.cpp" />
     <ClCompile Include="TTscene.cpp">
       <SubType>
       </SubType>

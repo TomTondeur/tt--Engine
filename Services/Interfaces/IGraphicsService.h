@@ -10,6 +10,7 @@ class Window;
 class Model3D;
 class Material;
 struct GameContext;
+class SpriteBatch;
 
 class IGraphicsService : public Service
 {
@@ -25,6 +26,7 @@ public:
 
 	virtual GraphicsDevice* GetGraphicsDevice(void) const=0;
 	virtual Window* GetWindow(void) const=0;
+	virtual SpriteBatch* GetSpriteBatch(void) const=0;
 
 private:
 	//Datamembers

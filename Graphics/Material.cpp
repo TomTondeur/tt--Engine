@@ -48,7 +48,7 @@ void Material::LoadEffect(void)
 	SetActiveTechnique(0);
 }
 
-void Material::UpdateEffectVariables(const tt::GameContext& context, const tt::Matrix4x4& worldMat)
+void Material::Update(const tt::GameContext& context, const tt::Matrix4x4& worldMat)
 {
 	tt::Matrix4x4 viewMat = context.pGame->GetActiveScene()->GetActiveCamera()->GetView();
 	tt::Matrix4x4 projMat = context.pGame->GetActiveScene()->GetActiveCamera()->GetProjection();
@@ -68,8 +68,7 @@ void Material::UpdateEffectVariables(const tt::GameContext& context, const tt::M
 	if(ContainsVariable(_T("WorldViewProjection")))
 		SetVariable(_T("WorldViewProjection"), worldMat * viewMat * projMat);
 
-	SetVariable(_T("DIRECTION"), tt::Vector3(0,-1,0));
-	SetVariable(_T("TEXTURE_DIFFUSE"), MyServiceLocator::GetInstance()->GetService<ResourceService>()->Load<ID3D10ShaderResourceView>(_T("c:/users/user/desktop/Vampire_Diffuse.dds")).get());
+	UpdateEffectVariables(context);
 }
 
 InputLayout* Material::GetInputLayout(void) const
