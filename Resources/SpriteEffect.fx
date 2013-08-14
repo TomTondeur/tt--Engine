@@ -63,21 +63,21 @@ void MainGS(point VS_INPUT input[1], inout TriangleStream<PS_INPUT> stream)
 					  ,{input[0].MatRow1.x,  input[0].MatRow1.y,  input[0].MatRow1.z,  0}
 					  ,{input[0].MatRow2.x,  input[0].MatRow2.y,  input[0].MatRow2.z,  0}
 					  ,{input[0].Position.x, input[0].Position.y, input[0].Position.z, 1}};*/ //Y U NO WORK?
-	matTrans[0][0] = input[0].MatRow0.x;  matTrans[0][1] = input[0].MatRow0.y;  matTrans[0][2] = input[0].MatRow0.z;  matTrans[0][3] = 0;
-	matTrans[1][0] = input[0].MatRow1.x;  matTrans[1][1] = input[0].MatRow1.y;  matTrans[1][2] = input[0].MatRow1.z;  matTrans[1][3] = 0;
-	matTrans[2][0] = input[0].MatRow2.x;  matTrans[2][1] = input[0].MatRow2.y;  matTrans[2][2] = input[0].MatRow2.z;  matTrans[2][3] = 0;
-	matTrans[3][0] = input[0].Position.x; matTrans[3][1] = input[0].Position.y; matTrans[3][2] = input[0].Position.z; matTrans[3][3] = 1;
-	matTrans = mul(matTrans, matTransform);	
+	matTrans[0][0] = input[0].MatRow0.x;	matTrans[0][1] = input[0].MatRow0.y;	matTrans[0][2] = input[0].MatRow0.z;	matTrans[0][3] = 0;
+	matTrans[1][0] = input[0].MatRow1.x;	matTrans[1][1] = input[0].MatRow1.y;	matTrans[1][2] = input[0].MatRow1.z;	matTrans[1][3] = 0;
+	matTrans[2][0] = input[0].MatRow2.x;	matTrans[2][1] = input[0].MatRow2.y;	matTrans[2][2] = input[0].MatRow2.z;	matTrans[2][3] = 0;
+	matTrans[3][0] = 0;						matTrans[3][1] = 0;						matTrans[3][2] = 0;						matTrans[3][3] = 1;
+	matTrans = mul(matTrans, matTransform);
 	
-	float3 vUp = mul( float3(0,1,0),	(float3x3)matTransform );
-	float3 vRight = mul( float3(1,0,0), (float3x3)matTransform );
+	float3 vUp =	mul(float3(0,texHeight,0), (float3x3)matTrans);
+	float3 vRight = mul(float3(texWidth,0, 0), (float3x3)matTrans);
 
-	CreateVertex(stream, mul(float4(input[0].Position+vRight	 ,1), matTransform),	float2(1,0), input[0].Color); //bot-right
-	CreateVertex(stream, mul(float4(input[0].Position			 ,1), matTransform),	float2(0,0), input[0].Color); //bot-left
-	CreateVertex(stream, mul(float4(input[0].Position+vUp		 ,1), matTransform),	float2(0,1), input[0].Color); //top-left
-	CreateVertex(stream, mul(float4(input[0].Position+vUp+vRight,1),  matTransform),	float2(1,1), input[0].Color); //top-right
+	float4 pos = mul(float4(input[0].Position, 1), matTrans);
 
-	stream.RestartStrip();
+	CreateVertex(stream, pos,						float2(0,0), input[0].Color); //bot-left
+	CreateVertex(stream, pos + float4(vRight, 0),	float2(1,0), input[0].Color); //bot-right
+	CreateVertex(stream, pos + float4(vUp, 0),		float2(0,1), input[0].Color); //top-left
+	CreateVertex(stream, pos + float4(vUp+vRight,0),float2(1,1), input[0].Color); //top-right
 }
 
 float4 MainPS(PS_INPUT input) : SV_TARGET {	

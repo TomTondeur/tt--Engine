@@ -21,8 +21,9 @@
 
 #include "../Components/TransformComponent.h"
 #include "../Components/ModelComponent.h"
+#include "../Components/SpriteComponent.h"
 
-class Object3D : public GenericSceneObject<TransformComponent, ModelComponent>
+class Object3D : public GenericSceneObject<TransformComponent, SpriteComponent>
 {
 public:
 	//Default constructor & destructor

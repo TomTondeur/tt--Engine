@@ -42,10 +42,10 @@ public:
 	void Scale(float x, float y, float z, bool bRelative=false);
 
 	//Accessors
-	tt::Vector3 GetWorldPosition(void) const;
-	tt::Quaternion GetWorldRotation(void) const;
-	tt::Vector3 GetWorldScale(void) const;
-	tt::Matrix4x4 GetWorldMatrix(void) const;
+	const tt::Vector3&		GetWorldPosition(void) const;
+	const tt::Quaternion&	GetWorldRotation(void) const;
+	const tt::Vector3&		GetWorldScale(void) const;
+	const tt::Matrix4x4&	GetWorldMatrix(void) const;
 
 	tt::Vector3 GetForward(void) const;
 	tt::Vector3 GetRight(void) const;

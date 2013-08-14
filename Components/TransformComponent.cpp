@@ -131,25 +131,25 @@ void TransformComponent::Scale(float x, float y, float z, bool bRelative)
 	Scale(Vector3(x,y,z), bRelative);
 }
 
-Vector3 TransformComponent::GetWorldPosition() const
+const Vector3& TransformComponent::GetWorldPosition() const
 { 
 	const_cast<TransformComponent*>(this)->CheckForUpdate(); 
 	return m_WorldPosition;
 }
 
-Quaternion TransformComponent::GetWorldRotation() const
+const Quaternion& TransformComponent::GetWorldRotation() const
 { 
 	const_cast<TransformComponent*>(this)->CheckForUpdate(); 
 	return m_WorldRotation;
 }
 
-Vector3 TransformComponent::GetWorldScale() const
+const Vector3& TransformComponent::GetWorldScale() const
 { 
 	const_cast<TransformComponent*>(this)->CheckForUpdate(); 
 	return m_WorldScale; 
 }
 
-Matrix4x4 TransformComponent::GetWorldMatrix() const
+const Matrix4x4& TransformComponent::GetWorldMatrix() const
 { 
 	const_cast<TransformComponent*>(this)->CheckForUpdate(); 
 	return m_World; 

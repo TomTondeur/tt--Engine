@@ -55,7 +55,7 @@ void SpriteBatch::Initialize(void)
 
 	for(auto& ilElem : m_pMaterial->GetInputLayout()->InputLayoutDesc)
 			m_VertexBufferStride += ilElem.Offset;
-
+	
 	//VERTEX BUFFER
 	D3D10_BUFFER_DESC bufferDesc = {};
 	bufferDesc.Usage = D3D10_USAGE_DYNAMIC;
@@ -101,9 +101,9 @@ void SpriteBatch::Flush(const tt::GameContext& context)
 
 	//Prepare Input Assembler
 	unsigned int offset=0;
-	pD3DDevice->IASetInputLayout(m_pMaterial->GetInputLayout()->pInputLayout);
 	pD3DDevice->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_POINTLIST);
-	pD3DDevice->IASetVertexBuffers(0, 0, &m_pVertexBuffer, &m_VertexBufferStride, &offset);
+	pD3DDevice->IASetVertexBuffers(0, 1, &m_pVertexBuffer, &m_VertexBufferStride, &offset);
+	pD3DDevice->IASetInputLayout(m_pMaterial->GetInputLayout()->pInputLayout);
 	
 	//Map Vertexbuffer
 	SpriteVertex* pVertices;
@@ -124,13 +124,11 @@ void SpriteBatch::Flush(const tt::GameContext& context)
 		m_pMaterial->SetVariable(_T("Texture"), _pair.first);
 		
 		ID3D10Resource* pResrc;
-		ID3D10Texture2D* pTexture;
 		D3D10_TEXTURE2D_DESC desc;
 
 		_pair.first->GetResource(&pResrc);
-		pTexture  = static_cast<ID3D10Texture2D*>(pResrc);
-		pTexture->GetDesc(&desc);
-
+		static_cast<ID3D10Texture2D*>(pResrc)->GetDesc(&desc);
+		
 		//Set texture dimensions
 		m_pMaterial->SetVariable(_T("Width"), (int)desc.Width);
 		m_pMaterial->SetVariable(_T("Height"), (int)desc.Height);

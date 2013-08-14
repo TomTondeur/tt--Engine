@@ -33,6 +33,7 @@
 #include "AbstractGame.h"
 #include "Services/ServiceLocator.h"
 #include "Graphics/GraphicsDevice.h"
+#include "Graphics/SpriteBatch.h"
 
 //------------
 // Defines
@@ -108,16 +109,20 @@ DWORD TTengine::GameLoop(void)
 	m_GameContext.pGame = m_pGame;
 	m_GameContext.GameTimer.Start();
 
-	auto pGraphicsDevice = MyServiceLocator::GetInstance()->GetService<IGraphicsService>()->GetGraphicsDevice();
+	auto pGraphicsService = MyServiceLocator::GetInstance()->GetService<IGraphicsService>();
 	
 	while(!m_bProgramTerminated){
 		m_pGame->Update(m_GameContext);
 		m_pGame->UpdateGame(m_GameContext);
 			
-		pGraphicsDevice->Clear();
+		pGraphicsService->GetGraphicsDevice()->Clear();
+
 		m_pGame->Draw(m_GameContext);
 		m_pGame->DrawGame(m_GameContext);
-		pGraphicsDevice->Present();
+		
+		pGraphicsService->GetSpriteBatch()->Flush(m_GameContext);
+		
+		pGraphicsService->GetGraphicsDevice()->Present();
 
 		m_GameContext.GameTimer.Tick();
 	}

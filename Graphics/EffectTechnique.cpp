@@ -20,7 +20,7 @@
 #include "GraphicsDevice.h"
 #include "../Diagnostics/Exceptions.h"
 
-std::vector<InputLayout> EffectTechnique::m_InputLayouts = std::vector<InputLayout>();
+std::vector< std::unique_ptr<InputLayout> > EffectTechnique::m_InputLayouts = std::vector< std::unique_ptr<InputLayout> >();
 
 bool InputLayoutElement::operator==(const InputLayoutElement& ref)
 {
@@ -66,14 +66,14 @@ void EffectTechnique::BuildInputLayout(void)
 	unsigned int inputLayoutSize = 0;
 
 	//Read new inputlayout
-	InputLayout inputLayout;
+	InputLayout* pInputLayout = new InputLayout();
 	for(unsigned int i=0; i < effectShaderDesc.NumInputSignatureEntries; ++i)
 	{
 		passShaderDesc.pShaderVariable->GetInputSignatureElementDesc(passShaderDesc.ShaderIndex,i, &signParDesc);
 		InputLayoutElement ilElem = GetInputLayoutElement(signParDesc);
 		
 		//Add element to descriptor
-		inputLayout.InputLayoutDesc.push_back(ilElem);
+		pInputLayout->InputLayoutDesc.push_back(ilElem);
 
 		//Create Input Element Desc
 		D3D10_INPUT_ELEMENT_DESC inputLayoutElement = {signParDesc.SemanticName, signParDesc.SemanticIndex, ilElem.Format, 0, inputLayoutSize, D3D10_INPUT_PER_VERTEX_DATA, 0};	
@@ -84,14 +84,14 @@ void EffectTechnique::BuildInputLayout(void)
 	}
 
 	//Find inputlayout with same inputlayoutid
-	auto it = find_if(m_InputLayouts.begin(), m_InputLayouts.end(), [&](InputLayout& layout)
+	auto it = find_if(m_InputLayouts.begin(), m_InputLayouts.end(), [&](const unique_ptr<InputLayout>& layout)
 						{
-							unsigned int ilDescSize = layout.InputLayoutDesc.size();
-							if(ilDescSize != inputLayout.InputLayoutDesc.size())
+							unsigned int ilDescSize = layout->InputLayoutDesc.size();
+							if(ilDescSize != pInputLayout->InputLayoutDesc.size())
 								return false;
 
 							for(unsigned int i=0; i<ilDescSize; ++i)
-								if(layout.InputLayoutDesc[i] != inputLayout.InputLayoutDesc[i])
+								if(layout->InputLayoutDesc[i] != pInputLayout->InputLayoutDesc[i])
 									return false;
 
 							return true;
@@ -99,7 +99,7 @@ void EffectTechnique::BuildInputLayout(void)
 
 	//No need to create a new inputlayout if id's are equal
 	if(it != m_InputLayouts.end()){
-		m_pInputLayout = &*it;
+		m_pInputLayout = it->get();
 		return;
 	}
 
@@ -110,11 +110,11 @@ void EffectTechnique::BuildInputLayout(void)
 	auto pDevice = MyServiceLocator::GetInstance()->GetService<IGraphicsService>()->GetGraphicsDevice()->GetDevice();
 	
 	// Create the input layout
-	HRESULT hr = pDevice->CreateInputLayout((D3D10_INPUT_ELEMENT_DESC*)&layoutDesc[0], layoutDesc.size(), PassDesc.pIAInputSignature, PassDesc.IAInputSignatureSize, &inputLayout.pInputLayout);
+	HR( pDevice->CreateInputLayout((D3D10_INPUT_ELEMENT_DESC*)&layoutDesc[0], layoutDesc.size(), PassDesc.pIAInputSignature, PassDesc.IAInputSignatureSize, &pInputLayout->pInputLayout) );
 	
 	//Store new inputlayout
-	m_InputLayouts.push_back(inputLayout);
-	m_pInputLayout = &m_InputLayouts.back();
+	m_InputLayouts.push_back( unique_ptr<InputLayout>(pInputLayout) );
+	m_pInputLayout = m_InputLayouts.back().get();
 }
 
 InputLayoutElement EffectTechnique::GetInputLayoutElement(D3D10_SIGNATURE_PARAMETER_DESC& signParDesc)

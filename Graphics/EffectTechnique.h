@@ -69,7 +69,7 @@ private:
 	std::tstring m_TechniqueName;
 	InputLayout* m_pInputLayout;
 
-	static std::vector<InputLayout> m_InputLayouts;
+	static std::vector< std::unique_ptr<InputLayout> > m_InputLayouts;
 	
 	void BuildInputLayout(void);
 	InputLayoutElement GetInputLayoutElement(D3D10_SIGNATURE_PARAMETER_DESC& signParDesc);
