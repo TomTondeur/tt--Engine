@@ -21,6 +21,8 @@
 #include "GraphicsDevice.h"
 #include "Materials/SpriteMaterial.h"
 #include "EffectTechnique.h"
+#include "SpriteFont.h"
+#include "Materials/TextMaterial.h"
 
 struct SpriteVertex{
 	SpriteVertex(const tt::Matrix4x4& transform, tt::Vector4 color):color(static_cast<D3DXCOLOR>(color))
@@ -84,13 +86,9 @@ void SpriteBatch::Flush(const tt::GameContext& context)
 {
 	auto pD3DDevice = MyServiceLocator::GetInstance()->GetService<IGraphicsService>()->GetGraphicsDevice()->GetDevice();
 	
-	//Set View Transform
-	D3D10_VIEWPORT viewport;
-	UINT viewportCount = 1;
-	pD3DDevice->RSGetViewports(&viewportCount, &viewport);
-
-	float scaleX = (viewport.Width>0) ? 2.0f/viewport.Width :0;
-	float scaleY = (viewport.Height>0)? 2.0f/viewport.Height:0;
+	//Set View Transform	
+	float scaleX = (context.vpInfo.width>0) ? 2.0f/context.vpInfo.width :0;
+	float scaleY = (context.vpInfo.height>0)? 2.0f/context.vpInfo.height:0;
 
 	tt::Matrix4x4 viewTransform(scaleX, 0			, 0, 0
 								,0		, -scaleY	, 0, 0
@@ -100,10 +98,10 @@ void SpriteBatch::Flush(const tt::GameContext& context)
 	m_pMaterial->SetVariable(_T("ViewTransform"), viewTransform);
 
 	//Prepare Input Assembler
-	unsigned int offset=0;
 	pD3DDevice->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_POINTLIST);
-	pD3DDevice->IASetVertexBuffers(0, 1, &m_pVertexBuffer, &m_VertexBufferStride, &offset);
 	pD3DDevice->IASetInputLayout(m_pMaterial->GetInputLayout()->pInputLayout);
+	unsigned int offset=0;
+	pD3DDevice->IASetVertexBuffers(0, 1, &m_pVertexBuffer, &m_VertexBufferStride, &offset);
 	
 	//Map Vertexbuffer
 	SpriteVertex* pVertices;
@@ -147,4 +145,23 @@ void SpriteBatch::Flush(const tt::GameContext& context)
 
 	m_Sprites.clear();
 	m_NrOfSprites = 0;
+
+	//Text rendering
+	
+	//Prepare Input Assembler
+	pD3DDevice->IASetInputLayout(SpriteFont::s_pMaterial->GetInputLayout()->pInputLayout);
+	pD3DDevice->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_POINTLIST);
+	pD3DDevice->IASetVertexBuffers(0,1,&SpriteFont::s_pVertexBuffer, &SpriteFont::s_VertexBufferStride, &offset);
+
+	SpriteFont::s_pMaterial->SetVariable(_T("ViewTransform"), viewTransform); //Set viewtransform
+	
+	for(auto pFont : m_Fonts) //Draw each font
+		pFont->Flush();
+	
+	m_Fonts.clear(); //Reset font buffer
+}
+
+void SpriteBatch::AddSpriteFont(SpriteFont* pFont)
+{
+	m_Fonts.insert(pFont);
 }

@@ -49,7 +49,7 @@ public:
 	}
 	
 	//This template is specialized in the corresponding .cpp file, do not call this function manually, use the Load function instead
-	template <typename T> static std::unique_ptr<T> LoadResource(std::tstring filePath);
+	template <typename T> static std::unique_ptr<T> LoadResource(const std::tstring& filePath);
 
 private:
 	//Disabling default copy constructor & assignment operator

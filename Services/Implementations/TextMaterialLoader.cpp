@@ -17,11 +17,11 @@
 
 #include "../Interfaces/ResourceService.h"
 
-#include "../../Graphics/Materials/SpriteMaterial.h"
+#include "../../Graphics/Materials/TextMaterial.h"
 
-template<> unique_ptr<SpriteMaterial> ResourceService::LoadResource<SpriteMaterial>(const std::tstring& filename)
+template<> unique_ptr<TextMaterial> ResourceService::LoadResource<TextMaterial>(const std::tstring& filename)
 {
-	auto ptr = new SpriteMaterial();
+	auto ptr = new TextMaterial();
 	ptr->LoadEffect();
-	return unique_ptr<SpriteMaterial>(ptr);
+	return unique_ptr<TextMaterial>(ptr);
 }

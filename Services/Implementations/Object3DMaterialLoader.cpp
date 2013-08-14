@@ -19,7 +19,7 @@
 
 #include "../../Graphics/Materials/Object3DMaterial.h"
 
-template<> unique_ptr<Object3DMaterial> ResourceService::LoadResource<Object3DMaterial>(std::tstring filename)
+template<> unique_ptr<Object3DMaterial> ResourceService::LoadResource<Object3DMaterial>(const std::tstring& filename)
 {
 	auto ptr = new Object3DMaterial();
 	ptr->LoadEffect();

@@ -37,9 +37,12 @@ struct EffectTechniqueNotFoundException
 
 struct LoaderException
 {
-	LoaderException(std::tstring _text):text(_text){}
+	LoaderException(const std::tstring& _text):text(_text){}
+
+	LoaderException(const std::tstring& _text, const std::tstring& _errors):text(_text), errors(_errors){}
 
 	std::tstring text;
+	std::tstring errors;
 };
 
 struct LoaderNotFoundException

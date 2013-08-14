@@ -21,10 +21,12 @@
 #include "../Helpers/D3DUtil.h"
 #include "../Helpers/Namespace.h"
 #include "../Helpers/resrc_ptr.hpp"
+#include <set>
 
 struct Sprite;
 struct SpriteVertex;
 class SpriteMaterial;
+class SpriteFont;
 
 class SpriteBatch
 {
@@ -38,10 +40,14 @@ public:
 	void Draw(const Sprite& sprite);
 	void Flush(const tt::GameContext& context);
 
+	void AddSpriteFont(SpriteFont* pFont);
+
 	static const unsigned int sc_MaxNrOfSprites = 50;
 
 private:
 	//Datamembers
+	std::set<SpriteFont*> m_Fonts;
+
 	std::map<ID3D10ShaderResourceView*, std::vector<SpriteVertex> > m_Sprites;
 	resource_ptr<SpriteMaterial> m_pMaterial;
 	

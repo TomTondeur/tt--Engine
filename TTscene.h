@@ -27,7 +27,8 @@ public:
 	virtual ~TTscene(void);
 
 	//Methods
-	virtual void Initialize(void);
+	virtual void Initialize(void) override;
+	virtual void Draw(const tt::GameContext& context) override;
 
 private:
 	//Datamembers

@@ -20,7 +20,7 @@
 #include "../../Graphics/Model3D.h"
 #include "../../Helpers/BinaryReader.h"
 
-template<> unique_ptr<Model3D> ResourceService::LoadResource<Model3D>(std::tstring filePath)
+template<> unique_ptr<Model3D> ResourceService::LoadResource<Model3D>(const std::tstring& filePath)
 {
 	auto pModel = new Model3D();
 	BinaryReader meshFile(filePath);

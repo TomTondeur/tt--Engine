@@ -123,7 +123,7 @@ Vector2::Vector2(const D3DXVECTOR2& v)
 		
 Vector2 Vector2::operator+(const Vector2& v) const
 {
-	return Vector2() += v;
+	return Vector2(*this) += v;
 }
 
 Vector2& Vector2::operator+=(const Vector2& v)

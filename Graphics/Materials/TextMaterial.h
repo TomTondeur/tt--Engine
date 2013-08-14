@@ -15,13 +15,25 @@
 // You should have received a copy of the GNU General Public License
 // along with tt::Engine.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "../Interfaces/ResourceService.h"
+#pragma once
 
-#include "../../Graphics/Materials/SpriteMaterial.h"
+#include "../Material.h"
 
-template<> unique_ptr<SpriteMaterial> ResourceService::LoadResource<SpriteMaterial>(const std::tstring& filename)
+class TextMaterial : public Material
 {
-	auto ptr = new SpriteMaterial();
-	ptr->LoadEffect();
-	return unique_ptr<SpriteMaterial>(ptr);
-}
+public:
+	//Default constructor & destructor
+	TextMaterial(void);
+	virtual ~TextMaterial(void);
+	
+	//Methods
+	virtual void UpdateEffectVariables(const tt::GameContext& context);
+
+private:
+	//Datamembers
+
+
+	//Disabling default copy constructor & assignment operator
+	TextMaterial(const TextMaterial& src);
+	TextMaterial& operator=(const TextMaterial& src);
+};

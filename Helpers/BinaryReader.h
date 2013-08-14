@@ -36,6 +36,10 @@ public:
 		fileStream.read(reinterpret_cast<char*>(outArray),sizeof(T) * size);
 	}
 
+	void Advance(size_t nrOfBytesToSkip);
+
+	std::tstring ReadNullTerminatedString(void);
+
 private:
 	std::ifstream fileStream;
 

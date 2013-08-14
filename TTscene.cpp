@@ -19,6 +19,8 @@
 
 #include "SceneObjects/FreeCamera.h"
 #include "SceneObjects/Object3D.h"
+#include "Services/ServiceLocator.h"
+#include "Graphics/SpriteFont.h"
 
 TTscene::TTscene(void)
 {
@@ -37,5 +39,12 @@ void TTscene::Initialize(void)
 	auto pCam = new FreeCamera();
 	AddSceneObject(pCam);
 	SetActiveCamera(pCam->GetComponent<CameraComponent>());
-	AddSceneObject(new Object3D());
+	//AddSceneObject(new Object3D());
+	
+	MyServiceLocator::GetInstance()->GetService<ResourceService>()->Load<SpriteFont>(_T("Resources/AgencyFB_12.fnt"));
+}
+
+void TTscene::Draw(const tt::GameContext& context)
+{
+	MyServiceLocator::GetInstance()->GetService<ResourceService>()->Load<SpriteFont>(_T("Resources/AgencyFB_12.fnt"))->DrawText(_T("Hello,\nWorld!\nSo nice to see\nYOU!"), tt::Vector2(20), tt::Vector4(.0f, .0f, .0f, 1.0f) );
 }

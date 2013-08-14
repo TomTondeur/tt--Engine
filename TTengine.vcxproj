@@ -197,7 +197,15 @@
       <SubType>
       </SubType>
     </ClInclude>
+    <ClInclude Include="Graphics\Materials\TextMaterial.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Graphics\SpriteBatch.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Graphics\SpriteFont.h">
       <SubType>
       </SubType>
     </ClInclude>
@@ -346,7 +354,15 @@
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="Graphics\Materials\TextMaterial.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Graphics\SpriteBatch.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Graphics\SpriteFont.cpp">
       <SubType>
       </SubType>
     </ClCompile>
@@ -393,7 +409,9 @@
     </ClCompile>
     <ClCompile Include="Services\Implementations\Object3DMaterialLoader.cpp" />
     <ClCompile Include="Services\Implementations\ShaderRVLoader.cpp" />
+    <ClCompile Include="Services\Implementations\SpriteFontLoader.cpp" />
     <ClCompile Include="Services\Implementations\SpriteMaterialLoader.cpp" />
+    <ClCompile Include="Services\Implementations\TextMaterialLoader.cpp" />
     <ClCompile Include="TTscene.cpp">
       <SubType>
       </SubType>

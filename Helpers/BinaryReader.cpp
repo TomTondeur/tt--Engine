@@ -26,3 +26,14 @@ BinaryReader::~BinaryReader(void)
 
 //Methods
 
+void BinaryReader::Advance(size_t nrOfBytesToSkip)
+{
+	fileStream.ignore(nrOfBytesToSkip);
+}
+
+std::tstring BinaryReader::ReadNullTerminatedString(void)
+{
+	std::string str;
+	std::getline(fileStream, str, '\0');
+	return StringToTstring(str);
+}

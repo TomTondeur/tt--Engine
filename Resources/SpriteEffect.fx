@@ -35,9 +35,9 @@ BlendState EnableBlending
     DestBlend = INV_SRC_ALPHA;
 };
 
-RasterizerState FrontCulling 
+RasterizerState BackfaceCulling 
 { 
-	CullMode = NONE; 
+	CullMode = BACK; 
 };
 
 struct VS_INPUT
@@ -104,7 +104,7 @@ float4 MainPS(PS_INPUT input) : SV_TARGET {
 // Default Technique
 technique10 Default {
 	pass p0 {
-		SetRasterizerState(FrontCulling);
+		SetRasterizerState(BackfaceCulling);
 		SetBlendState(EnableBlending,float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
 
 		SetVertexShader(  CompileShader(vs_4_0, MainVS() ) );

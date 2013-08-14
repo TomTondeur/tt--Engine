@@ -20,7 +20,7 @@
 #include "../ServiceLocator.h"
 #include "../../Graphics/GraphicsDevice.h"
 
-template<> unique_ptr<ID3D10Effect> ResourceService::LoadResource<ID3D10Effect>(std::tstring filePath)
+template<> unique_ptr<ID3D10Effect> ResourceService::LoadResource<ID3D10Effect>(const std::tstring& filePath)
 {
 	ID3D10Blob* pErrorBlob;
 	ID3D10Effect* pEffect;
@@ -40,11 +40,12 @@ template<> unique_ptr<ID3D10Effect> ResourceService::LoadResource<ID3D10Effect>(
 
 	if(FAILED(hr))
 	{
+		tstringstream ss;
+		
 		if(pErrorBlob!=nullptr)
 		{
 			char *errors = (char*)pErrorBlob->GetBufferPointer();
  
-			tstringstream ss;
 			for(unsigned int i = 0; i < pErrorBlob->GetBufferSize(); i++)
 				ss<<errors[i];
  
@@ -52,7 +53,7 @@ template<> unique_ptr<ID3D10Effect> ResourceService::LoadResource<ID3D10Effect>(
 			pErrorBlob->Release();
 		}
 
-		throw LoaderException(_T("effect ") + filePath);
+		throw LoaderException(_T("effect ") + filePath, ss.str() );
 	}
 
 	return unique_ptr<ID3D10Effect>(pEffect);
