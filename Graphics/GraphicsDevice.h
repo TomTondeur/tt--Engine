@@ -19,6 +19,8 @@
 
 #include "../Helpers/Namespace.h"
 
+class RenderTarget2D;
+
 class GraphicsDevice
 {
 public:
@@ -34,28 +36,23 @@ public:
 	void Clear(void);
 	void Present(void);
 	
-	void DrawString(ID3DX10Font* pFont, const std::tstring &textRef, int xpos, int ypos) const;
-	ID3DX10Font* CreateFontFromDescriptor(const D3DX10_FONT_DESC& fontDesc) const;
+	void ResetRenderTarget(void);
+	void SetRenderTarget(RenderTarget2D* pRT);
+	RenderTarget2D* GetRenderTarget(void) const;
 
 	void EnableVSync(bool b);
 
 private:
 	void CreateDeviceAndSwapChain(); 
-	void CreateRenderTargetView();
-	void CreateDepthBufferAndView(); 
+	void CreateRenderTarget();
 	void SetViewPort(); 
-
-	void CreateDirect3DFont(); 
-	
-	void DiscardResources();
 
 	//Datamembers
 	ID3D10Device* m_pD3DDevice;
 	IDXGISwapChain* m_pSwapChain; 
-	ID3D10Texture2D* m_pDepthStencilBuffer; 
-	ID3D10DepthStencilView* m_pDepthStencilView; 
 	ID3DX10Font* m_pFont;
-	ID3D10RenderTargetView* m_pRenderTargetView; 
+	RenderTarget2D* m_pRenderTarget;
+	RenderTarget2D* m_pDefaultRenderTarget;
 	
 	tt::ViewportInfo m_MainViewportInfo;
 

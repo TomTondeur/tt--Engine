@@ -109,20 +109,16 @@ DWORD TTengine::GameLoop(void)
 	m_GameContext.pGame = m_pGame;
 	m_GameContext.GameTimer.Start();
 
-	auto pGraphicsService = MyServiceLocator::GetInstance()->GetService<IGraphicsService>();
-	
 	while(!m_bProgramTerminated){
 		m_pGame->Update(m_GameContext);
 		m_pGame->UpdateGame(m_GameContext);
 			
-		pGraphicsService->GetGraphicsDevice()->Clear();
+		MyServiceLocator::GetInstance()->GetService<IGraphicsService>()->GetGraphicsDevice()->Clear();
 
 		m_pGame->Draw(m_GameContext);
 		m_pGame->DrawGame(m_GameContext);
-		
-		pGraphicsService->GetSpriteBatch()->Flush(m_GameContext);
-		
-		pGraphicsService->GetGraphicsDevice()->Present();
+				
+		MyServiceLocator::GetInstance()->GetService<IGraphicsService>()->GetGraphicsDevice()->Present();
 
 		m_GameContext.GameTimer.Tick();
 	}

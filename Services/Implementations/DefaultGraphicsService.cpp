@@ -22,6 +22,8 @@
 #include "../../Graphics/Material.h"
 #include "../../Graphics/EffectTechnique.h"
 #include "../../Graphics/SpriteBatch.h"
+#include "../../Graphics/RenderTarget2D.h"
+#include "../../Graphics/PostProcessingEffect.h"
 
 DefaultGraphicsService::DefaultGraphicsService(void):m_pGraphicsDevice(nullptr)
 													,m_pWindow(nullptr)
@@ -35,6 +37,8 @@ DefaultGraphicsService::~DefaultGraphicsService(void)
 	delete m_pGraphicsDevice;
 	delete m_pWindow;
 	delete m_pSpriteBatch;
+	delete m_pSwapRT1;
+	delete m_pSwapRT2;
 }
 
 //Methods
@@ -73,6 +77,33 @@ void DefaultGraphicsService::Draw(resource_ptr<Model3D> pModel, const tt::Matrix
     }
 }
 
+ID3D10ShaderResourceView* DefaultGraphicsService::RenderPostProcessing(const tt::GameContext& context, std::multimap<unsigned int, PostProcessingEffect*, std::greater_equal<unsigned int> >& postProEffects)
+{
+	if(postProEffects.empty() )
+		return nullptr;
+
+	//First ppEffect: backbuffer as input, swap1 as output
+	m_pGraphicsDevice->SetRenderTarget(m_pSwapRT1);
+	m_pGraphicsDevice->Clear();
+	postProEffects.begin()->second->Draw(context, m_pGraphicsDevice->GetRenderTarget() );
+
+	//get iterator of second effect (will skip for_each if there is no second effect)
+	auto itBegin = postProEffects.begin();
+	itBegin++;
+
+	for_each(itBegin, postProEffects.end(), [&](std::pair<unsigned int, PostProcessingEffect*>& effectPair)
+	{
+		//Additional ppEffects: swap1 as input, swap2 as output
+		m_pGraphicsDevice->SetRenderTarget(m_pSwapRT2);
+		m_pGraphicsDevice->Clear();
+		effectPair.second->Draw(context, m_pSwapRT1);
+		std::swap(m_pSwapRT1, m_pSwapRT2);
+	});
+
+	//swap2 is output, but they are swapped before returning => swap1 contains output (same if the for_each is skipped)
+	return m_pSwapRT1->GetColorMap();
+}
+
 GraphicsDevice* DefaultGraphicsService::GetGraphicsDevice(void) const
 {
 	return m_pGraphicsDevice;
@@ -86,6 +117,9 @@ void DefaultGraphicsService::InitWindow(int windowWidth, int windowHeight, TTeng
 	m_pGraphicsDevice->Initialize();
 	m_pSpriteBatch = new SpriteBatch();
 	m_pSpriteBatch->Initialize();
+
+	m_pSwapRT1 = new RenderTarget2D(); m_pSwapRT1->Create(windowWidth, windowHeight);
+	m_pSwapRT2 = new RenderTarget2D(); m_pSwapRT2->Create(windowWidth, windowHeight);
 }
 
 Window* DefaultGraphicsService::GetWindow(void) const

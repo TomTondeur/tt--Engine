@@ -31,6 +31,7 @@
 #include "SceneObject.h"
 
 class CameraComponent;
+class PostProcessingEffect;
 
 class GameScene
 {
@@ -52,9 +53,10 @@ public:
 	NxScene* GetPhysicsScene(void) const;
 	void SetActiveCamera(CameraComponent* pCam);
 	const CameraComponent* GetActiveCamera(void) const;
-
+	
 protected:
 	void AddSceneObject(SceneObject* pObject);
+	void AddPostProcessingEffect(PostProcessingEffect* pPostProEffect, unsigned int priority);
 
 private:
 	vector<SceneObject*> m_Objects;
@@ -62,6 +64,8 @@ private:
 	NxScene* m_pPhysicsScene;
 	CameraComponent* m_pActiveCamera;
 	static GameScene* s_pActiveScene;
+
+	std::multimap<unsigned int, PostProcessingEffect*, std::greater_equal<unsigned int> > m_PostProEffects;
 
 	GameScene(const GameScene& src);// = delete;
 	GameScene& operator=(const GameScene& src);// = delete;

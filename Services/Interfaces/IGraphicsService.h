@@ -28,6 +28,7 @@ class Model3D;
 class Material;
 struct GameContext;
 class SpriteBatch;
+class PostProcessingEffect;
 
 class IGraphicsService : public Service
 {
@@ -40,15 +41,13 @@ public:
 	virtual void InitWindow(int windowWidth, int windowHeight, TTengine* pEngine)=0;
 
 	virtual void Draw(resource_ptr<Model3D> pModel, const tt::Matrix4x4& worldMat, resource_ptr<Material> pMat, const tt::GameContext& context)=0;
+	virtual ID3D10ShaderResourceView* RenderPostProcessing(const tt::GameContext& context, std::multimap<unsigned int, PostProcessingEffect*, std::greater_equal<unsigned int> >& postProEffects)=0;
 
 	virtual GraphicsDevice* GetGraphicsDevice(void) const=0;
 	virtual Window* GetWindow(void) const=0;
 	virtual SpriteBatch* GetSpriteBatch(void) const=0;
 
 private:
-	//Datamembers
-
-
 	//Disabling default copy constructor & assignment operator
 	IGraphicsService(const IGraphicsService& src);// = delete;
 	IGraphicsService& operator=(const IGraphicsService& src);// = delete;

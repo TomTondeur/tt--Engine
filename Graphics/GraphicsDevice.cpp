@@ -19,14 +19,14 @@
 #include "../Helpers/D3DUtil.h"
 #include "../TTengine.h"
 #include "../Services/ServiceLocator.h"
+#include "RenderTarget2D.h"
 
 GraphicsDevice::GraphicsDevice(HWND windowHandle, unsigned short windowWith, unsigned short windowHeight)
 						:m_pD3DDevice(nullptr)
 						,m_pSwapChain(nullptr) 
-						,m_pDepthStencilBuffer(nullptr) 
-						,m_pDepthStencilView(nullptr)
 						,m_pFont(nullptr)
-						,m_pRenderTargetView(nullptr)
+						,m_pRenderTarget(nullptr)
+						,m_pDefaultRenderTarget(nullptr)
 						,m_MainViewportInfo(windowWith,windowHeight)
 						,m_hWindow(windowHandle)
 
@@ -36,10 +36,8 @@ GraphicsDevice::GraphicsDevice(HWND windowHandle, unsigned short windowWith, uns
 
 GraphicsDevice::~GraphicsDevice(void)
 {
-    m_pRenderTargetView->Release();
-    m_pDepthStencilBuffer->Release();
+    delete m_pDefaultRenderTarget;
     m_pSwapChain->Release();
-    m_pDepthStencilView->Release();
     m_pFont->Release();
     m_pD3DDevice->Release();
 }
@@ -49,18 +47,16 @@ GraphicsDevice::~GraphicsDevice(void)
 void GraphicsDevice::Initialize(void)
 {
     CreateDeviceAndSwapChain();
-    CreateRenderTargetView();
-    CreateDepthBufferAndView();
+    CreateRenderTarget();
     SetViewPort();
-    CreateDirect3DFont();
  
-    m_pD3DDevice->OMSetRenderTargets(1, &m_pRenderTargetView, m_pDepthStencilView);
+    m_pD3DDevice->OMSetRenderTargets(1, &m_pRenderTarget->GetRenderTargetView(), m_pRenderTarget->GetDepthStencilView() );
 }
 
 void GraphicsDevice::Clear(void)
 {
-	m_pD3DDevice->ClearRenderTargetView(m_pRenderTargetView, D3DXCOLOR(1, 1, 1, 1));
-	m_pD3DDevice->ClearDepthStencilView(m_pDepthStencilView, D3D10_CLEAR_DEPTH|D3D10_CLEAR_STENCIL, 1.0f, 0); 
+	m_pD3DDevice->ClearRenderTargetView(m_pRenderTarget->GetRenderTargetView(), D3DXCOLOR(1, 1, 1, 1));
+	m_pD3DDevice->ClearDepthStencilView(m_pRenderTarget->GetDepthStencilView(), D3D10_CLEAR_DEPTH|D3D10_CLEAR_STENCIL, 1.0f, 0); 
 	m_pD3DDevice->OMSetDepthStencilState(0,0);
 }
 
@@ -84,22 +80,21 @@ const tt::ViewportInfo& GraphicsDevice::GetViewportInfo(void) const
 	return m_MainViewportInfo;
 }
 
-void GraphicsDevice::DrawString(ID3DX10Font* pFont, const tstring &textRef, int xpos, int ypos) const
+void GraphicsDevice::ResetRenderTarget(void)
 {
-	const D3DXCOLOR BLACK(0.0f, 0.0f, 0.0f, 1.0f);
-	RECT R = {xpos, ypos, 0, 0};
-	pFont->DrawText(0, textRef.c_str(), -1, &R, DT_NOCLIP, BLACK);
+	m_pD3DDevice->OMSetRenderTargets( 1, &m_pDefaultRenderTarget->GetRenderTargetView(), m_pDefaultRenderTarget->GetDepthStencilView() );
+	m_pRenderTarget = m_pDefaultRenderTarget;
 }
 
-ID3DX10Font* GraphicsDevice::CreateFontFromDescriptor(const D3DX10_FONT_DESC& fontDesc) const
+void GraphicsDevice::SetRenderTarget(RenderTarget2D* pRT)
 {
-	ID3DX10Font* pFont;
-	
-	_tcscpy_s((TCHAR*)fontDesc.FaceName, sizeof(_T("Arial")), _T("Arial"));
-       
-    D3DX10CreateFontIndirect(m_pD3DDevice, &fontDesc, &pFont);
- 
-    return pFont;
+	m_pD3DDevice->OMSetRenderTargets(1, &pRT->GetRenderTargetView(), pRT->GetDepthStencilView() );
+	m_pRenderTarget = pRT;
+}
+
+RenderTarget2D* GraphicsDevice::GetRenderTarget(void) const
+{
+	return m_pRenderTarget;
 }
 
 void GraphicsDevice::CreateDeviceAndSwapChain()
@@ -132,32 +127,15 @@ void GraphicsDevice::CreateDeviceAndSwapChain()
 	HR(D3D10CreateDeviceAndSwapChain(0, D3D10_DRIVER_TYPE_HARDWARE, 0, createDeviceFlags, D3D10_SDK_VERSION, &swapChainDescStruct, &m_pSwapChain, &m_pD3DDevice));
 }
 
-void GraphicsDevice::CreateRenderTargetView()
+void GraphicsDevice::CreateRenderTarget()
 {
-	ID3D10Texture2D* backBuffer;
-	HR(m_pSwapChain->GetBuffer(0,__uuidof(ID3D10Texture2D),reinterpret_cast<void**>(&backBuffer)));
-	HR(m_pD3DDevice->CreateRenderTargetView(backBuffer, 0, &m_pRenderTargetView));
-	backBuffer->Release();
-}
+	ID3D10Texture2D *pBackbuffer = nullptr;
+	HR( m_pSwapChain->GetBuffer(0, __uuidof(ID3D10Texture2D), reinterpret_cast<void**>(&pBackbuffer)) );
 
-void GraphicsDevice::CreateDepthBufferAndView()
-{
-	//Initialize depth/stencil description struct
-	D3D10_TEXTURE2D_DESC depthStencilDesc={};
-	depthStencilDesc.Width				= m_MainViewportInfo.width;
-	depthStencilDesc.Height				= m_MainViewportInfo.height;
-	depthStencilDesc.MipLevels			= 1;
-	depthStencilDesc.ArraySize			= 1;
-	depthStencilDesc.Format				= DXGI_FORMAT_D24_UNORM_S8_UINT;
-	depthStencilDesc.SampleDesc.Count	= 1;
-	depthStencilDesc.SampleDesc.Quality = 0;
-	depthStencilDesc.Usage				= D3D10_USAGE_DEFAULT;
-	depthStencilDesc.BindFlags			= D3D10_BIND_DEPTH_STENCIL;
-	depthStencilDesc.CPUAccessFlags		= 0;
-	depthStencilDesc.MiscFlags			= 0;
+	m_pRenderTarget = new RenderTarget2D();
+	m_pRenderTarget->Create(pBackbuffer);
 
-	HR(m_pD3DDevice->CreateTexture2D(&depthStencilDesc, 0, &m_pDepthStencilBuffer));
-	HR(m_pD3DDevice->CreateDepthStencilView(m_pDepthStencilBuffer, 0, &m_pDepthStencilView));
+	pBackbuffer->Release();
 }
 
 void GraphicsDevice::SetViewPort()
@@ -173,21 +151,4 @@ void GraphicsDevice::SetViewPort()
 	vp.MaxDepth = 1;
 
 	m_pD3DDevice->RSSetViewports(1, &vp);
-}
-
-void GraphicsDevice::CreateDirect3DFont()
-{
-    D3DX10_FONT_DESC fontDesc;
-    fontDesc.Height				= 24;
-    fontDesc.Width				= 0;
-    fontDesc.Weight				= 0;
-    fontDesc.MipLevels			= 1;
-    fontDesc.Italic				= false;
-    fontDesc.CharSet			= DEFAULT_CHARSET;
-    fontDesc.OutputPrecision	= OUT_DEFAULT_PRECIS;
-    fontDesc.Quality			= DEFAULT_QUALITY;
-    fontDesc.PitchAndFamily		= DEFAULT_PITCH | FF_DONTCARE;
-    wcscpy_s(fontDesc.FaceName, sizeof(_T("Arial")), _T("Arial"));
-       
-    D3DX10CreateFontIndirect(m_pD3DDevice, &fontDesc, &m_pFont);
 }

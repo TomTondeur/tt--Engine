@@ -18,20 +18,35 @@
 #pragma once
 
 #include "../Helpers/D3DUtil.h"
+#include "../Helpers/Namespace.h"
 
 class RenderTarget2D
 {
 public:
 	//Default constructor & destructor
 	RenderTarget2D(void);
+	RenderTarget2D(ID3D10Texture2D* pRTTexture, ID3D10Texture2D* pDepthTexture, ID3D10RenderTargetView* pRTView, ID3D10DepthStencilView* pDepthView, ID3D10ShaderResourceView* pColorMap, ID3D10ShaderResourceView* pDepthMap);
 	virtual ~RenderTarget2D(void);
 
 	//Methods
-	ID3D10ShaderResourceView* GetShaderRV(void);
+	void Create(unsigned int width, unsigned int height);
+	void Create(ID3D10Texture2D* pRenderTargetBuffer);
+
+	ID3D10RenderTargetView*& GetRenderTargetView(void);
+	ID3D10DepthStencilView*& GetDepthStencilView(void);
+
+	ID3D10ShaderResourceView* GetColorMap(void);
+	ID3D10ShaderResourceView* GetDepthMap(void);
 
 private:
 	//Datamembers
-
+	ID3D10RenderTargetView* m_pRenderTargetView;
+	ID3D10DepthStencilView* m_pDepthStencilView;
+	
+	ID3D10Texture2D* m_pDepthStencilTexture;
+	
+	ID3D10ShaderResourceView* m_pColorMapShaderResourceView;
+	ID3D10ShaderResourceView* m_pDepthMapShaderResourceView;
 
 	//Disabling default copy constructor & assignment operator
 	RenderTarget2D(const RenderTarget2D& src);

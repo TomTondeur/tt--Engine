@@ -27,7 +27,7 @@ struct Sprite
 {
 	Sprite(const tt::Matrix4x4& transform);
 
-	resource_ptr<ID3D10ShaderResourceView> pTexture;
+	ID3D10ShaderResourceView* pTexture;
 	tt::Vector4 Color;
 	const tt::Matrix4x4& Transform;
 };

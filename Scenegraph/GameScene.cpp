@@ -17,6 +17,12 @@
 
 #include "GameScene.h"
 #include "../Components/CameraComponent.h"
+#include "../Components/SpriteComponent.h"
+#include "../Graphics/PostProcessingEffect.h"
+#include "../Graphics/GraphicsDevice.h"
+#include "../Graphics/RenderTarget2D.h"
+#include "../Graphics/SpriteBatch.h"
+#include "../Services/ServiceLocator.h"
 
 GameScene* GameScene::s_pActiveScene = nullptr;
 
@@ -49,6 +55,19 @@ void GameScene::DrawScene(const tt::GameContext& context)
 		pObj->Draw(context);
 		pObj->DrawObject(context);
 	}
+
+	auto pGfxService = MyServiceLocator::GetInstance()->GetService<IGraphicsService>();
+	
+	pGfxService->GetSpriteBatch()->Flush(context);
+
+	auto pPostProOutput = pGfxService->RenderPostProcessing(context, m_PostProEffects);
+
+	Sprite postProSprite(tt::Matrix4x4::Identity() );
+	postProSprite.Color = tt::Vector4(1);
+	postProSprite.pTexture = pPostProOutput;
+	
+	pGfxService->GetSpriteBatch()->Draw(postProSprite);
+	pGfxService->GetSpriteBatch()->Flush(context);
 }
 	
 void GameScene::Initialize(void){}
@@ -86,4 +105,9 @@ const CameraComponent* GameScene::GetActiveCamera(void) const
 void GameScene::AddSceneObject(SceneObject* pObject)
 {
 	m_Objects.push_back(pObject);
+}
+
+void GameScene::AddPostProcessingEffect(PostProcessingEffect* pPostProEffect, unsigned int priority)
+{
+	m_PostProEffects.insert(make_pair(priority, pPostProEffect));
 }

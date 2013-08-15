@@ -19,6 +19,8 @@
 
 #include "../Interfaces/IGraphicsService.h"
 
+class RenderTarget2D;
+
 class DefaultGraphicsService : public IGraphicsService
 {
 public:
@@ -30,6 +32,7 @@ public:
 	virtual void InitWindow(int windowWidth, int windowHeight, TTengine* pEngine) override;	
 
 	virtual void Draw(resource_ptr<Model3D> pModel, const tt::Matrix4x4& worldMat, resource_ptr<Material> pMat, const tt::GameContext& context) override;
+	virtual ID3D10ShaderResourceView* RenderPostProcessing(const tt::GameContext& context, std::multimap<unsigned int, PostProcessingEffect*, std::greater_equal<unsigned int> >& postProEffects) override;
 
 	virtual GraphicsDevice* GetGraphicsDevice(void) const override;
 	virtual Window* GetWindow(void) const override;
@@ -40,6 +43,9 @@ private:
 	GraphicsDevice* m_pGraphicsDevice;
 	Window* m_pWindow;
 	SpriteBatch* m_pSpriteBatch;
+
+	RenderTarget2D* m_pSwapRT1;
+	RenderTarget2D* m_pSwapRT2;
 
 	//Disabling default copy constructor & assignment operator
 	DefaultGraphicsService(const DefaultGraphicsService& src);
