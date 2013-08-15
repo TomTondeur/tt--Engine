@@ -193,11 +193,23 @@
       <SubType>
       </SubType>
     </ClInclude>
+    <ClInclude Include="Graphics\Materials\PostProcessingMaterial.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Graphics\Materials\SpriteMaterial.h">
       <SubType>
       </SubType>
     </ClInclude>
     <ClInclude Include="Graphics\Materials\TextMaterial.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Graphics\PostProcessingEffect.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Graphics\RenderTarget2D.h">
       <SubType>
       </SubType>
     </ClInclude>
@@ -350,11 +362,23 @@
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="Graphics\Materials\PostProcessingMaterial.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Graphics\Materials\SpriteMaterial.cpp">
       <SubType>
       </SubType>
     </ClCompile>
     <ClCompile Include="Graphics\Materials\TextMaterial.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Graphics\PostProcessingEffect.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Graphics\RenderTarget2D.cpp">
       <SubType>
       </SubType>
     </ClCompile>
@@ -408,6 +432,7 @@
       </SubType>
     </ClCompile>
     <ClCompile Include="Services\Implementations\Object3DMaterialLoader.cpp" />
+    <ClCompile Include="Services\Implementations\PostProcessingMaterialLoader.cpp" />
     <ClCompile Include="Services\Implementations\ShaderRVLoader.cpp" />
     <ClCompile Include="Services\Implementations\SpriteFontLoader.cpp" />
     <ClCompile Include="Services\Implementations\SpriteMaterialLoader.cpp" />

@@ -17,26 +17,23 @@
 
 #pragma once
 
-#include "Scenegraph/GameScene.h"
+#include "../Helpers/D3DUtil.h"
 
-class PostProcessingEffect;
-
-class TTscene : public GameScene
+class RenderTarget2D
 {
 public:
 	//Default constructor & destructor
-	TTscene(void);
-	virtual ~TTscene(void);
+	RenderTarget2D(void);
+	virtual ~RenderTarget2D(void);
 
 	//Methods
-	virtual void Initialize(void) override;
-	virtual void Draw(const tt::GameContext& context) override;
+	ID3D10ShaderResourceView* GetShaderRV(void);
 
 private:
 	//Datamembers
-	PostProcessingEffect* pPostProEffect;
+
 
 	//Disabling default copy constructor & assignment operator
-	TTscene(const TTscene& src);
-	TTscene& operator=(const TTscene& src);
+	RenderTarget2D(const RenderTarget2D& src);
+	RenderTarget2D& operator=(const RenderTarget2D& src);
 };

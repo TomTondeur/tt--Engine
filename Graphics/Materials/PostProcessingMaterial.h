@@ -17,26 +17,24 @@
 
 #pragma once
 
-#include "Scenegraph/GameScene.h"
+#include "../../Helpers/stdafx.h"
+#include "../Material.h"
 
-class PostProcessingEffect;
-
-class TTscene : public GameScene
+class PostProcessingMaterial : public Material
 {
 public:
 	//Default constructor & destructor
-	TTscene(void);
-	virtual ~TTscene(void);
+	PostProcessingMaterial(std::tstring effectFilePath);
+	virtual ~PostProcessingMaterial(void);
 
 	//Methods
-	virtual void Initialize(void) override;
-	virtual void Draw(const tt::GameContext& context) override;
+	virtual void PostProcessingMaterial::UpdateEffectVariables(const tt::GameContext& context) override;
 
 private:
 	//Datamembers
-	PostProcessingEffect* pPostProEffect;
+
 
 	//Disabling default copy constructor & assignment operator
-	TTscene(const TTscene& src);
-	TTscene& operator=(const TTscene& src);
+	PostProcessingMaterial(const PostProcessingMaterial& src);
+	PostProcessingMaterial& operator=(const PostProcessingMaterial& src);
 };

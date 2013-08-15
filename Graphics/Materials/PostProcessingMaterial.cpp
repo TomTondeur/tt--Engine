@@ -15,28 +15,21 @@
 // You should have received a copy of the GNU General Public License
 // along with tt::Engine.  If not, see <http://www.gnu.org/licenses/>.
 
-#pragma once
+#include "PostProcessingMaterial.h"
 
-#include "Scenegraph/GameScene.h"
-
-class PostProcessingEffect;
-
-class TTscene : public GameScene
+PostProcessingMaterial::PostProcessingMaterial(std::tstring effectFilePath):Material(effectFilePath)
 {
-public:
-	//Default constructor & destructor
-	TTscene(void);
-	virtual ~TTscene(void);
 
-	//Methods
-	virtual void Initialize(void) override;
-	virtual void Draw(const tt::GameContext& context) override;
+}
 
-private:
-	//Datamembers
-	PostProcessingEffect* pPostProEffect;
+PostProcessingMaterial::~PostProcessingMaterial(void)
+{
 
-	//Disabling default copy constructor & assignment operator
-	TTscene(const TTscene& src);
-	TTscene& operator=(const TTscene& src);
-};
+}
+
+//Methods
+
+void PostProcessingMaterial::UpdateEffectVariables(const tt::GameContext& context)
+{
+
+}

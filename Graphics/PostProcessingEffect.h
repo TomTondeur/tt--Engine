@@ -17,26 +17,32 @@
 
 #pragma once
 
-#include "Scenegraph/GameScene.h"
+#include "../Helpers/Namespace.h"
+#include "../Helpers/resrc_ptr.hpp"
 
-class PostProcessingEffect;
+class RenderTarget2D;
+class PostProcessingMaterial;
 
-class TTscene : public GameScene
+class PostProcessingEffect
 {
 public:
 	//Default constructor & destructor
-	TTscene(void);
-	virtual ~TTscene(void);
+	PostProcessingEffect(resource_ptr<PostProcessingMaterial> pMaterial);
+	virtual ~PostProcessingEffect(void);
 
 	//Methods
-	virtual void Initialize(void) override;
-	virtual void Draw(const tt::GameContext& context) override;
+	void Initialize(void);
+
+	void Draw(const tt::GameContext& context, RenderTarget2D* pInputRT);
 
 private:
 	//Datamembers
-	PostProcessingEffect* pPostProEffect;
+	resource_ptr<PostProcessingMaterial> m_pMaterial;
+
+	static ID3D10Buffer* s_pVertexBuffer;
+	static unsigned int s_VertexBufferStride;
 
 	//Disabling default copy constructor & assignment operator
-	TTscene(const TTscene& src);
-	TTscene& operator=(const TTscene& src);
+	PostProcessingEffect(const PostProcessingEffect& src);
+	PostProcessingEffect& operator=(const PostProcessingEffect& src);
 };
