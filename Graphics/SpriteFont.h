@@ -73,6 +73,7 @@ private:
 	std::map<BMFONT_CHAR, SpriteFontGlyphInfo> m_Characters;
 
 	std::vector<TextData> m_TextQueue;
+	size_t m_NrOfCharsToDraw;
 
 	static resource_ptr<TextMaterial> s_pMaterial;
 	static ID3D10Buffer* s_pVertexBuffer;

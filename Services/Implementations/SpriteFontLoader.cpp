@@ -58,7 +58,7 @@ std::unique_ptr<SpriteFont> ResourceService::LoadResource<SpriteFont>(const std:
 	auto blockId0 = binReader.Read<char>();
 	auto blockSize0 = binReader.Read<int>();
 	
-	pSpriteFont->m_FontSize = binReader.Read<short>(); //Retrieve the FontSize (will be -25, BMF bug) [SpriteFont::m_FontSize]
+	pSpriteFont->m_FontSize = -binReader.Read<short>(); //Retrieve the FontSize (will be -25, BMF bug) [SpriteFont::m_FontSize]
 	
 	binReader.Advance(12); //Skip stuff like padding and spacing
 

@@ -44,7 +44,7 @@ struct TextVertex
 	unsigned int Channel;
 };
 
-SpriteFont::SpriteFont(void):m_FontSize(0)
+SpriteFont::SpriteFont(void):m_FontSize(0), m_NrOfCharsToDraw(0)
 {}
 
 SpriteFont::~SpriteFont(void)
@@ -89,26 +89,33 @@ void SpriteFont::Flush(void)
 	s_pVertexBuffer->Map(D3D10_MAP_WRITE_DISCARD, 0, (void**)&pBuffer);
 	for(auto& txtData : m_TextQueue)
 	{
-		float totalAdvanceX=0;
+		tt::Vector2 totalAdvance(0);
 
-		for(auto& character : txtData.Text){
+		for(auto& character : txtData.Text){			
+			if(character == _BM'\n'){
+				totalAdvance.y += m_FontSize;
+				totalAdvance.x = 0;
+				continue;
+			}
+
 			auto it = m_Characters.find(character);
 			
 			if(it == m_Characters.end() ){
 				s_pVertexBuffer->Unmap();
 				throw exception();
-			}			
+			}
+			
 			if(character == _BM' '){
-				totalAdvanceX += it->second.AdvanceX;
+				totalAdvance.x += it->second.AdvanceX;
 				continue;
 			}
 
-			pBuffer[bufferPos++] = TextVertex(	 txtData.Position + tt::Vector2(totalAdvanceX, 0) + it->second.OffsetTexToScreen //Position
+			pBuffer[bufferPos++] = TextVertex(	 txtData.Position + totalAdvance + it->second.OffsetTexToScreen //Position
 												,it->second.TexCoord	//TexCoord
 												,it->second.Dimensions  //CharSize
 												,txtData.Color			//Color
 												,it->second.Channel);   //Channel
-			totalAdvanceX += it->second.AdvanceX;
+			totalAdvance.x += it->second.AdvanceX;
 		}
 	}
 	s_pVertexBuffer->Unmap();
@@ -127,22 +134,10 @@ void SpriteFont::Flush(void)
 
 void SpriteFont::DrawText(const std::tstring& text, tt::Vector2 position, const tt::Vector4& color)
 {
-	unsigned int newlineIndex, startSearchAt=0;
+	if(m_NrOfCharsToDraw += text.size() > sc_MaxNrOfChars)
+		throw exception();
 
 	MyServiceLocator::GetInstance()->GetService<IGraphicsService>()->GetSpriteBatch()->AddSpriteFont(this);
-
-	while(true){
-		newlineIndex = text.find(_T('\n'), startSearchAt);
-		
-		if(newlineIndex == std::tstring::npos || newlineIndex == text.size()-1){
-			m_TextQueue.push_back(TextData(text.substr(startSearchAt, text.size() - startSearchAt), position, color));
-			return;
-		}
-
-		if(text[newlineIndex+1] != _T('\n')) //Don't add empty lines, just advance the Y offset instead
-			m_TextQueue.push_back(TextData(text.substr(startSearchAt, newlineIndex - startSearchAt), position, color));
-		
-		startSearchAt = newlineIndex + 1;
-		position.y += 25;
-	}
+	
+	m_TextQueue.push_back(TextData(text, position, color));
 }
