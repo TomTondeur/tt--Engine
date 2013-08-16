@@ -50,7 +50,6 @@ private:
 	//Datamembers
 	ID3D10Device* m_pD3DDevice;
 	IDXGISwapChain* m_pSwapChain; 
-	ID3DX10Font* m_pFont;
 	RenderTarget2D* m_pRenderTarget;
 	RenderTarget2D* m_pDefaultRenderTarget;
 	

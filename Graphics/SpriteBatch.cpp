@@ -74,10 +74,10 @@ void SpriteBatch::Draw(const Sprite& sprite)
 	if(m_NrOfSprites++ > sc_MaxNrOfSprites)
 		throw exception();
 
-	auto it = m_Sprites.find( sprite.pTexture.get() );
+	auto it = m_Sprites.find(sprite.pTexture);
 
 	if(it == m_Sprites.end() )
-		it = m_Sprites.insert( make_pair(sprite.pTexture.get(), std::vector<SpriteVertex>() ) ).first;
+		it = m_Sprites.insert( make_pair(sprite.pTexture, std::vector<SpriteVertex>() ) ).first;
 	
 	it->second.push_back(SpriteVertex(sprite.Transform, sprite.Color) );
 }
@@ -147,7 +147,9 @@ void SpriteBatch::Flush(const tt::GameContext& context)
 	m_NrOfSprites = 0;
 
 	//Text rendering
-	
+	if(m_Fonts.empty() )
+		return;
+
 	//Prepare Input Assembler
 	pD3DDevice->IASetInputLayout(SpriteFont::s_pMaterial->GetInputLayout()->pInputLayout);
 	pD3DDevice->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_POINTLIST);

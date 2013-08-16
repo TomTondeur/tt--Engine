@@ -60,12 +60,8 @@ void GameScene::DrawScene(const tt::GameContext& context)
 	
 	pGfxService->GetSpriteBatch()->Flush(context);
 
-	auto pPostProOutput = pGfxService->RenderPostProcessing(context, m_PostProEffects);
+	auto postProSprite = pGfxService->RenderPostProcessing(context, m_PostProEffects);
 
-	Sprite postProSprite(tt::Matrix4x4::Identity() );
-	postProSprite.Color = tt::Vector4(1);
-	postProSprite.pTexture = pPostProOutput;
-	
 	pGfxService->GetSpriteBatch()->Draw(postProSprite);
 	pGfxService->GetSpriteBatch()->Flush(context);
 }

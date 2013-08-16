@@ -21,6 +21,7 @@
 #include "GraphicsDevice.h"
 #include "Materials/PostProcessingMaterial.h"
 #include "EffectTechnique.h"
+#include "RenderTarget2D.h"
 
 struct PostProcessingVertex
 {
@@ -66,10 +67,10 @@ void PostProcessingEffect::Initialize(void)
 		bufferDesc.CPUAccessFlags = 0;
 		bufferDesc.MiscFlags = 0;
 
-		PostProcessingVertex pVertices[] = {PostProcessingVertex(D3DXVECTOR3(-1,-1,0), D3DXVECTOR2(0,0) ),
-											PostProcessingVertex(D3DXVECTOR3( 1,-1,0), D3DXVECTOR2(1,0) ),
-											PostProcessingVertex(D3DXVECTOR3(-1, 1,0), D3DXVECTOR2(0,1) ),
-											PostProcessingVertex(D3DXVECTOR3( 1, 1,0), D3DXVECTOR2(1,1) )};										
+		PostProcessingVertex pVertices[] = {PostProcessingVertex(D3DXVECTOR3(-1,-1,0), D3DXVECTOR2(0,1) ),
+											PostProcessingVertex(D3DXVECTOR3(-1, 1,0), D3DXVECTOR2(0,0) ),
+											PostProcessingVertex(D3DXVECTOR3( 1,-1,0), D3DXVECTOR2(1,1) ),
+											PostProcessingVertex(D3DXVECTOR3( 1, 1,0), D3DXVECTOR2(1,0) )};										
 
 		D3D10_SUBRESOURCE_DATA initData;
 		initData.pSysMem = pVertices;
@@ -80,7 +81,12 @@ void PostProcessingEffect::Initialize(void)
 
 void PostProcessingEffect::Draw(const tt::GameContext& context, RenderTarget2D* pInputRT)
 {
-	m_pMaterial->UpdateEffectVariables(context); //Pass pInputRT (SetVariable?)
+	if(m_pMaterial->ContainsVariable(_T("ColorMap") ) )
+		m_pMaterial->SetVariable(_T("ColorMap"), pInputRT->GetColorMap() );
+	if(m_pMaterial->ContainsVariable(_T("DepthMap") ) )
+		m_pMaterial->SetVariable(_T("DepthMap"), pInputRT->GetDepthMap() );
+
+	m_pMaterial->UpdateEffectVariables(context);
 
 	//Drawcall
 	auto pD3DDevice = MyServiceLocator::GetInstance()->GetService<IGraphicsService>()->GetGraphicsDevice()->GetDevice();

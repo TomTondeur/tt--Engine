@@ -21,7 +21,6 @@
 
 RenderTarget2D::RenderTarget2D(void) :	m_pRenderTargetView(nullptr),
 										m_pDepthStencilView(nullptr),	
-										m_pRenderTargetTexture(nullptr),
 										m_pDepthStencilTexture(nullptr),	
 										m_pColorMapShaderResourceView(nullptr),
 										m_pDepthMapShaderResourceView(nullptr)
@@ -31,7 +30,6 @@ RenderTarget2D::RenderTarget2D(void) :	m_pRenderTargetView(nullptr),
 
 RenderTarget2D::~RenderTarget2D(void)
 {
-	m_pRenderTargetTexture->Release();
 	m_pDepthStencilTexture->Release();
 	m_pRenderTargetView->Release();
 	m_pDepthStencilView->Release();
@@ -71,14 +69,24 @@ void RenderTarget2D::Create(unsigned int width, unsigned int height)
 void RenderTarget2D::Create(ID3D10Texture2D* pRenderTargetBuffer)
 {
 	auto pD3DDevice = MyServiceLocator::GetInstance()->GetService<IGraphicsService>()->GetGraphicsDevice()->GetDevice();
-
-	D3D10_TEXTURE2D_DESC textureDesc;
-	pRenderTargetBuffer->GetDesc(&textureDesc);
 	
-	textureDesc.BindFlags = D3D10_BIND_DEPTH_STENCIL | D3D10_BIND_SHADER_RESOURCE;
-	textureDesc.Format = DXGI_FORMAT_R32_TYPELESS;
+	D3D10_TEXTURE2D_DESC rtBuff;
+	pRenderTargetBuffer->GetDesc(&rtBuff);
+	
+	D3D10_TEXTURE2D_DESC depthStencilDesc;
+	depthStencilDesc.Format = DXGI_FORMAT_R32_TYPELESS;
+	depthStencilDesc.Width = rtBuff.Width;
+	depthStencilDesc.Height = rtBuff.Height;
+	depthStencilDesc.BindFlags = D3D10_BIND_DEPTH_STENCIL | D3D10_BIND_SHADER_RESOURCE;
+	depthStencilDesc.ArraySize = 1;
+	depthStencilDesc.MipLevels = 1;
+	depthStencilDesc.SampleDesc.Count = 1;
+	depthStencilDesc.SampleDesc.Quality = 0;
+	depthStencilDesc.CPUAccessFlags = 0;
+	depthStencilDesc.MiscFlags = 0;
+	depthStencilDesc.Usage = D3D10_USAGE_DEFAULT;
 
-	HR( pD3DDevice->CreateTexture2D(&textureDesc, nullptr, &m_pDepthStencilTexture) );
+	HR( pD3DDevice->CreateTexture2D(&depthStencilDesc, nullptr, &m_pDepthStencilTexture) );
 
 	//Create Views
 

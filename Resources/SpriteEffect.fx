@@ -37,7 +37,7 @@ BlendState EnableBlending
 
 RasterizerState BackfaceCulling 
 { 
-	CullMode = BACK; 
+	CullMode = NONE; 
 };
 
 struct VS_INPUT

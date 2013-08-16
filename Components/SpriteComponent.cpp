@@ -40,7 +40,7 @@ SpriteComponent::~SpriteComponent(void)
 
 void SpriteComponent::Initialize(void)
 {
-	m_Sprite.pTexture = MyServiceLocator::GetInstance()->GetService<ResourceService>()->Load<ID3D10ShaderResourceView>(m_TextureFilename);
+	m_Sprite.pTexture = MyServiceLocator::GetInstance()->GetService<ResourceService>()->Load<ID3D10ShaderResourceView>(m_TextureFilename).get();
 }
 
 void SpriteComponent::Draw(const tt::GameContext& context)

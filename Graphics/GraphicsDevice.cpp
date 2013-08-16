@@ -24,7 +24,6 @@
 GraphicsDevice::GraphicsDevice(HWND windowHandle, unsigned short windowWith, unsigned short windowHeight)
 						:m_pD3DDevice(nullptr)
 						,m_pSwapChain(nullptr) 
-						,m_pFont(nullptr)
 						,m_pRenderTarget(nullptr)
 						,m_pDefaultRenderTarget(nullptr)
 						,m_MainViewportInfo(windowWith,windowHeight)
@@ -38,7 +37,6 @@ GraphicsDevice::~GraphicsDevice(void)
 {
     delete m_pDefaultRenderTarget;
     m_pSwapChain->Release();
-    m_pFont->Release();
     m_pD3DDevice->Release();
 }
 
@@ -100,31 +98,32 @@ RenderTarget2D* GraphicsDevice::GetRenderTarget(void) const
 void GraphicsDevice::CreateDeviceAndSwapChain()
 {
 	//Init swapchain desc
-	DXGI_SWAP_CHAIN_DESC swapChainDescStruct={};
+	DXGI_SWAP_CHAIN_DESC swapChainDesc={};
 	//Swapchain characteristics
-	swapChainDescStruct.BufferDesc.Width					= m_MainViewportInfo.width;
-	swapChainDescStruct.BufferDesc.Height					= m_MainViewportInfo.height;
-	swapChainDescStruct.BufferDesc.RefreshRate.Numerator	= 60;
-	swapChainDescStruct.BufferDesc.RefreshRate.Denominator	= 1;
-	swapChainDescStruct.BufferDesc.Format					= DXGI_FORMAT_R8G8B8A8_UNORM;
-	swapChainDescStruct.BufferDesc.ScanlineOrdering			= DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
-	swapChainDescStruct.BufferDesc.Scaling					= DXGI_MODE_SCALING_UNSPECIFIED;
+	swapChainDesc.BufferDesc.Width					= m_MainViewportInfo.width;
+	swapChainDesc.BufferDesc.Height					= m_MainViewportInfo.height;
+	swapChainDesc.BufferDesc.RefreshRate.Numerator	= 60;
+	swapChainDesc.BufferDesc.RefreshRate.Denominator	= 1;
+	swapChainDesc.BufferDesc.Format					= DXGI_FORMAT_R8G8B8A8_UNORM;
+	swapChainDesc.BufferDesc.ScanlineOrdering			= DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
+	swapChainDesc.BufferDesc.Scaling					= DXGI_MODE_SCALING_UNSPECIFIED;
 	//Disable anti-aliasing
-	swapChainDescStruct.SampleDesc.Count	= 1;
-	swapChainDescStruct.SampleDesc.Quality	= 0;
+	swapChainDesc.SampleDesc.Count	= 1;
+	swapChainDesc.SampleDesc.Quality	= 0;
 	//Swapchain to window
-	swapChainDescStruct.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-	swapChainDescStruct.BufferCount = 1;
-	swapChainDescStruct.OutputWindow = m_hWindow;
-	swapChainDescStruct.Windowed = true;
-	swapChainDescStruct.Flags = 0;
+	swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT | DXGI_USAGE_SHADER_INPUT;
+	swapChainDesc.BufferCount = 1;
+	swapChainDesc.OutputWindow = m_hWindow;
+	swapChainDesc.Windowed = true;
+	swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
+	swapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 
 	UINT createDeviceFlags = 0;
 	#ifndef NDEBUG
 		createDeviceFlags |= D3D10_CREATE_DEVICE_DEBUG;
 	#endif
 
-	HR(D3D10CreateDeviceAndSwapChain(0, D3D10_DRIVER_TYPE_HARDWARE, 0, createDeviceFlags, D3D10_SDK_VERSION, &swapChainDescStruct, &m_pSwapChain, &m_pD3DDevice));
+	HR(D3D10CreateDeviceAndSwapChain(0, D3D10_DRIVER_TYPE_HARDWARE, 0, createDeviceFlags, D3D10_SDK_VERSION, &swapChainDesc, &m_pSwapChain, &m_pD3DDevice));
 }
 
 void GraphicsDevice::CreateRenderTarget()
@@ -132,7 +131,7 @@ void GraphicsDevice::CreateRenderTarget()
 	ID3D10Texture2D *pBackbuffer = nullptr;
 	HR( m_pSwapChain->GetBuffer(0, __uuidof(ID3D10Texture2D), reinterpret_cast<void**>(&pBackbuffer)) );
 
-	m_pRenderTarget = new RenderTarget2D();
+	m_pRenderTarget = m_pDefaultRenderTarget = new RenderTarget2D();
 	m_pRenderTarget->Create(pBackbuffer);
 
 	pBackbuffer->Release();

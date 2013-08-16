@@ -19,9 +19,9 @@
 
 using namespace tt;
 
-TransformComponent::TransformComponent(void):m_WorldPosition(0),m_WorldRotation(Quaternion::Identity()),m_WorldScale(1),m_World(Matrix4x4::Identity())
-											,m_NewPosition(0),m_NewRotation(Quaternion::Identity()),m_NewScale(0)
-											,m_DeltaPosition(0),m_DeltaRotation(Quaternion::Identity()),m_DeltaScale(0)
+TransformComponent::TransformComponent(void):m_WorldPosition(0),m_WorldRotation(Quaternion::Identity),m_WorldScale(1),m_World(Matrix4x4::Identity)
+											,m_NewPosition(0),m_NewRotation(Quaternion::Identity),m_NewScale(0)
+											,m_DeltaPosition(0),m_DeltaRotation(Quaternion::Identity),m_DeltaScale(0)
 											,m_Forward(0,0,1),m_Right(1,0,0),m_Up(0,1,0)
 {
 
@@ -42,7 +42,7 @@ void TransformComponent::Update(const tt::GameContext& context)
 void TransformComponent::CheckForUpdate(bool bForce)
 {
 	auto zeroVec = Vector3(0);
-	auto idQuat = Quaternion::Identity();
+	auto idQuat = Quaternion::Identity;
 	bool bTransformed = false;
 
 	if(m_NewPosition != zeroVec){

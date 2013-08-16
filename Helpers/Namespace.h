@@ -173,14 +173,6 @@ namespace tt
 				_31, _32, _33, _34,
 				_41, _42, _43, _44;
 
-		static Matrix4x4 Identity(void);
-		static Matrix4x4 Translation(Vector3 displacement);
-		static Matrix4x4 Rotation(Quaternion rotationQuaternion);
-		static Matrix4x4 Rotation(tt::Vector3 axis, float angle);
-		static Matrix4x4 Rotation(tt::Vector3 yawPitchRoll);
-		static Matrix4x4 Scale(Vector3 scale);
-		static Matrix4x4 Scale(float scale);
-
 		Matrix4x4(void);
 		Matrix4x4(const D3DXMATRIX& mat);
 		Matrix4x4(float __11, float __12, float __13, float __14
@@ -192,8 +184,17 @@ namespace tt
 
 		void Decompose(Vector3& pos, Quaternion& rot, Vector3& scale) const;
 		tt::Matrix4x4 Inverse(void) const;
-
+		
 		D3DXMATRIX To_DxMatrix(void) const;
+
+		static Matrix4x4 Translation(Vector3 displacement);
+		static Matrix4x4 Rotation(Quaternion rotationQuaternion);
+		static Matrix4x4 Rotation(tt::Vector3 axis, float angle);
+		static Matrix4x4 Rotation(tt::Vector3 yawPitchRoll);
+		static Matrix4x4 Scale(Vector3 scale);
+		static Matrix4x4 Scale(float scale);
+
+		static const Matrix4x4 Identity;
 	};
 	
 	struct Quaternion
@@ -212,7 +213,6 @@ namespace tt
 		bool operator==(const Quaternion& quat);
 		bool operator!=(const Quaternion& quat);
 
-		static Quaternion Identity(void);
 		static Quaternion FromEuler(const Vector3& eulerAngles);
 		static Quaternion FromEuler(float yaw, float pitch, float roll);
 		static Quaternion FromRotationMatrix(Matrix4x4 rotMat);
@@ -223,6 +223,8 @@ namespace tt
 		float GetAngle(void) const;
 		Vector3 GetYawPitchRoll(void) const;
 		Quaternion& Normalize(void);
+
+		static const Quaternion Identity;
 	};
 
 	struct ViewportInfo{

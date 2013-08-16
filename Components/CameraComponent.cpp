@@ -21,9 +21,9 @@
 
 using namespace tt;
 
-CameraComponent::CameraComponent(TransformComponent* pParentTransform):m_MatView(Matrix4x4::Identity())
-																	,m_MatProj(Matrix4x4::Identity())
-																	,m_MatViewInv(Matrix4x4::Identity())
+CameraComponent::CameraComponent(TransformComponent* pParentTransform):m_MatView(Matrix4x4::Identity)
+																	,m_MatProj(Matrix4x4::Identity)
+																	,m_MatViewInv(Matrix4x4::Identity)
 																	,m_pParentTransform(pParentTransform)
 {
 	m_Attributes.fov = static_cast<float>(D3DX_PI)*.25f;

@@ -24,6 +24,7 @@
 #include "../../Graphics/SpriteBatch.h"
 #include "../../Graphics/RenderTarget2D.h"
 #include "../../Graphics/PostProcessingEffect.h"
+#include "../../Components/SpriteComponent.h"
 
 DefaultGraphicsService::DefaultGraphicsService(void):m_pGraphicsDevice(nullptr)
 													,m_pWindow(nullptr)
@@ -77,21 +78,26 @@ void DefaultGraphicsService::Draw(resource_ptr<Model3D> pModel, const tt::Matrix
     }
 }
 
-ID3D10ShaderResourceView* DefaultGraphicsService::RenderPostProcessing(const tt::GameContext& context, std::multimap<unsigned int, PostProcessingEffect*, std::greater_equal<unsigned int> >& postProEffects)
+Sprite DefaultGraphicsService::RenderPostProcessing(const tt::GameContext& context, std::multimap<unsigned int, PostProcessingEffect*, std::greater_equal<unsigned int> >& postProEffects)
 {
-	if(postProEffects.empty() )
-		return nullptr;
+	if(postProEffects.empty() ){
+		Sprite backbufferSprite(tt::Matrix4x4::Identity );
+		backbufferSprite.Color = tt::Vector4(1);
+		backbufferSprite.pTexture = m_pGraphicsDevice->GetRenderTarget()->GetColorMap();
+		return backbufferSprite;
+	}
 
 	//First ppEffect: backbuffer as input, swap1 as output
+	auto pBackbufferRT = m_pGraphicsDevice->GetRenderTarget();
 	m_pGraphicsDevice->SetRenderTarget(m_pSwapRT1);
 	m_pGraphicsDevice->Clear();
-	postProEffects.begin()->second->Draw(context, m_pGraphicsDevice->GetRenderTarget() );
+	postProEffects.begin()->second->Draw(context,  pBackbufferRT);
 
 	//get iterator of second effect (will skip for_each if there is no second effect)
 	auto itBegin = postProEffects.begin();
-	itBegin++;
+	++itBegin;
 
-	for_each(itBegin, postProEffects.end(), [&](std::pair<unsigned int, PostProcessingEffect*>& effectPair)
+	for_each(itBegin, postProEffects.end(), [&](std::pair<const unsigned int, PostProcessingEffect*>& effectPair)
 	{
 		//Additional ppEffects: swap1 as input, swap2 as output
 		m_pGraphicsDevice->SetRenderTarget(m_pSwapRT2);
@@ -100,8 +106,16 @@ ID3D10ShaderResourceView* DefaultGraphicsService::RenderPostProcessing(const tt:
 		std::swap(m_pSwapRT1, m_pSwapRT2);
 	});
 
+	//Set RenderTarget back to default
+	m_pGraphicsDevice->ResetRenderTarget();
+	m_pGraphicsDevice->Clear();
+
 	//swap2 is output, but they are swapped before returning => swap1 contains output (same if the for_each is skipped)
-	return m_pSwapRT1->GetColorMap();
+	Sprite postProSprite(tt::Matrix4x4::Identity );
+	postProSprite.Color = tt::Vector4(1);
+	postProSprite.pTexture = m_pSwapRT1->GetColorMap();
+	
+	return postProSprite;
 }
 
 GraphicsDevice* DefaultGraphicsService::GetGraphicsDevice(void) const

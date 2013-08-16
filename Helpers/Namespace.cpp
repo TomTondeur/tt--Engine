@@ -534,6 +534,13 @@ float Vector4::LengthSq(void) const
 	return x*x + y*y + z*z + w*w;
 }
 
+//---------
+//Matrix4X4
+//---------
+const Matrix4x4 Matrix4x4::Identity = Matrix4x4(  1,0,0,0,
+												  0,1,0,0,
+												  0,0,1,0,
+												  0,0,0,1);
 Matrix4x4::Matrix4x4(void)
 {
 	_11 = 0; _12 = 0; _13 = 0; _14 = 0;
@@ -561,17 +568,9 @@ Matrix4x4::Matrix4x4(float __11, float __12, float __13, float __14
 	_41 = __41; _42 = __42; _43 = __43; _44 = __44;
 }
 
-Matrix4x4 Matrix4x4::Identity(void)
-{
-	return Matrix4x4(1,0,0,0
-					,0,1,0,0
-					,0,0,1,0
-					,0,0,0,1);
-}
-
 Matrix4x4 Matrix4x4::Translation(Vector3 displacement)
 {
-	auto out = Matrix4x4::Identity();
+	auto out = Matrix4x4::Identity;
 	out._41 = displacement.x;
 	out._42 = displacement.y;
 	out._43 = displacement.z;
@@ -596,7 +595,7 @@ Matrix4x4 Matrix4x4::Rotation(tt::Vector3 axis, float angle)
 {/*
 	//Calculations found at http://inside.mines.edu/~gmurray/ArbitraryAxisRotation/
 	axis.Normalize();
-	Matrix4x4 out = Matrix4x4::Identity();
+	Matrix4x4 out = Matrix4x4::Identity;
 	out._11 = axis.x*axis.x + (axis.y*axis.y + axis.z*axis.z) * cosf(angle);
 	out._12 = axis.x*axis.y * (1 - cosf(angle)) + axis.z * sinf(angle);
 	out._13 = axis.x*axis.z * (1 - cosf(angle)) - axis.y * sinf(angle);
@@ -616,7 +615,7 @@ Matrix4x4 Matrix4x4::Rotation(tt::Vector3 axis, float angle)
 
 Matrix4x4 Matrix4x4::Scale(Vector3 scale)
 {
-	auto out = Matrix4x4::Identity();
+	auto out = Matrix4x4::Identity;
 	out._11 = scale.x;
 	out._22 = scale.y;
 	out._33 = scale.z;
@@ -625,7 +624,7 @@ Matrix4x4 Matrix4x4::Scale(Vector3 scale)
 
 Matrix4x4 Matrix4x4::Scale(float scale)
 {
-	auto out = Matrix4x4::Identity();
+	auto out = Matrix4x4::Identity;
 	out._11 = scale;
 	out._22 = scale;
 	out._33 = scale;
@@ -674,6 +673,11 @@ D3DXMATRIX Matrix4x4::To_DxMatrix(void) const
 	out._41 = _41; out._42 = _42; out._43 = _43; out._44 = _44;
 	return out;
 }
+
+//----------
+//Quaternion
+//----------
+const Quaternion Quaternion::Identity = Quaternion(0,0,0,1);
 
 Quaternion::Quaternion(void)
 {
@@ -747,11 +751,6 @@ bool Quaternion::operator==(const Quaternion& quat)
 bool Quaternion::operator!=(const Quaternion& quat)
 {
 	return !(*this == quat);
-}
-
-Quaternion Quaternion::Identity(void)
-{
-	return Quaternion(0,0,0,1);
 }
 
 Quaternion Quaternion::FromEuler(const Vector3& eulerAngles)

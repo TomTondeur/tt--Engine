@@ -44,14 +44,14 @@ void TTscene::Initialize(void)
 	//AddSceneObject(new Object3D());
 	
 	MyServiceLocator::GetInstance()->GetService<ResourceService>()->Load<SpriteFont>(_T("Resources/AgencyFB_12.fnt"));
-
-
+	
 	pPostProEffect = new PostProcessingEffect( MyServiceLocator::GetInstance()->GetService<ResourceService>()->Load<PostProcessingMaterial>(_T("Resources/Blur.fx")) );
 	pPostProEffect->Initialize();
+	AddPostProcessingEffect(pPostProEffect, 0);
+	AddPostProcessingEffect(pPostProEffect, 1); //First
 }
 
 void TTscene::Draw(const tt::GameContext& context)
 {
 	MyServiceLocator::GetInstance()->GetService<ResourceService>()->Load<SpriteFont>(_T("Resources/AgencyFB_12.fnt"))->DrawText(_T("Hello,\nWorld!\nSo nice to see\nYOU!"), tt::Vector2(0), tt::Vector4(.0f, .0f, .0f, 1.0f) );
-	pPostProEffect->Draw(context, nullptr);
 }
