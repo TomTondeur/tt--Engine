@@ -19,6 +19,7 @@
 
 #include "../Helpers/D3DUtil.h"
 #include "../Helpers/resrc_ptr.hpp"
+#include "../Helpers/Namespace.h"
 
 class Material;
 struct InputLayout;
@@ -34,6 +35,33 @@ struct VertexBufferInfo
 	VertexBufferInfo(void);
 
 	void Release(void);
+};
+
+struct Ray
+{
+	Ray(const tt::Vector3& origin, const tt::Vector3& direction);
+	
+	tt::Vector3 Origin;
+	tt::Vector3 Direction;
+	tt::Vector3 InvDirection;
+	int sign[3];
+};
+
+struct AABBox
+{
+	AABBox(void);
+	~AABBox(void);
+
+	void Initialize(const vector<D3DXVECTOR3>& vertices);
+	void GetVertices(tt::Vector3* targetArr) const;
+	bool Intersect(const Ray& r, float t0, float t1) const;
+
+	tt::Vector3 Bounds[2];
+	
+	static const Ray FrustumCullRay0;
+	static const Ray FrustumCullRay1;
+	static const Ray FrustumCullRay2;
+	static const Ray FrustumCullRay3;
 };
 
 class Model3D
@@ -69,6 +97,7 @@ public:
 	const VertexBufferInfo& GetVertexBufferInfo(resource_ptr<Material> pMaterial);
 	ID3D10Buffer* GetIndexBuffer(void);
 	unsigned int GetNrOfIndices(void) const;
+	const AABBox& GetAABB(void) const;
 
 private:
 	//Datamembers
@@ -86,6 +115,8 @@ private:
 	vector<unsigned int> m_Indices;
 	
 	ID3D10Buffer* m_pIndexBuffer;
+
+	AABBox m_BoundingBox;
 
 	//Disabling default copy constructor & assignment operator
 	Model3D(const Model3D& src);

@@ -32,6 +32,83 @@ void VertexBufferInfo::Release(void)
 		pVertexBuffer->Release();
 }
 
+Ray::Ray(const tt::Vector3& origin, const tt::Vector3& direction)
+{
+	Origin = origin;
+	Direction = direction;
+	InvDirection = tt::Vector3(1/direction.x, 1/direction.y, 1/direction.z);
+	sign[0] = (InvDirection.x < 0); 
+	sign[1] = (InvDirection.y < 0);
+	sign[2] = (InvDirection.z < 0);
+}
+	
+const Ray AABBox::FrustumCullRay0 = Ray(tt::Vector3(-1,-1,0), tt::Vector3(0,0,1) );
+const Ray AABBox::FrustumCullRay1 = Ray(tt::Vector3(-1, 1,0), tt::Vector3(0,0,1) );
+const Ray AABBox::FrustumCullRay2 = Ray(tt::Vector3( 1,-1,0), tt::Vector3(0,0,1) );
+const Ray AABBox::FrustumCullRay3 = Ray(tt::Vector3( 1, 1,0), tt::Vector3(0,0,1) );
+
+AABBox::AABBox(void)
+{
+	Bounds[0] = tt::Vector3(0);
+	Bounds[1] = tt::Vector3(0);
+}
+
+AABBox::~AABBox(void){}
+
+void AABBox::Initialize(const vector<D3DXVECTOR3>& vertices)
+{
+	for(auto& vertex : vertices)
+	{
+		Bounds[0].x = min(vertex.x, Bounds[0].x);
+		Bounds[0].y = min(vertex.y, Bounds[0].y);
+		Bounds[0].z = min(vertex.z, Bounds[0].z);
+		
+		Bounds[1].x = max(vertex.x, Bounds[1].x);
+		Bounds[1].y = max(vertex.y, Bounds[1].y);
+		Bounds[1].z = max(vertex.z, Bounds[1].z);
+	}
+}
+
+void AABBox::GetVertices(tt::Vector3* targetArr) const
+{
+	targetArr[0] = tt::Vector3(Bounds[0].x, Bounds[0].y, Bounds[0].z);
+	targetArr[1] = tt::Vector3(Bounds[0].x, Bounds[0].y, Bounds[1].z);
+	targetArr[2] = tt::Vector3(Bounds[0].x, Bounds[1].y, Bounds[0].z);
+	targetArr[3] = tt::Vector3(Bounds[0].x, Bounds[1].y, Bounds[1].z);
+	targetArr[4] = tt::Vector3(Bounds[1].x, Bounds[0].y, Bounds[0].z);
+	targetArr[5] = tt::Vector3(Bounds[1].x, Bounds[0].y, Bounds[1].z);	
+	targetArr[6] = tt::Vector3(Bounds[1].x, Bounds[1].y, Bounds[0].z);
+	targetArr[7] = tt::Vector3(Bounds[1].x, Bounds[1].y, Bounds[1].z);
+}
+
+//Optimized method to check ray-AABB intersection
+bool AABBox::Intersect(const Ray& ray, float t0, float t1) const
+{
+	float txMin = (Bounds[  ray.sign[0]].x - ray.Origin.x) * ray.InvDirection.x; 
+	float txMax = (Bounds[1-ray.sign[0]].x - ray.Origin.x) * ray.InvDirection.x; 
+	float tyMin = (Bounds[  ray.sign[1]].y - ray.Origin.y) * ray.InvDirection.y;
+	float tyMax = (Bounds[1-ray.sign[1]].y - ray.Origin.y) * ray.InvDirection.y;
+
+	if( (txMin > tyMax) || (tyMin > txMax) )
+		return false;
+	if(tyMin > txMin) 
+		txMin = tyMin;
+	if(tyMax < txMax) 
+		txMax = tyMax;
+	
+	float tzMin = (Bounds[  ray.sign[2]].z - ray.Origin.z) * ray.InvDirection.z; 
+	float tzMax = (Bounds[1-ray.sign[2]].z - ray.Origin.z) * ray.InvDirection.z;
+	
+	if( (txMin > tzMax) || (tzMin > txMax) )
+		return false;
+	if(tzMin > txMin)
+		txMin = tzMin;
+	if(tzMax < txMax)
+		txMax = tzMax;
+	
+	return( (txMin < t1) && (txMax > t0) );
+}
+
 Model3D::Model3D(void):m_pIndexBuffer(nullptr)
 {
 
@@ -221,4 +298,9 @@ ID3D10Buffer* Model3D::GetIndexBuffer(void)
 unsigned int Model3D::GetNrOfIndices(void) const
 {
 	return m_Indices.size();
+}
+
+const AABBox& Model3D::GetAABB(void) const
+{
+	return m_BoundingBox;
 }

@@ -39,6 +39,8 @@ public:
 
 	void SetMaterial(resource_ptr<Material> pMat);
 	const TransformComponent* GetTransform(void) const;
+	
+	bool Cull(const tt::GameContext& context);
 
 private:
 	//Datamembers

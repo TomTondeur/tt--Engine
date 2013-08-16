@@ -22,6 +22,9 @@
 #include "../Graphics/GraphicsDevice.h"
 #include "../Graphics/Material.h"
 #include "../Components/TransformComponent.h"
+#include "../AbstractGame.h"
+#include "../Scenegraph/GameScene.h"
+#include "CameraComponent.h"
 
 ModelComponent::ModelComponent(std::tstring modelFilename, const TransformComponent* pTransform):m_ModelFile(modelFilename),m_pTransform(pTransform)
 {
@@ -45,6 +48,9 @@ void ModelComponent::Draw(const tt::GameContext& context)
 	if(m_pMaterial == nullptr)
 		throw exception();
 
+	if( Cull(context) )
+		return;
+
 	MyServiceLocator::GetInstance()->GetService<IGraphicsService>()->Draw(m_pModel, m_pTransform->GetWorldMatrix(), m_pMaterial, context);
 }
 
@@ -56,4 +62,31 @@ void ModelComponent::SetMaterial(resource_ptr<Material> pMat)
 const TransformComponent* ModelComponent::GetTransform(void) const
 {
 	return m_pTransform;
+}
+
+bool ModelComponent::Cull(const tt::GameContext& context)
+{
+	tt::Vector3 vertices[8];
+	tt::Matrix4x4 wvpMat = m_pTransform->GetWorldMatrix() * context.pGame->GetActiveScene()->GetActiveCamera()->GetView() * context.pGame->GetActiveScene()->GetActiveCamera()->GetProjection();
+	
+	AABBox wvpBox;
+	wvpBox.Bounds[0] = m_pModel->GetAABB().Bounds[0].TransformCoord(wvpMat);
+	wvpBox.Bounds[1] = m_pModel->GetAABB().Bounds[1].TransformCoord(wvpMat);
+	wvpBox.GetVertices(vertices);
+
+	//If one point is inside the view frustum, the bounding volume is visible
+	for(unsigned int i=0; i<8; ++i){
+		vertices[i] = vertices[i].TransformCoord(wvpMat);
+
+		if( vertices[i].x < -1 || vertices[i].x > 1 || 
+			vertices[i].y < -1 || vertices[i].y > 1 ||
+			vertices[i].z < 0  || vertices[i].z > 1)
+			return false;
+	}
+
+	//Additional checks to make sure we don't cull edge cases	
+	return	wvpBox.Intersect(AABBox::FrustumCullRay0, 0, 1) ||	
+			wvpBox.Intersect(AABBox::FrustumCullRay1, 0, 1) ||
+			wvpBox.Intersect(AABBox::FrustumCullRay2, 0, 1) ||
+			wvpBox.Intersect(AABBox::FrustumCullRay3, 0, 1);
 }

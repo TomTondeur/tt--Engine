@@ -190,6 +190,9 @@ template<> unique_ptr<Model3D> ResourceService::LoadResource<Model3D>(const std:
 	for(unsigned int i=0; i < nrOfIndices; ++i)
 		pModel->m_Indices.push_back(meshFile.Read<unsigned int>());
 
+	//Build bounding box
+	pModel->m_BoundingBox.Initialize(pModel->m_Positions.data);
+
 	return std::unique_ptr<Model3D>(pModel);
 }
 
