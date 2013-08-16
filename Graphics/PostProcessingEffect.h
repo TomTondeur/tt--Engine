@@ -21,13 +21,13 @@
 #include "../Helpers/resrc_ptr.hpp"
 
 class RenderTarget2D;
-class PostProcessingMaterial;
+class Material;
 
 class PostProcessingEffect
 {
 public:
 	//Default constructor & destructor
-	PostProcessingEffect(resource_ptr<PostProcessingMaterial> pMaterial);
+	PostProcessingEffect(resource_ptr<Material> pMaterial);
 	virtual ~PostProcessingEffect(void);
 
 	//Methods
@@ -37,7 +37,7 @@ public:
 
 private:
 	//Datamembers
-	resource_ptr<PostProcessingMaterial> m_pMaterial;
+	resource_ptr<Material> m_pMaterial;
 
 	static ID3D10Buffer* s_pVertexBuffer;
 	static unsigned int s_VertexBufferStride;

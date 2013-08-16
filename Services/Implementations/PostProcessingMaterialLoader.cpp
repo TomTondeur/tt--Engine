@@ -17,11 +17,11 @@
 
 #include "../Interfaces/ResourceService.h"
 
-#include "../../Graphics/Materials/PostProcessingMaterial.h"
+#include "../../Graphics/Materials/PostProcessing/BlurMaterial.h"
 
-template<> unique_ptr<PostProcessingMaterial> ResourceService::LoadResource<PostProcessingMaterial>(const std::tstring& filename)
+template<> unique_ptr<BlurMaterial> ResourceService::LoadResource<BlurMaterial>(const std::tstring& filename)
 {
-	auto ptr = new PostProcessingMaterial(filename);
+	auto ptr = new BlurMaterial();
 	ptr->LoadEffect();
-	return unique_ptr<PostProcessingMaterial>(ptr);
+	return unique_ptr<BlurMaterial>(ptr);
 }

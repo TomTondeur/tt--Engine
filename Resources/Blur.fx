@@ -17,7 +17,7 @@
 
 Texture2D gTexture : ColorMap;
 
-int gOffset = 5;
+float gOffset : BlurOffset;
 
 SamplerState samLinear
 {
@@ -56,8 +56,8 @@ PS_INPUT_STRUCT VS(VS_INPUT_STRUCT input)
 float4 PS(PS_INPUT_STRUCT input):SV_TARGET
 {
 	//FIXME
-	float du = .2f/1280.0f;
-	float dv = .2f/1024.0f;
+	float du = 1/1280.0f;
+	float dv = 1/1024.0f;
 	
 	float3 p0 = gTexture.Sample(samLinear, input.TexCoord + float2(0			,0));
 	float3 p1 = gTexture.Sample(samLinear, input.TexCoord + float2(-gOffset*du	,0));

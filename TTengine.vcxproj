@@ -189,11 +189,11 @@
       </SubType>
     </ClInclude>
     <ClInclude Include="Diagnostics\Exceptions.h" />
-    <ClInclude Include="Graphics\Materials\Object3DMaterial.h">
+    <ClInclude Include="Graphics\Materials\PostProcessing\BlurMaterial.h">
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Graphics\Materials\PostProcessingMaterial.h">
+    <ClInclude Include="Graphics\Materials\Object3DMaterial.h">
       <SubType>
       </SubType>
     </ClInclude>
@@ -358,11 +358,11 @@
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Graphics\Materials\Object3DMaterial.cpp">
+    <ClCompile Include="Graphics\Materials\PostProcessing\BlurMaterial.cpp">
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Graphics\Materials\PostProcessingMaterial.cpp">
+    <ClCompile Include="Graphics\Materials\Object3DMaterial.cpp">
       <SubType>
       </SubType>
     </ClCompile>

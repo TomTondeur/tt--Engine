@@ -60,7 +60,7 @@ int WINAPI _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR nCmdLi
 	// Enable run-time memory leak check for debug builds.
 	#if defined(DEBUG) | defined(_DEBUG)
 		_CrtSetDbgFlag( _CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF );
-		//_CrtSetBreakAlloc(318);
+		//_CrtSetBreakAlloc(734);
 	#endif
 	
 	TTengine* pEngine = new TTengine();

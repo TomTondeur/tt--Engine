@@ -19,7 +19,7 @@
 
 #include "../Services/ServiceLocator.h"
 #include "GraphicsDevice.h"
-#include "Materials/PostProcessingMaterial.h"
+#include "Material.h"
 #include "EffectTechnique.h"
 #include "RenderTarget2D.h"
 
@@ -34,7 +34,7 @@ struct PostProcessingVertex
 ID3D10Buffer* PostProcessingEffect::s_pVertexBuffer = nullptr;
 unsigned int PostProcessingEffect::s_VertexBufferStride = 3*4 + 2*4; //NrOfVertices * (PosFloatComponents * 4 bytes + TexCoordFloatComponents * 4 bytes)
 
-PostProcessingEffect::PostProcessingEffect(resource_ptr<PostProcessingMaterial> pMaterial):m_pMaterial(pMaterial)
+PostProcessingEffect::PostProcessingEffect(resource_ptr<Material> pMaterial):m_pMaterial(pMaterial)
 {
 
 }

@@ -52,6 +52,8 @@ void Timer::Start(void)
 {
 	if(QueryPerformanceCounter(&m_CountsAtStart) == 0)
 		MyServiceLocator::GetInstance()->GetService<DebugService>()->LogWin32Error(GetLastError(),__LINE__, __FILE__);
+	m_CountsLatestTick = m_CountsAtStart;
+	m_CountsPreviousTick = m_CountsAtStart;
 }
 
 void Timer::Tick(void)

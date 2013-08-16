@@ -31,6 +31,13 @@ GameScene::~GameScene()
 {
 	for(auto pObj : m_Objects)
 		delete pObj;
+
+	std::set<PostProcessingEffect*> uniquePostproEffects;
+	for(auto effectPair : m_PostProEffects)
+		uniquePostproEffects.insert(effectPair.second);
+
+	for(auto pEffect : uniquePostproEffects)
+		delete pEffect;
 }
 	
 void GameScene::InitializeScene(void)
@@ -39,6 +46,9 @@ void GameScene::InitializeScene(void)
 		pObj->Initialize();
 		pObj->InitializeObject();
 	}
+
+	for(auto effectPair : m_PostProEffects)
+		effectPair.second->Initialize();
 }
 
 void GameScene::UpdateScene(const tt::GameContext& context)

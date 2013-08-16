@@ -22,7 +22,7 @@
 #include "Services/ServiceLocator.h"
 #include "Graphics/SpriteFont.h"
 #include "Graphics/PostProcessingEffect.h"
-#include "Graphics/Materials/PostProcessingMaterial.h"
+#include "Graphics/Materials/PostProcessing/BlurMaterial.h"
 
 TTscene::TTscene(void)
 {
@@ -45,10 +45,9 @@ void TTscene::Initialize(void)
 	
 	MyServiceLocator::GetInstance()->GetService<ResourceService>()->Load<SpriteFont>(_T("Resources/AgencyFB_12.fnt"));
 	
-	pPostProEffect = new PostProcessingEffect( MyServiceLocator::GetInstance()->GetService<ResourceService>()->Load<PostProcessingMaterial>(_T("Resources/Blur.fx")) );
-	pPostProEffect->Initialize();
+	pPostProEffect = new PostProcessingEffect( MyServiceLocator::GetInstance()->GetService<ResourceService>()->Load<BlurMaterial>(_T("BlurPostpro")) );
 	AddPostProcessingEffect(pPostProEffect, 0);
-	AddPostProcessingEffect(pPostProEffect, 1); //First
+	AddPostProcessingEffect(pPostProEffect, 1); //Will be processed first (higher priority)
 }
 
 void TTscene::Draw(const tt::GameContext& context)

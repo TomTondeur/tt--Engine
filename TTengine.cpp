@@ -34,6 +34,7 @@
 #include "Services/ServiceLocator.h"
 #include "Graphics/GraphicsDevice.h"
 #include "Graphics/SpriteBatch.h"
+#include "Graphics/SpriteFont.h"
 
 //------------
 // Defines
@@ -51,6 +52,7 @@ TTengine* TTengine::m_pEngineInstance = nullptr;
 
 TTengine::TTengine(void):m_pGame(nullptr)
 						,m_bProgramTerminated(false)
+						,m_FrameCounter(0), m_TimeElapsedSinceLastSecond(0)
 {
 	
 }
@@ -108,6 +110,7 @@ DWORD TTengine::GameLoop(void)
 	m_pGame->InitializeGame();
 	m_GameContext.pGame = m_pGame;
 	m_GameContext.GameTimer.Start();
+	m_GameContext.FramesPerSecond = 0;
 
 	while(!m_bProgramTerminated){
 		m_pGame->Update(m_GameContext);
@@ -115,12 +118,22 @@ DWORD TTengine::GameLoop(void)
 			
 		MyServiceLocator::GetInstance()->GetService<IGraphicsService>()->GetGraphicsDevice()->Clear();
 
+		MyServiceLocator::GetInstance()->GetService<ResourceService>()->Load<SpriteFont>(_T("Resources/AgencyFB_12.fnt"))->DrawText(std::tstring(_T("FPS: ")) + to_tstring(m_GameContext.FramesPerSecond), tt::Vector2(100,0), tt::Vector4(0,0,0,1) );
+		MyServiceLocator::GetInstance()->GetService<ResourceService>()->Load<SpriteFont>(_T("Resources/AgencyFB_12.fnt"))->DrawText(std::tstring(_T("SPF: ")) + to_tstring(m_GameContext.GameTimer.GetElapsedSeconds()), tt::Vector2(100,25), tt::Vector4(0,0,0,1) );
 		m_pGame->Draw(m_GameContext);
 		m_pGame->DrawGame(m_GameContext);
-				
+		
 		MyServiceLocator::GetInstance()->GetService<IGraphicsService>()->GetGraphicsDevice()->Present();
-
+		
 		m_GameContext.GameTimer.Tick();
+
+		m_TimeElapsedSinceLastSecond += m_GameContext.GameTimer.GetElapsedSeconds();
+		if(m_TimeElapsedSinceLastSecond > 1){
+			m_TimeElapsedSinceLastSecond -= 1;
+			m_GameContext.FramesPerSecond = m_FrameCounter;
+			m_FrameCounter = 0;
+		}
+		m_FrameCounter++;
 	}
 
 	m_bProgramTerminated = false;

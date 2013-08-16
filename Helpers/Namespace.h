@@ -239,6 +239,7 @@ namespace tt
 		ViewportInfo vpInfo;
 		AbstractGame* pGame;
 		Timer GameTimer;
+		unsigned int FramesPerSecond;
 		//Viewport size
 		//DeltaTime
 		//Camera

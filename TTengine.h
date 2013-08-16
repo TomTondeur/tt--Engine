@@ -70,6 +70,9 @@ class TTengine
 		AbstractGame* m_pGame;
 		bool m_bProgramTerminated;
 		tt::GameContext m_GameContext;
+
+		unsigned int m_FrameCounter;
+		float m_TimeElapsedSinceLastSecond;
 		
 		//Disabled copy constructor & assignment operator
 		TTengine(TTengine& source);// = delete;
