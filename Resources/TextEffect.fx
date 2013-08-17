@@ -18,6 +18,7 @@
 float4x4 matTransform : ViewTransform;
 Texture2D texSprite : Texture;
 float2 texSize : TextureDimensions;
+uint gOpacityCutoff : OpacityThreshold = 0.3f;
 
 BlendState EnableBlending 
 {     
@@ -82,8 +83,6 @@ void MainGS(point GS_INPUT vertex[1], inout TriangleStream<PS_INPUT> triStream)
 {
 	//Calculate texOffset
 	float2 texOffset = vertex[0].CharSize / texSize;
-
-	//texOffset.y = -texOffset.y;
 	
 	CreateVertex(triStream, vertex[0].Position,										vertex[0].Color, vertex[0].TexCoord,							vertex[0].Channel); //left-bot
 	CreateVertex(triStream, vertex[0].Position + float3(vertex[0].CharSize.x, 0, 0),vertex[0].Color, vertex[0].TexCoord + float2(texOffset.x, 0),	vertex[0].Channel); //right-bot
@@ -94,7 +93,11 @@ void MainGS(point GS_INPUT vertex[1], inout TriangleStream<PS_INPUT> triStream)
 //PIXEL SHADER
 //************
 float4 MainPS(PS_INPUT input) : SV_TARGET {
-	return input.Color * texSprite.Sample(samPoint, input.TexCoord)[input.Channel];
+	float4 outColor = input.Color * texSprite.Sample(samPoint, input.TexCoord)[input.Channel];
+
+	clip(outColor.a - gOpacityCutoff);
+
+	return outColor;
 }
 
 // Default Technique

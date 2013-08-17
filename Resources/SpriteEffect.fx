@@ -20,6 +20,7 @@ float4x4 matTransform : ViewTransform;
 Texture2D texSprite : Texture;
 uint texWidth : Width;
 uint texHeight : Height;
+uint gOpacityCutoff : OpacityThreshold = 0.3f;
 
 SamplerState samLinear
 {
@@ -98,7 +99,11 @@ void MainGS(point VS_INPUT input[1], inout TriangleStream<PS_INPUT> stream)
 }
 
 float4 MainPS(PS_INPUT input) : SV_TARGET {	
-	return texSprite.Sample(samLinear, input.TexCoord) * input.Color;
+	float4 outColor = texSprite.Sample(samLinear, input.TexCoord) * input.Color;
+
+	clip(outColor.a - gOpacityCutoff);
+
+	return outColor;
 }
 
 // Default Technique

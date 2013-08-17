@@ -136,7 +136,7 @@ void Material::SetVariable(std::tstring semantic, const tt::Matrix4x4& value)
 	if(it==m_EffectVariables.end())
 		throw exception();
 	
-	it->second->AsMatrix()->SetMatrix( reinterpret_cast<float*>( &value.To_DxMatrix() ) );
+	it->second->AsMatrix()->SetMatrix( reinterpret_cast<float*>( &static_cast<D3DXMATRIX>(value) ) );
 }
 
 void Material::SetVariable(std::tstring semantic, const tt::Vector2& value)

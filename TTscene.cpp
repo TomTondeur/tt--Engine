@@ -41,16 +41,13 @@ void TTscene::Initialize(void)
 	auto pCam = new FreeCamera();
 	AddSceneObject(pCam);
 	SetActiveCamera(pCam->GetComponent<CameraComponent>());
-	//AddSceneObject(new Object3D());
-	
-	MyServiceLocator::GetInstance()->GetService<ResourceService>()->Load<SpriteFont>(_T("Resources/AgencyFB_12.fnt"));
+	AddSceneObject(new Object3D());
 	
 	pPostProEffect = new PostProcessingEffect( MyServiceLocator::GetInstance()->GetService<ResourceService>()->Load<BlurMaterial>(_T("BlurPostpro")) );
 	AddPostProcessingEffect(pPostProEffect, 0);
-	AddPostProcessingEffect(pPostProEffect, 1); //Will be processed first (higher priority)
 }
 
 void TTscene::Draw(const tt::GameContext& context)
 {
-	MyServiceLocator::GetInstance()->GetService<ResourceService>()->Load<SpriteFont>(_T("Resources/AgencyFB_12.fnt"))->DrawText(_T("Hello,\nWorld!\nSo nice to see\nYOU!"), tt::Vector2(0), tt::Vector4(.0f, .0f, .0f, 1.0f) );
+
 }

@@ -87,8 +87,8 @@ void TransformComponent::CheckForUpdate(bool bForce)
 
 	m_World = matScale * matRot * matTrans;
 	
-	m_Forward = Vector3(0,0,1).TransformCoord(matRot);
-	m_Right = Vector3(1,0,0).TransformCoord(matRot);
+	m_Forward = Vector3(0,0,1).TransformPoint(matRot);
+	m_Right = Vector3(1,0,0).TransformPoint(matRot);
 	m_Up = m_Forward.Cross(m_Right).Normalize();
 }
 

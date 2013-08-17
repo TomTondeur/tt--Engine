@@ -57,11 +57,6 @@ struct AABBox
 	bool Intersect(const Ray& r, float t0, float t1) const;
 
 	tt::Vector3 Bounds[2];
-	
-	static const Ray FrustumCullRay0;
-	static const Ray FrustumCullRay1;
-	static const Ray FrustumCullRay2;
-	static const Ray FrustumCullRay3;
 };
 
 class Model3D

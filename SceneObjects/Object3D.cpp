@@ -23,11 +23,11 @@
 Object3D::Object3D(void)
 {
 	auto pTransform = new TransformComponent();
-	//auto pModel = new ModelComponent(_T("Resources/box.bin"),pTransform);
+	auto pModel = new ModelComponent(_T("Resources/box.bin"),pTransform);
 	
 	SetComponent<TransformComponent>(pTransform);
-	//SetComponent<ModelComponent>(pModel);
-	SetComponent<SpriteComponent>(new SpriteComponent(_T("Resources/Vampire_Diffuse.dds"), pTransform) );
+	SetComponent<ModelComponent>(pModel);
+	//SetComponent<SpriteComponent>(new SpriteComponent(_T("Resources/Vampire_Diffuse.dds"), pTransform) );
 }
 
 Object3D::~Object3D(void)
@@ -39,5 +39,5 @@ Object3D::~Object3D(void)
 
 void Object3D::Initialize(void)
 {
-	//GetComponent<ModelComponent>()->SetMaterial( MyServiceLocator::GetInstance()->GetService<ResourceService>()->Load<Object3DMaterial>( _T("BasicMaterial") ) );
+	GetComponent<ModelComponent>()->SetMaterial( MyServiceLocator::GetInstance()->GetService<ResourceService>()->Load<Object3DMaterial>( _T("BasicMaterial") ) );
 }

@@ -42,15 +42,10 @@ Ray::Ray(const tt::Vector3& origin, const tt::Vector3& direction)
 	sign[2] = (InvDirection.z < 0);
 }
 	
-const Ray AABBox::FrustumCullRay0 = Ray(tt::Vector3(-1,-1,0), tt::Vector3(0,0,1) );
-const Ray AABBox::FrustumCullRay1 = Ray(tt::Vector3(-1, 1,0), tt::Vector3(0,0,1) );
-const Ray AABBox::FrustumCullRay2 = Ray(tt::Vector3( 1,-1,0), tt::Vector3(0,0,1) );
-const Ray AABBox::FrustumCullRay3 = Ray(tt::Vector3( 1, 1,0), tt::Vector3(0,0,1) );
-
 AABBox::AABBox(void)
 {
-	Bounds[0] = tt::Vector3(0);
-	Bounds[1] = tt::Vector3(0);
+	Bounds[0] = tt::Vector3(INFINITY);
+	Bounds[1] = tt::Vector3(-INFINITY);
 }
 
 AABBox::~AABBox(void){}

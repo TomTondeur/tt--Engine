@@ -363,7 +363,14 @@ float Vector3::LengthSq(void) const
 	return x*x + y*y + z*z;
 }
 
-Vector3 Vector3::TransformCoord(const Matrix4x4& matTransform) const
+Vector3 Vector3::TransformVector(const Matrix4x4& matTransform) const
+{
+	D3DXVECTOR3 vec;
+	D3DXVec3TransformNormal(&vec, &static_cast<D3DXVECTOR3>(*this), &static_cast<D3DXMATRIX>(matTransform) );
+	return static_cast<Vector3>(vec);
+}
+
+Vector3 Vector3::TransformPoint(const Matrix4x4& matTransform) const
 {/*
 	Vector3 out;
 	float w = x*matTransform._14 + y*matTransform._24 + z*matTransform._34 + matTransform._44;
@@ -373,14 +380,14 @@ Vector3 Vector3::TransformCoord(const Matrix4x4& matTransform) const
 	return out;
 	*/
 	D3DXVECTOR3 vec;
-	D3DXVec3TransformCoord(&vec, &static_cast<D3DXVECTOR3>(*this), &matTransform.To_DxMatrix());
+	D3DXVec3TransformCoord(&vec, &static_cast<D3DXVECTOR3>(*this), &static_cast<D3DXMATRIX>(matTransform) );
 	return static_cast<Vector3>(vec);
 }
 
-Vector3 Vector3::TransformCoord(const Quaternion& rotQuat) const
+Vector3 Vector3::TransformPoint(const Quaternion& rotQuat) const
 {
 	auto rotMat = Matrix4x4::Rotation(rotQuat);
-	return TransformCoord(rotMat);
+	return TransformPoint(rotMat);
 }
 
 Vector3 Vector3::Cross(const Vector3& v) const
@@ -634,7 +641,7 @@ Matrix4x4 Matrix4x4::Scale(float scale)
 Matrix4x4 Matrix4x4::operator*(const Matrix4x4& mat) const
 {
     D3DXMATRIX matT;
-    D3DXMatrixMultiply(&matT, &this->To_DxMatrix(), &mat.To_DxMatrix());
+    D3DXMatrixMultiply(&matT, &static_cast<D3DXMATRIX>(*this), &static_cast<D3DXMATRIX>(mat) );
     
 	return Matrix4x4(matT);
 }
@@ -644,9 +651,17 @@ Matrix4x4& Matrix4x4::operator*=(const Matrix4x4& mat)
 	return *this = *this * mat;
 }
 
+Matrix4x4::operator D3DXMATRIX(void) const
+{
+	return D3DXMATRIX(	_11, _12, _13, _14,
+						_21, _22, _23, _24,
+						_31, _32, _33, _34,
+						_41, _42, _43, _44);
+}
+
 void Matrix4x4::Decompose(Vector3& pos, Quaternion& rot, Vector3& scale) const
 {
-	D3DXMATRIX transform = To_DxMatrix();
+	D3DXMATRIX transform = static_cast<D3DXMATRIX>(*this);
 	D3DXVECTOR3 _pos, _scale;
 	D3DXQUATERNION _rot;
 
@@ -660,18 +675,8 @@ void Matrix4x4::Decompose(Vector3& pos, Quaternion& rot, Vector3& scale) const
 Matrix4x4 Matrix4x4::Inverse(void) const
 {
 	D3DXMATRIX temp;
-	D3DXMatrixInverse(&temp, nullptr, &To_DxMatrix());
+	D3DXMatrixInverse(&temp, nullptr, &static_cast<D3DXMATRIX>(*this) );
 	return static_cast<Matrix4x4>(temp);
-}
-
-D3DXMATRIX Matrix4x4::To_DxMatrix(void) const
-{
-	D3DXMATRIX out;
-	out._11 = _11; out._12 = _12; out._13 = _13; out._14 = _14;
-	out._21 = _21; out._22 = _22; out._23 = _23; out._24 = _24;
-	out._31 = _31; out._32 = _32; out._33 = _33; out._34 = _34;
-	out._41 = _41; out._42 = _42; out._43 = _43; out._44 = _44;
-	return out;
 }
 
 //----------
@@ -777,7 +782,7 @@ Quaternion Quaternion::FromRotationMatrix(Matrix4x4 rotMat)
 	out.z = static_cast<float>( _copysign(static_cast<double>(out.z), static_cast<double>(rotMat._12 - rotMat._21) ) );
 	return out;*/
 	D3DXQUATERNION quat;
-	D3DXQuaternionRotationMatrix(&quat, &rotMat.To_DxMatrix());
+	D3DXQuaternionRotationMatrix(&quat, &static_cast<D3DXMATRIX>(rotMat) );
 	return static_cast<Quaternion>(quat);
 } 
 

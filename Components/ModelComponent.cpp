@@ -21,6 +21,7 @@
 //#include "../Graphics/Material.h"
 #include "../Graphics/GraphicsDevice.h"
 #include "../Graphics/Material.h"
+#include "../Graphics/SpriteFont.h"
 #include "../Components/TransformComponent.h"
 #include "../AbstractGame.h"
 #include "../Scenegraph/GameScene.h"
@@ -49,7 +50,7 @@ void ModelComponent::Draw(const tt::GameContext& context)
 		throw exception();
 
 	if( Cull(context) )
-		return;
+		return;	
 
 	MyServiceLocator::GetInstance()->GetService<IGraphicsService>()->Draw(m_pModel, m_pTransform->GetWorldMatrix(), m_pMaterial, context);
 }
@@ -69,24 +70,41 @@ bool ModelComponent::Cull(const tt::GameContext& context)
 	tt::Vector3 vertices[8];
 	tt::Matrix4x4 wvpMat = m_pTransform->GetWorldMatrix() * context.pGame->GetActiveScene()->GetActiveCamera()->GetView() * context.pGame->GetActiveScene()->GetActiveCamera()->GetProjection();
 	
-	AABBox wvpBox;
-	wvpBox.Bounds[0] = m_pModel->GetAABB().Bounds[0].TransformCoord(wvpMat);
-	wvpBox.Bounds[1] = m_pModel->GetAABB().Bounds[1].TransformCoord(wvpMat);
-	wvpBox.GetVertices(vertices);
-
+	AABBox aabBox = m_pModel->GetAABB();
+	aabBox.GetVertices(vertices);
+	
 	//If one point is inside the view frustum, the bounding volume is visible
 	for(unsigned int i=0; i<8; ++i){
-		vertices[i] = vertices[i].TransformCoord(wvpMat);
+		vertices[i] = vertices[i].TransformPoint(wvpMat);
 
-		if( vertices[i].x < -1 || vertices[i].x > 1 || 
-			vertices[i].y < -1 || vertices[i].y > 1 ||
-			vertices[i].z < 0  || vertices[i].z > 1)
+		if( vertices[i].x >= -1 && vertices[i].x <= 1 && 
+			vertices[i].y >= -1 && vertices[i].y <= 1 &&
+			vertices[i].z >= 0  && vertices[i].z <= 1 )
 			return false;
 	}
-
+	
 	//Additional checks to make sure we don't cull edge cases	
-	return	wvpBox.Intersect(AABBox::FrustumCullRay0, 0, 1) ||	
-			wvpBox.Intersect(AABBox::FrustumCullRay1, 0, 1) ||
-			wvpBox.Intersect(AABBox::FrustumCullRay2, 0, 1) ||
-			wvpBox.Intersect(AABBox::FrustumCullRay3, 0, 1);
+	tt::Matrix4x4 invWvpMat = wvpMat.Inverse();
+	tt::Vector3 origin[] = {tt::Vector3(-1, -1, 0),
+							tt::Vector3(-1,  1, 0),
+							tt::Vector3( 1, -1, 0),
+							tt::Vector3( 1,  1, 0),
+							};
+	tt::Vector3 destination[] = {tt::Vector3(-1, -1, 1),
+								 tt::Vector3(-1,  1, 1),
+								 tt::Vector3( 1, -1, 1),
+								 tt::Vector3( 1,  1, 1),
+								 };
+	tt::Vector3 direction = tt::Vector3(0,0,1).TransformVector(invWvpMat);
+	
+	if(aabBox.Intersect(Ray(origin[0].TransformPoint(invWvpMat), destination[0].TransformPoint(invWvpMat)), 0, 1) )
+		return false;
+	if(aabBox.Intersect(Ray(origin[1].TransformPoint(invWvpMat), destination[1].TransformPoint(invWvpMat)), 0, 1) )
+		return false;
+	if(aabBox.Intersect(Ray(origin[2].TransformPoint(invWvpMat), destination[2].TransformPoint(invWvpMat)), 0, 1) )
+		return false;
+	if(aabBox.Intersect(Ray(origin[3].TransformPoint(invWvpMat), destination[3].TransformPoint(invWvpMat)), 0, 1) )
+		return false;
+
+	return true;
 }

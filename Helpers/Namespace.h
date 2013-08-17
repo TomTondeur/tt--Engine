@@ -121,8 +121,9 @@ namespace tt
 		float Length(void) const;
 		float LengthSq(void) const;
 		
-		Vector3 TransformCoord(const Matrix4x4& matTransform) const;
-		Vector3 TransformCoord(const Quaternion& rotQuat) const;
+		Vector3 TransformVector(const Matrix4x4& matTransform) const;
+		Vector3 TransformPoint(const Matrix4x4& matTransform) const;
+		Vector3 TransformPoint(const Quaternion& rotQuat) const;
 		
 		Vector3 Cross(const Vector3& v) const;
 		float Dot(const Vector3& v) const;
@@ -182,11 +183,11 @@ namespace tt
 		Matrix4x4 operator*(const Matrix4x4& mat) const;
 		Matrix4x4& operator*=(const Matrix4x4& mat);
 
+		operator D3DXMATRIX(void) const;
+
 		void Decompose(Vector3& pos, Quaternion& rot, Vector3& scale) const;
 		tt::Matrix4x4 Inverse(void) const;
 		
-		D3DXMATRIX To_DxMatrix(void) const;
-
 		static Matrix4x4 Translation(Vector3 displacement);
 		static Matrix4x4 Rotation(Quaternion rotationQuaternion);
 		static Matrix4x4 Rotation(tt::Vector3 axis, float angle);

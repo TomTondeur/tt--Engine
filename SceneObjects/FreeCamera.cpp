@@ -20,7 +20,7 @@
 #include "../Services/ServiceLocator.h"
 #include "../Services/InputEnums.h"
 
-FreeCamera::FreeCamera(void):m_MovementSpeed(0.5f),m_RotationSpeed(static_cast<float>(D3DX_PI / 10)), m_Yaw(0), m_Pitch(0)
+FreeCamera::FreeCamera(void):m_MovementSpeed(0.05f),m_RotationSpeed(static_cast<float>(D3DX_PI / 10)), m_Yaw(0), m_Pitch(0)
 {
 	auto pTransform = new TransformComponent();
 	SetComponent<TransformComponent>(pTransform);
@@ -79,7 +79,7 @@ void FreeCamera::Update(const tt::GameContext& context)
 	m_Pitch += mouseMovement.y;
 
 	tt::Quaternion yawQuat(tt::Vector3::j, m_Yaw);
-	tt::Vector3 rotatedRight = tt::Vector3::i.TransformCoord(yawQuat);
+	tt::Vector3 rotatedRight = tt::Vector3::i.TransformPoint(yawQuat);
 	tt::Quaternion pitchQuat(rotatedRight, m_Pitch);
 
 	pTransform->Rotate(yawQuat * pitchQuat);
