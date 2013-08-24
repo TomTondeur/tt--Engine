@@ -65,6 +65,8 @@ void Material::LoadEffect(void)
 	SetActiveTechnique(0);
 }
 
+void Material::InitializeEffectVariables(void){}
+
 void Material::Update(const tt::GameContext& context, const tt::Matrix4x4& worldMat)
 {
 	tt::Matrix4x4 viewMat = context.pGame->GetActiveScene()->GetActiveCamera()->GetView();

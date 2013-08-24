@@ -187,7 +187,7 @@ InputLayoutElement EffectTechnique::GetInputLayoutElement(D3D10_SIGNATURE_PARAME
 	else if(strcmp(signParDesc.SemanticName,"BLENDINDICES")==0)	ilElem.Semantic = InputLayoutSemantic::BlendIndices;
 	else if(strcmp(signParDesc.SemanticName,"BLENDWEIGHTS")==0)	ilElem.Semantic = InputLayoutSemantic::BlendWeights;
 	else 
-		MyServiceLocator::GetInstance()->GetService<DebugService>()->Log(tstring(_T("Semantic Type")) + StringToTstring(signParDesc.SemanticName) + _T("is not supported!"),LogLevel::Error, __LINE__, __FILE__);
+		MyServiceLocator::GetInstance()->GetService<DebugService>()->Log(tstring(_T("Semantic Type ")) + StringToTstring(signParDesc.SemanticName) + _T(" is not supported for standard meshes!"),LogLevel::Warning, __LINE__, __FILE__);
 
 	//Semantic Index
 	ilElem.SemanticIndex = signParDesc.SemanticIndex;

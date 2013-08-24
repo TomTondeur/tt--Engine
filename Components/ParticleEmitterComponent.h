@@ -17,18 +17,42 @@
 
 #pragma once
 
-class ParticleEmitterComponent
+#include "../Scenegraph/ObjectComponent.h"
+#include "../Helpers/resrc_ptr.hpp"
+
+class Material;
+class TransformComponent;
+class RenderTarget2D;
+struct Sprite;
+
+class ParticleEmitterComponent : public ObjectComponent
 {
 public:
 	//Default constructor & destructor
-	ParticleEmitterComponent(void);
+	ParticleEmitterComponent(resource_ptr<Material> pMat, const TransformComponent* pTransform, unsigned int nrOfParticles=30000);
 	virtual ~ParticleEmitterComponent(void);
 
 	//Methods
+	virtual void Initialize(void) override;
+	virtual void Draw(const tt::GameContext& context) override;
+
+	static Sprite RenderDeferred(const tt::GameContext& context);
 
 private:
 	//Datamembers
+	ID3D10Buffer* m_pInitVB;
+	ID3D10Buffer* m_pUpdateVB;
+	ID3D10Buffer* m_pDrawVB;
+	
+	resource_ptr<Material> m_pMaterial;
+	const TransformComponent* m_pTransform;
 
+	unsigned int m_VertexStride, m_NrOfParticles;
+
+	static std::vector<ParticleEmitterComponent*> s_DeferredParticles;
+	static std::unique_ptr<RenderTarget2D> s_pRenderTarget;
+
+	void CreateVertexBuffers(void);
 
 	//Disabling default copy constructor & assignment operator
 	ParticleEmitterComponent(const ParticleEmitterComponent& src);

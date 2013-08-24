@@ -92,6 +92,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -120,6 +121,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -189,6 +191,10 @@
       </SubType>
     </ClInclude>
     <ClInclude Include="Diagnostics\Exceptions.h" />
+    <ClInclude Include="Graphics\Materials\ParticlesMaterial.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Graphics\Materials\PostProcessing\BlurMaterial.h">
       <SubType>
       </SubType>
@@ -259,6 +265,10 @@
     </ClInclude>
     <ClInclude Include="resource.h" />
     <ClInclude Include="SceneObjects\Object3D.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="SceneObjects\ParticleSystem.h">
       <SubType>
       </SubType>
     </ClInclude>
@@ -358,6 +368,10 @@
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="Graphics\Materials\ParticlesMaterial.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Graphics\Materials\PostProcessing\BlurMaterial.cpp">
       <SubType>
       </SubType>
@@ -431,12 +445,14 @@
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="SceneObjects\ParticleSystem.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Services\Implementations\Object3DMaterialLoader.cpp" />
-    <ClCompile Include="Services\Implementations\PostProcessingMaterialLoader.cpp" />
     <ClCompile Include="Services\Implementations\ShaderRVLoader.cpp" />
     <ClCompile Include="Services\Implementations\SpriteFontLoader.cpp" />
-    <ClCompile Include="Services\Implementations\SpriteMaterialLoader.cpp" />
-    <ClCompile Include="Services\Implementations\TextMaterialLoader.cpp" />
+    <ClCompile Include="Services\Implementations\MaterialLoader.cpp" />
     <ClCompile Include="TTscene.cpp">
       <SubType>
       </SubType>

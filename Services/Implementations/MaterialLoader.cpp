@@ -18,10 +18,34 @@
 #include "../Interfaces/ResourceService.h"
 
 #include "../../Graphics/Materials/SpriteMaterial.h"
+#include "../../Graphics/Materials/PostProcessing/BlurMaterial.h"
+#include "../../Graphics/Materials/TextMaterial.h"
+#include "../../Graphics/Materials/ParticlesMaterial.h"
 
 template<> unique_ptr<SpriteMaterial> ResourceService::LoadResource<SpriteMaterial>(const std::tstring& filename)
 {
 	auto ptr = new SpriteMaterial();
 	ptr->LoadEffect();
 	return unique_ptr<SpriteMaterial>(ptr);
+}
+
+template<> unique_ptr<BlurMaterial> ResourceService::LoadResource<BlurMaterial>(const std::tstring& filename)
+{
+	auto ptr = new BlurMaterial();
+	ptr->LoadEffect();
+	return unique_ptr<BlurMaterial>(ptr);
+}
+
+template<> unique_ptr<TextMaterial> ResourceService::LoadResource<TextMaterial>(const std::tstring& filename)
+{
+	auto ptr = new TextMaterial();
+	ptr->LoadEffect();
+	return unique_ptr<TextMaterial>(ptr);
+}
+
+template<> unique_ptr<ParticlesMaterial> ResourceService::LoadResource<ParticlesMaterial>(const std::tstring& filename)
+{
+	auto ptr = new ParticlesMaterial();
+	ptr->LoadEffect();
+	return unique_ptr<ParticlesMaterial>(ptr);
 }

@@ -53,7 +53,7 @@ void GraphicsDevice::Initialize(void)
 
 void GraphicsDevice::Clear(void)
 {
-	m_pD3DDevice->ClearRenderTargetView(m_pRenderTarget->GetRenderTargetView(), D3DXCOLOR(1, 1, 1, 1));
+	m_pD3DDevice->ClearRenderTargetView(m_pRenderTarget->GetRenderTargetView(), D3DXCOLOR(0, 0, 0, 1));
 	m_pD3DDevice->ClearDepthStencilView(m_pRenderTarget->GetDepthStencilView(), D3D10_CLEAR_DEPTH|D3D10_CLEAR_STENCIL, 1.0f, 0); 
 	m_pD3DDevice->OMSetDepthStencilState(0,0);
 }

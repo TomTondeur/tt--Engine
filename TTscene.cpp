@@ -19,6 +19,7 @@
 
 #include "SceneObjects/FreeCamera.h"
 #include "SceneObjects/Object3D.h"
+#include "SceneObjects/ParticleSystem.h"
 #include "Services/ServiceLocator.h"
 #include "Graphics/SpriteFont.h"
 #include "Graphics/PostProcessingEffect.h"
@@ -43,8 +44,7 @@ void TTscene::Initialize(void)
 	SetActiveCamera(pCam->GetComponent<CameraComponent>());
 	AddSceneObject(new Object3D());
 	
-	pPostProEffect = new PostProcessingEffect( MyServiceLocator::GetInstance()->GetService<ResourceService>()->Load<BlurMaterial>(_T("BlurPostpro")) );
-	AddPostProcessingEffect(pPostProEffect, 0);
+	AddSceneObject(new ParticleSystem() );
 }
 
 void TTscene::Draw(const tt::GameContext& context)

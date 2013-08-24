@@ -18,6 +18,7 @@
 #include "GameScene.h"
 #include "../Components/CameraComponent.h"
 #include "../Components/SpriteComponent.h"
+#include "../Components/ParticleEmitterComponent.h"
 #include "../Graphics/PostProcessingEffect.h"
 #include "../Graphics/GraphicsDevice.h"
 #include "../Graphics/RenderTarget2D.h"
@@ -69,11 +70,17 @@ void GameScene::DrawScene(const tt::GameContext& context)
 	auto pGfxService = MyServiceLocator::GetInstance()->GetService<IGraphicsService>();
 	
 	pGfxService->GetSpriteBatch()->Flush(context);
+	
+	auto particlesSprite = ParticleEmitterComponent::RenderDeferred(context);
+	//pGfxService->GetSpriteBatch()->Draw(particlesSprite);
+	//pGfxService->GetSpriteBatch()->Flush(context);
+	
+	if(!m_PostProEffects.empty() ){
+		auto postProSprite = pGfxService->RenderPostProcessing(context, m_PostProEffects);
 
-	auto postProSprite = pGfxService->RenderPostProcessing(context, m_PostProEffects);
-
-	pGfxService->GetSpriteBatch()->Draw(postProSprite);
-	pGfxService->GetSpriteBatch()->Flush(context);
+		pGfxService->GetSpriteBatch()->Draw(postProSprite);
+		pGfxService->GetSpriteBatch()->Flush(context);
+	}
 }
 	
 void GameScene::Initialize(void){}

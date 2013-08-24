@@ -38,6 +38,7 @@ public:
 	void LoadEffect(void);
 	void Update(const tt::GameContext& context, const tt::Matrix4x4& worldMat);
 	virtual void UpdateEffectVariables(const tt::GameContext& context)=0;
+	virtual void InitializeEffectVariables(void);
 
 	InputLayout* GetInputLayout(void) const;
 	ID3D10EffectTechnique* GetActiveTechnique(void) const;
