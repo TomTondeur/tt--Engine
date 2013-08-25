@@ -18,23 +18,23 @@
 #include "ModelComponent.h"
 #include "../Services/ServiceLocator.h"
 #include "../Graphics/Model3D.h"
-//#include "../Graphics/Material.h"
 #include "../Graphics/GraphicsDevice.h"
 #include "../Graphics/Material.h"
+#include "../Graphics/Materials/SkinnedMaterial.h"
 #include "../Graphics/SpriteFont.h"
 #include "../Components/TransformComponent.h"
 #include "../AbstractGame.h"
 #include "../Scenegraph/GameScene.h"
 #include "CameraComponent.h"
 
-ModelComponent::ModelComponent(std::tstring modelFilename, const TransformComponent* pTransform):m_ModelFile(modelFilename),m_pTransform(pTransform)
+ModelComponent::ModelComponent(std::tstring modelFilename, const TransformComponent* pTransform):m_ModelFile(modelFilename),m_pTransform(pTransform),m_pMeshAnimator(nullptr)
 {
 
 }
 
 ModelComponent::~ModelComponent(void)
 {
-
+	delete m_pMeshAnimator;
 }
 
 //Methods
@@ -42,10 +42,31 @@ ModelComponent::~ModelComponent(void)
 void ModelComponent::Initialize(void)
 {
 	m_pModel = MyServiceLocator::GetInstance()->GetService<ResourceService>()->Load<Model3D>(m_ModelFile);
+
+	if(m_pModel->HasAnimData()){
+		m_pMeshAnimator = new MeshAnimator();
+		m_pMeshAnimator->SetModel(m_pModel.get() );
+		m_pMeshAnimator->SetAnimationClip(_T("TestAnimation"));
+	}
+}
+
+void ModelComponent::Update(const tt::GameContext& context)
+{
+	if(m_pModel->HasAnimData())
+		m_pMeshAnimator->Update(context);
 }
 
 void ModelComponent::Draw(const tt::GameContext& context)
 {
+	if(m_pModel->HasAnimData())
+		m_pMeshAnimator->Draw(context);
+	
+	auto pMat = dynamic_cast<SkinnedMaterial*>(m_pMaterial.get() );
+	if(pMat != nullptr){
+		pMat->SetBoneTransforms(m_pMeshAnimator->GetBoneTransforms() );
+		pMat->SetLightDirection(D3DXVECTOR3(0,-1,0) );
+	}
+
 	if(m_pMaterial == nullptr)
 		throw exception();
 

@@ -100,6 +100,7 @@ void EffectTechnique::BuildInputLayout(void)
 	//No need to create a new inputlayout if id's are equal
 	if(it != m_InputLayouts.end()){
 		m_pInputLayout = it->get();
+		delete pInputLayout; //Don't need the temp inputlayout anymore
 		return;
 	}
 

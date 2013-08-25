@@ -24,6 +24,8 @@
 #include "Graphics/SpriteFont.h"
 #include "Graphics/PostProcessingEffect.h"
 #include "Graphics/Materials/PostProcessing/BlurMaterial.h"
+#include "Graphics/GraphicsDevice.h"
+#include "Services/InputEnums.h"
 
 TTscene::TTscene(void)
 {
@@ -45,6 +47,16 @@ void TTscene::Initialize(void)
 	AddSceneObject(new Object3D());
 	
 	AddSceneObject(new ParticleSystem() );
+
+	MyServiceLocator::GetInstance()->GetService<IInputService>()->AddInputAction(InputActionId::ToggleVSync, 'V', KeyState::Pressed);
+}
+
+void TTscene::Update(const tt::GameContext& context)
+{
+	if(MyServiceLocator::GetInstance()->GetService<IInputService>()->IsActionTriggered(InputActionId::ToggleVSync)){
+		tcout << _T("Toggle") << endl;
+		MyServiceLocator::GetInstance()->GetService<IGraphicsService>()->GetGraphicsDevice()->ToggleVSync();
+	}
 }
 
 void TTscene::Draw(const tt::GameContext& context)

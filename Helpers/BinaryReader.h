@@ -37,7 +37,8 @@ public:
 	}
 
 	void Advance(size_t nrOfBytesToSkip);
-
+	
+	std::tstring ReadString(void);	
 	std::tstring ReadNullTerminatedString(void);
 
 private:

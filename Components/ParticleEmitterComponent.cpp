@@ -144,6 +144,14 @@ void ParticleEmitterComponent::Draw(const tt::GameContext& context)
 
 Sprite ParticleEmitterComponent::RenderDeferred(const tt::GameContext& context)
 {
+	if(s_DeferredParticles.empty()){
+		Sprite oSprite(tt::Matrix4x4::Identity);
+		oSprite.pTexture = MyServiceLocator::GetInstance()->GetService<IGraphicsService>()->GetGraphicsDevice()->GetRenderTarget()->GetColorMap();
+		oSprite.Color = tt::Vector4(1);
+
+		return oSprite;
+	}
+
 	auto pD3DDevice = MyServiceLocator::GetInstance()->GetService<IGraphicsService>()->GetGraphicsDevice()->GetDevice();
 	
 	//MyServiceLocator::GetInstance()->GetService<IGraphicsService>()->GetGraphicsDevice()->SetRenderTarget(s_pRenderTarget.get() );

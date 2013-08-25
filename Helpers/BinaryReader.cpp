@@ -31,6 +31,19 @@ void BinaryReader::Advance(size_t nrOfBytesToSkip)
 	fileStream.ignore(nrOfBytesToSkip);
 }
 
+std::tstring BinaryReader::ReadString(void)
+{
+	std::string str;
+	
+	char strLen;
+	fileStream.read(&strLen, 1);
+	
+	str.resize(strLen);
+	fileStream.read(const_cast<char*>(str.c_str()), str.size() );
+	
+	return StringToTstring(str);
+}
+
 std::tstring BinaryReader::ReadNullTerminatedString(void)
 {
 	std::string str;

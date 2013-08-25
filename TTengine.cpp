@@ -121,7 +121,7 @@ DWORD TTengine::GameLoop(void)
 		MyServiceLocator::GetInstance()->GetService<ResourceService>()->Load<SpriteFont>(_T("Resources/AgencyFB_12.fnt"))->DrawText(
 			std::tstring(_T("FPS: ")) + to_tstring(m_GameContext.FramesPerSecond) + _T("\nSPF: ") + to_tstring(m_GameContext.GameTimer.GetElapsedSeconds() ), 
 			tt::Vector2(5,0), 
-			tt::Vector4(0,0,0,1) );
+			tt::Vector4(1,1,0,1) );
 		
 		m_pGame->Draw(m_GameContext);
 		m_pGame->DrawGame(m_GameContext);

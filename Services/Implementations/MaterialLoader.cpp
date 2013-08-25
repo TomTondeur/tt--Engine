@@ -21,6 +21,7 @@
 #include "../../Graphics/Materials/PostProcessing/BlurMaterial.h"
 #include "../../Graphics/Materials/TextMaterial.h"
 #include "../../Graphics/Materials/ParticlesMaterial.h"
+#include "../../Graphics/Materials/SkinnedMaterial.h"
 
 template<> unique_ptr<SpriteMaterial> ResourceService::LoadResource<SpriteMaterial>(const std::tstring& filename)
 {
@@ -48,4 +49,11 @@ template<> unique_ptr<ParticlesMaterial> ResourceService::LoadResource<Particles
 	auto ptr = new ParticlesMaterial();
 	ptr->LoadEffect();
 	return unique_ptr<ParticlesMaterial>(ptr);
+}
+
+template<> unique_ptr<SkinnedMaterial> ResourceService::LoadResource<SkinnedMaterial>(const std::tstring& filename)
+{
+	auto ptr = new SkinnedMaterial();
+	ptr->LoadEffect();
+	return unique_ptr<SkinnedMaterial>(ptr);
 }

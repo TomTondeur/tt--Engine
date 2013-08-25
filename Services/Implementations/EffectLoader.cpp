@@ -51,9 +51,10 @@ template<> unique_ptr<ID3D10Effect> ResourceService::LoadResource<ID3D10Effect>(
  
 			OutputDebugString(ss.str().c_str());
 			pErrorBlob->Release();
+			
+			throw LoaderException(_T("effect ") + filePath, ss.str() );
 		}
-
-		throw LoaderException(_T("effect ") + filePath, ss.str() );
+		MyServiceLocator::GetInstance()->GetService<DebugService>()->LogDirectXError(hr, __LINE__, __FILE__);
 	}
 
 	return unique_ptr<ID3D10Effect>(pEffect);

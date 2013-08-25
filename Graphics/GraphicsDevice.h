@@ -41,6 +41,7 @@ public:
 	RenderTarget2D* GetRenderTarget(void) const;
 
 	void EnableVSync(bool b);
+	void ToggleVSync(void);
 
 private:
 	void CreateDeviceAndSwapChain(); 

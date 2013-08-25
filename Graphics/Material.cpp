@@ -25,7 +25,7 @@
 #include "../AbstractGame.h"
 #include "../Scenegraph/GameScene.h"
 
-Material::Material(std::tstring effectFileName):m_EffectFileName(effectFileName), m_pActiveTechnique(nullptr)
+Material::Material(const std::tstring& effectFileName):m_EffectFileName(effectFileName), m_pActiveTechnique(nullptr)
 {
 
 }
@@ -105,7 +105,7 @@ void Material::SetActiveTechnique(unsigned int index)
 	m_pActiveTechnique = GetTechnique(index);		
 }
 
-void Material::SetActiveTechnique(std::tstring name)
+void Material::SetActiveTechnique(const std::tstring& name)
 {
 	m_pActiveTechnique = GetTechnique(name);	
 }
@@ -121,7 +121,7 @@ EffectTechnique* Material::GetTechnique(unsigned int index)
 	return *it;
 }
 
-EffectTechnique* Material::GetTechnique(std::tstring name)
+EffectTechnique* Material::GetTechnique(const std::tstring& name)
 {
 	auto it = find_if(m_Techniques.begin(), m_Techniques.end(), [&](EffectTechnique* tech)
 						{
@@ -132,7 +132,7 @@ EffectTechnique* Material::GetTechnique(std::tstring name)
 	return *it;
 }
 
-void Material::SetVariable(std::tstring semantic, const tt::Matrix4x4& value)
+void Material::SetVariable(const std::tstring& semantic, const tt::Matrix4x4& value)
 {
 	auto it = m_EffectVariables.find(semantic);
 	if(it==m_EffectVariables.end())
@@ -141,7 +141,7 @@ void Material::SetVariable(std::tstring semantic, const tt::Matrix4x4& value)
 	it->second->AsMatrix()->SetMatrix( reinterpret_cast<float*>( &static_cast<D3DXMATRIX>(value) ) );
 }
 
-void Material::SetVariable(std::tstring semantic, const tt::Vector2& value)
+void Material::SetVariable(const std::tstring& semantic, const tt::Vector2& value)
 {
 	auto it = m_EffectVariables.find(semantic);
 	if(it==m_EffectVariables.end())
@@ -150,7 +150,7 @@ void Material::SetVariable(std::tstring semantic, const tt::Vector2& value)
 	it->second->AsVector()->SetFloatVector( reinterpret_cast<float*>( &static_cast<D3DXVECTOR2>(value ) ) );
 }
 
-void Material::SetVariable(std::tstring semantic, const tt::Vector3& value)
+void Material::SetVariable(const std::tstring& semantic, const tt::Vector3& value)
 {
 	auto it = m_EffectVariables.find(semantic);
 	if(it==m_EffectVariables.end())
@@ -159,7 +159,7 @@ void Material::SetVariable(std::tstring semantic, const tt::Vector3& value)
 	it->second->AsVector()->SetFloatVector( reinterpret_cast<float*>( &static_cast<D3DXVECTOR3>(value ) ) );
 }
 
-void Material::SetVariable(std::tstring semantic, const tt::Vector4& value)
+void Material::SetVariable(const std::tstring& semantic, const tt::Vector4& value)
 {
 	auto it = m_EffectVariables.find(semantic);
 	if(it==m_EffectVariables.end())
@@ -168,7 +168,7 @@ void Material::SetVariable(std::tstring semantic, const tt::Vector4& value)
 	it->second->AsVector()->SetFloatVector( reinterpret_cast<float*>( &static_cast<D3DXVECTOR4>(value ) ) );
 }
 
-void Material::SetVariable(std::tstring semantic, int value)
+void Material::SetVariable(const std::tstring& semantic, int value)
 {
 	auto it = m_EffectVariables.find(semantic);
 	if(it==m_EffectVariables.end())
@@ -177,7 +177,7 @@ void Material::SetVariable(std::tstring semantic, int value)
 	it->second->AsScalar()->SetInt(value);
 }
 
-void Material::SetVariable(std::tstring semantic, float value)
+void Material::SetVariable(const std::tstring& semantic, float value)
 {
 	auto it = m_EffectVariables.find(semantic);
 	if(it==m_EffectVariables.end())
@@ -186,7 +186,7 @@ void Material::SetVariable(std::tstring semantic, float value)
 	it->second->AsScalar()->SetFloat(value);
 }
 
-void Material::SetVariable(std::tstring semantic, bool value)
+void Material::SetVariable(const std::tstring& semantic, bool value)
 {
 	auto it = m_EffectVariables.find(semantic);
 	if(it==m_EffectVariables.end())
@@ -195,7 +195,7 @@ void Material::SetVariable(std::tstring semantic, bool value)
 	it->second->AsScalar()->SetBool(value);
 }
 
-void Material::SetVariable(std::tstring semantic, ID3D10ShaderResourceView* value)
+void Material::SetVariable(const std::tstring& semantic, ID3D10ShaderResourceView* value)
 {
 	auto it = m_EffectVariables.find(semantic);
 	if(it==m_EffectVariables.end())
@@ -204,7 +204,16 @@ void Material::SetVariable(std::tstring semantic, ID3D10ShaderResourceView* valu
 	it->second->AsShaderResource()->SetResource(value);
 }
 
-bool Material::ContainsVariable(std::tstring semantic)
+void Material::SetVariable(const std::tstring& semantic, void* pRawValue, unsigned int nrOfBytes)
+{
+	auto it = m_EffectVariables.find(semantic);
+	if(it==m_EffectVariables.end())
+		throw exception();
+	
+	it->second->SetRawValue(pRawValue, 0, nrOfBytes);
+}
+
+bool Material::ContainsVariable(const std::tstring& semantic)
 {
 	return m_EffectVariables.find(semantic) != m_EffectVariables.end();
 }

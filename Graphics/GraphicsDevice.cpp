@@ -68,6 +68,11 @@ void GraphicsDevice::EnableVSync(bool b)
 	m_bUseVSync = b;
 }
 
+void GraphicsDevice::ToggleVSync(void)
+{
+	m_bUseVSync = !m_bUseVSync;
+}
+
 ID3D10Device* GraphicsDevice::GetDevice(void)
 {
 	return m_pD3DDevice;

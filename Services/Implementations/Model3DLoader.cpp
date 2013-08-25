@@ -32,7 +32,7 @@ template<> unique_ptr<Model3D> ResourceService::LoadResource<Model3D>(const std:
 	auto nrOfTexCoordChannels = meshFile.Read<unsigned char>();
 
 	unsigned int* nrOfTexCoordsArr;
-	unsigned int nrOfPositions=0, nrOfNormals=0, nrOfTangents=0, nrOfBinormals=0, nrOfVertexColors=0;//, nrOfAnimData=0;
+	unsigned int nrOfPositions=0, nrOfNormals=0, nrOfTangents=0, nrOfBinormals=0, nrOfVertexColors=0, nrOfAnimData=0;
 	
 	nrOfPositions = meshFile.Read<unsigned int>();
 
@@ -48,8 +48,8 @@ template<> unique_ptr<Model3D> ResourceService::LoadResource<Model3D>(const std:
 		nrOfBinormals = meshFile.Read<unsigned int>();
 	if(vertexFormat & 8)
 		nrOfVertexColors = meshFile.Read<unsigned int>();
-	//if(vertexFormat & 16)
-		//nrOfAnimData = meshFile.Read<unsigned int>();
+	if(vertexFormat & 16)
+		nrOfAnimData = meshFile.Read<unsigned int>();
 	
 	auto nrOfVertices = meshFile.Read<unsigned int>();
 	auto nrOfIndices = meshFile.Read<unsigned int>();
@@ -121,30 +121,33 @@ template<> unique_ptr<Model3D> ResourceService::LoadResource<Model3D>(const std:
 			pModel->m_Colors.data.push_back(D3DXCOLOR(r,g,b,a));
 		}
 	}
-	/*
+	
 	if(vertexFormat & 16){
 	//Read blend indices
 		for(unsigned int i=0; i < nrOfAnimData; ++i){
-			auto x = meshFile.Read<float>();
-			auto y = meshFile.Read<float>();
-			auto z = meshFile.Read<float>();
-			auto w = meshFile.Read<float>();
+			auto nrOfIndices = meshFile.Read<unsigned int>();
 
-			pModel->m_BlendIndices.push_back(D3DXVECTOR4(x,y,z,w));
+			auto x = nrOfIndices > 0 ? static_cast<float>( meshFile.Read<unsigned int>() ) : 0.0f;
+			auto y = nrOfIndices > 1 ? static_cast<float>( meshFile.Read<unsigned int>() ) : 0.0f;
+			auto z = nrOfIndices > 2 ? static_cast<float>( meshFile.Read<unsigned int>() ) : 0.0f;
+			auto w = nrOfIndices > 3 ? static_cast<float>( meshFile.Read<unsigned int>() ) : 0.0f;
+
+			pModel->m_BlendIndices.data.push_back(D3DXVECTOR4(x,y,z,w));
 		}
-		inputLayoutID += 100000;
 
 		//Read blend weights
-		for(unsigned int i=0; i < nrOfVertices; ++i){
-			auto x = meshFile.Read<float>();
-			auto y = meshFile.Read<float>();
-			auto z = meshFile.Read<float>();
-			auto w = meshFile.Read<float>();
+		for(unsigned int i=0; i < nrOfAnimData; ++i){
+			auto nrOfWeights = meshFile.Read<unsigned int>();
 
-			pModel->m_BlendWeights.push_back(D3DXVECTOR4(x,y,z,w));
+			auto x = nrOfWeights > 0 ? meshFile.Read<float>() : 0.0f;
+			auto y = nrOfWeights > 1 ? meshFile.Read<float>() : 0.0f;
+			auto z = nrOfWeights > 2 ? meshFile.Read<float>() : 0.0f;
+			auto w = nrOfWeights > 3 ? meshFile.Read<float>() : 0.0f;
+
+			pModel->m_BlendWeights.data.push_back(D3DXVECTOR4(x,y,z,w));
 		}
 	}
-	*/
+	
 	
 	pModel->m_TexCoords.resize(nrOfTexCoordChannels);
 	
@@ -178,17 +181,70 @@ template<> unique_ptr<Model3D> ResourceService::LoadResource<Model3D>(const std:
 		if(nrOfVertexColors > 0){
 			auto iVertexColor = meshFile.Read<unsigned int>();
 			pModel->m_Colors.indices.push_back(iVertexColor);
-		}/*
+		}
 		if(nrOfAnimData > 0){
 			auto iAnimData = meshFile.Read<unsigned int>();
 			pModel->m_BlendIndices.indices.push_back(iAnimData);
 			pModel->m_BlendWeights.indices.push_back(iAnimData);
-		}*/
+		}
 	}
 
 	//Read indices
 	for(unsigned int i=0; i < nrOfIndices; ++i)
 		pModel->m_Indices.push_back(meshFile.Read<unsigned int>());
+
+	if(nrOfAnimData > 0){
+		//Read bones
+		auto nrOfBones = meshFile.Read<unsigned int>();
+
+		for(unsigned int i=0; i < nrOfBones; ++i){
+			Bone newBone;
+			newBone.Name = meshFile.ReadString();
+			
+			for(unsigned int row=0; row < 4; ++row)
+				for(unsigned int col=0; col < 3; ++col)
+					newBone.BindPose.m[row][col] = meshFile.Read<float>();
+
+			newBone.BindPose._14 = newBone.BindPose._24 = newBone.BindPose._34 = 0;
+			newBone.BindPose._44 = 1;
+
+			pModel->m_Skeleton.push_back(newBone);
+		}
+		
+		//Read AnimClips
+		auto nrOfAnimClips = meshFile.Read<unsigned int>();
+
+		for(unsigned int i=0; i < nrOfAnimClips; ++i){
+			AnimationClip newClip;
+
+			newClip.Name = meshFile.ReadString();
+			newClip.KeysPerSecond = meshFile.Read<float>();
+
+			auto nrOfKeys = meshFile.Read<unsigned int>();
+
+			for(unsigned int iKey=0; iKey < nrOfKeys; ++iKey){
+				AnimationKey newKey;
+
+				newKey.KeyTime = meshFile.Read<float>();
+				
+				auto nrOfTransforms = meshFile.Read<unsigned int>();
+				for(unsigned int iTransform=0; iTransform < nrOfTransforms; ++iTransform){
+					D3DXMATRIX transform;
+					for(unsigned int row=0; row < 4; ++row)
+						for(unsigned int col=0; col < 3; ++col)
+							transform.m[row][col] = meshFile.Read<float>();
+
+					transform._14 = transform._24 = transform._34 = 0;
+					transform._44 = 1;
+
+					newKey.BoneTransforms.push_back(transform);
+				}
+
+				newClip.Keys.push_back(newKey);
+			}
+			pModel->m_AnimClips.push_back(newClip);
+		}
+	}
 
 	//Build bounding box
 	pModel->m_BoundingBox.Initialize(pModel->m_Positions.data);

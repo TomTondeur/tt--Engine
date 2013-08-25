@@ -23,6 +23,7 @@
 
 class Material;
 class Model3D;
+class MeshAnimator;
 class TransformComponent;
 
 class ModelComponent : public ObjectComponent
@@ -33,9 +34,9 @@ public:
 	virtual ~ModelComponent(void);
 
 	//Methods
-	//virtual void Update(const tt::GameContext& context) override;
-	virtual void Draw(const tt::GameContext& context) override;
 	virtual void Initialize(void) override;
+	virtual void Update(const tt::GameContext& context) override;
+	virtual void Draw(const tt::GameContext& context) override;
 
 	void SetMaterial(resource_ptr<Material> pMat);
 	const TransformComponent* GetTransform(void) const;
@@ -48,6 +49,7 @@ private:
 	resource_ptr<Model3D> m_pModel;
 	resource_ptr<Material> m_pMaterial;
 	const TransformComponent* m_pTransform;
+	MeshAnimator* m_pMeshAnimator;
 
 	//Disabling default copy constructor & assignment operator
 	ModelComponent(const ModelComponent& src);

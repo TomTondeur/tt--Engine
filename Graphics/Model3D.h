@@ -20,6 +20,7 @@
 #include "../Helpers/D3DUtil.h"
 #include "../Helpers/resrc_ptr.hpp"
 #include "../Helpers/Namespace.h"
+#include "MeshAnimator.h"
 
 class Material;
 struct InputLayout;
@@ -61,6 +62,7 @@ struct AABBox
 
 class Model3D
 {
+	friend class MeshAnimator;
 	friend class ResourceService;
 
 	template <typename T>
@@ -94,6 +96,8 @@ public:
 	unsigned int GetNrOfIndices(void) const;
 	const AABBox& GetAABB(void) const;
 
+	bool HasAnimData(void);
+
 private:
 	//Datamembers
 	vector<VertexBufferInfo> m_vecVertBufferInfo; //We need a different vertex buffer for each different input layout
@@ -112,6 +116,9 @@ private:
 	ID3D10Buffer* m_pIndexBuffer;
 
 	AABBox m_BoundingBox;
+
+	vector<Bone> m_Skeleton;
+	vector<AnimationClip> m_AnimClips;
 
 	//Disabling default copy constructor & assignment operator
 	Model3D(const Model3D& src);

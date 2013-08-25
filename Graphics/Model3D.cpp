@@ -178,6 +178,18 @@ void Model3D::BuildVertexBuffer(resource_ptr<Material> pMaterial)
 				else
 					vbStride += sizeof(D3DXCOLOR);
 				break;
+			case InputLayoutSemantic::BlendIndices:
+				if(m_BlendIndices.data.empty())
+					throw exception();
+				else
+					vbStride += sizeof(D3DXVECTOR4);
+				break;
+			case InputLayoutSemantic::BlendWeights:
+				if(m_BlendWeights.data.empty())
+					throw exception();
+				else
+					vbStride += sizeof(D3DXVECTOR4);
+				break;
 		}
 	}
 	
@@ -218,6 +230,14 @@ void Model3D::BuildVertexBuffer(resource_ptr<Material> pMaterial)
 				case InputLayoutSemantic::Color:
 					memcpy(pDataLocation, &m_Colors.GetRefAt(i), sizeof(D3DXCOLOR));
 					pDataLocation = static_cast<D3DXCOLOR*>(pDataLocation) + 1;
+					break;
+				case InputLayoutSemantic::BlendIndices:
+					memcpy(pDataLocation, &m_BlendIndices.GetRefAt(i), sizeof(D3DXVECTOR4));
+					pDataLocation = static_cast<D3DXVECTOR4*>(pDataLocation) + 1;
+					break;
+				case InputLayoutSemantic::BlendWeights:
+					memcpy(pDataLocation, &m_BlendWeights.GetRefAt(i), sizeof(D3DXVECTOR4));
+					pDataLocation = static_cast<D3DXVECTOR4*>(pDataLocation) + 1;
 					break;
 			}
 		}
@@ -298,4 +318,9 @@ unsigned int Model3D::GetNrOfIndices(void) const
 const AABBox& Model3D::GetAABB(void) const
 {
 	return m_BoundingBox;
+}
+
+bool Model3D::HasAnimData(void)
+{
+	return !m_Skeleton.empty();
 }

@@ -19,15 +19,15 @@
 
 #include "../Services/ServiceLocator.h"
 #include "../Graphics/Materials/Object3DMaterial.h"
+#include "../Graphics/Materials/SkinnedMaterial.h"
 
 Object3D::Object3D(void)
 {
 	auto pTransform = new TransformComponent();
-	auto pModel = new ModelComponent(_T("Resources/box.bin"),pTransform);
+	auto pModel = new ModelComponent(_T("Resources/skinnedBox.bin"),pTransform);
 	
 	SetComponent<TransformComponent>(pTransform);
 	SetComponent<ModelComponent>(pModel);
-	//SetComponent<SpriteComponent>(new SpriteComponent(_T("Resources/Vampire_Diffuse.dds"), pTransform) );
 }
 
 Object3D::~Object3D(void)
@@ -39,5 +39,7 @@ Object3D::~Object3D(void)
 
 void Object3D::Initialize(void)
 {
-	GetComponent<ModelComponent>()->SetMaterial( MyServiceLocator::GetInstance()->GetService<ResourceService>()->Load<Object3DMaterial>( _T("BasicMaterial") ) );
+	auto pMat = MyServiceLocator::GetInstance()->GetService<ResourceService>()->Load<Object3DMaterial>( _T("BasicMaterial") );
+	GetComponent<ModelComponent>()->SetMaterial(pMat);
+	//pMat->SetDiffuse(_T("Resources/Vampire_Diffuse.dds"));
 }

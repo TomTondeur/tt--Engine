@@ -31,7 +31,7 @@ class Material
 {
 public:
 	//Default constructor & destructor
-	explicit Material(std::tstring effectFileName);
+	explicit Material(const std::tstring& effectFileName);
 	virtual ~Material(void);
 
 	//Methods
@@ -44,18 +44,19 @@ public:
 	ID3D10EffectTechnique* GetActiveTechnique(void) const;
 
 	void SetActiveTechnique(unsigned int index);
-	void SetActiveTechnique(std::tstring name);
+	void SetActiveTechnique(const std::tstring& name);
 	
-	void SetVariable(std::tstring semantic, const tt::Matrix4x4& value);
-	void SetVariable(std::tstring semantic, const tt::Vector2& value);
-	void SetVariable(std::tstring semantic, const tt::Vector3& value);
-	void SetVariable(std::tstring semantic, const tt::Vector4& value);
-	void SetVariable(std::tstring semantic, int value);
-	void SetVariable(std::tstring semantic, float value);
-	void SetVariable(std::tstring semantic, bool value);
-	void SetVariable(std::tstring semantic, ID3D10ShaderResourceView* value);
+	void SetVariable(const std::tstring& semantic, const tt::Matrix4x4& value);
+	void SetVariable(const std::tstring& semantic, const tt::Vector2& value);
+	void SetVariable(const std::tstring& semantic, const tt::Vector3& value);
+	void SetVariable(const std::tstring& semantic, const tt::Vector4& value);
+	void SetVariable(const std::tstring& semantic, int value);
+	void SetVariable(const std::tstring& semantic, float value);
+	void SetVariable(const std::tstring& semantic, bool value);
+	void SetVariable(const std::tstring& semantic, ID3D10ShaderResourceView* value);
+	void SetVariable(const std::tstring& semantic, void* pRawData, unsigned int nrOfBytes);
 
-	bool ContainsVariable(std::tstring semantic);
+	bool ContainsVariable(const std::tstring& semantic);
 
 private:
 	//Datamembers
@@ -69,7 +70,7 @@ private:
 
 	
 	EffectTechnique* GetTechnique(unsigned int index);
-	EffectTechnique* GetTechnique(std::tstring name);
+	EffectTechnique* GetTechnique(const std::tstring& name);
 	
 	//Disabling default copy constructor & assignment operator
 	Material(const Material& src);

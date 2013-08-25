@@ -94,7 +94,13 @@ bool DefaultInputService::IsActionTriggered(InputActionId action)
 		return false;
 
 	auto it = m_ActionsToMonitor.find(action);
-	return ( it != m_ActionsToMonitor.end() ) && (it->second.targetState & it->second.currentState);
+
+	bool bRet = ( it != m_ActionsToMonitor.end() ) && (it->second.targetState & it->second.currentState);
+
+	//TODO: GET RID OF THIS HACK AND REPLACE WITH VALID SOLUTION
+	if(it->second.currentState == KeyState::Pressed)
+		it->second.currentState = KeyState::Held;
+	return bRet;
 }
 
 tt::Vector2 DefaultInputService::GetMousePosition(void)

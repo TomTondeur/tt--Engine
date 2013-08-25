@@ -39,5 +39,6 @@ enum class InputActionId
 	CameraMoveRight,
 	CameraMoveUp,
 	CameraMoveDown,
-	CameraUnlockRotation
+	CameraUnlockRotation,
+	ToggleVSync
 };
