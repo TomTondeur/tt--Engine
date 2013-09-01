@@ -17,18 +17,22 @@
 
 #pragma once
 
-class SphereColliderComponent
+#include "BaseColliderComponent.h"
+
+class SphereColliderComponent : public BaseColliderComponent
 {
 public:
 	//Default constructor & destructor
-	SphereColliderComponent(void);
+	SphereColliderComponent(RigidBodyComponent* pRigidBody, float radius);
 	virtual ~SphereColliderComponent(void);
 
 	//Methods
+	virtual void Initialize(void) override;
 
 private:
 	//Datamembers
-
+	float m_Radius;
+	NxSphereShapeDesc m_SphereShapeDesc;
 
 	//Disabling default copy constructor & assignment operator
 	SphereColliderComponent(const SphereColliderComponent& src);

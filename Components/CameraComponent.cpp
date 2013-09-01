@@ -66,10 +66,10 @@ void CameraComponent::Update(const tt::GameContext& context)
 	D3DXVec3TransformCoord(&vLookat, &D3DXVECTOR3(0,0,1), &rotTransform);
 	D3DXVec3TransformCoord(&vUpVec, &D3DXVECTOR3(0,1,0), &rotTransform);
 	D3DXMatrixLookAtLH(&outMat, &vEyePt, &(vEyePt+vLookat), &vUpVec);
-	m_MatView = outMat;
+	m_MatView = tt::Matrix4x4(outMat);
 
 	D3DXMatrixInverse(&outMat,NULL,&outMat);
-	m_MatViewInv = outMat;
+	m_MatViewInv = tt::Matrix4x4(outMat);
 }
 
 void CameraComponent::SetActive(bool b)

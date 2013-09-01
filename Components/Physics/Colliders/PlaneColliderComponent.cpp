@@ -15,30 +15,32 @@
 // You should have received a copy of the GNU General Public License
 // along with tt::Engine.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "CapsuleColliderComponent.h"
+#include "PlaneColliderComponent.h"
 #include "../RigidBodyComponent.h"
 
-CapsuleColliderComponent::CapsuleColliderComponent(RigidBodyComponent* pRigidBody, float height, float radius) : BaseColliderComponent(pRigidBody), m_Height(height), m_Radius(radius)
+PlaneColliderComponent::PlaneColliderComponent(RigidBodyComponent* pRigidBody, float distance, const tt::Vector3& normal):BaseColliderComponent(pRigidBody), 
+																															m_Distance(distance), 
+																															m_Normal(normal)
 {
-	m_CapsuleShapeDesc.setToDefault();
-	m_CapsuleShapeDesc.height = m_Height;
-	m_CapsuleShapeDesc.radius= m_Radius;
-	m_CapsuleShapeDesc.userData = m_pRigidBody;
+	m_PlaneShapeDesc.setToDefault();
+	m_PlaneShapeDesc.d = m_Distance;
+	m_PlaneShapeDesc.normal = m_Normal;
+	m_PlaneShapeDesc.userData = m_pRigidBody;
 }
 
-CapsuleColliderComponent::~CapsuleColliderComponent(void)
+PlaneColliderComponent::~PlaneColliderComponent(void)
 {
 
 }
 
 //Methods
 
-void CapsuleColliderComponent::Initialize(void)
+void PlaneColliderComponent::Initialize(void)
 {
 	if(m_bIsTrigger)
-		m_CapsuleShapeDesc.shapeFlags |= NX_TRIGGER_ENABLE;
+		m_PlaneShapeDesc.shapeFlags |= NX_TRIGGER_ENABLE;
 
-	m_CapsuleShapeDesc.materialIndex = GetMaterialIndex();
-	
-	m_pRigidBody->AddShape(&m_CapsuleShapeDesc);
+	m_PlaneShapeDesc.materialIndex = GetMaterialIndex();
+
+	m_pRigidBody->AddShape(&m_PlaneShapeDesc);
 }

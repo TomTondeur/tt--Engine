@@ -28,6 +28,7 @@
 #include "ServiceLocator.h"
 #include "Implementations/DefaultGraphicsService.h"
 #include "Implementations/DefaultInputService.h"
+#include "Implementations/DefaultPhysicsService.h"
 
 std::unique_ptr<MyServiceLocator> MyServiceLocator::s_pInstance = nullptr;
 
@@ -38,6 +39,7 @@ MyServiceLocator::MyServiceLocator(void)
 	AddService<IInputService>(new DefaultInputService());
 	AddService<ResourceService>(new ResourceService());
 	AddService<DebugService>(new DebugService());
+	AddService<IPhysicsService>(new DefaultPhysicsService());
 }
 
 MyServiceLocator::~MyServiceLocator(void)

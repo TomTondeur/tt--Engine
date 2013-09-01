@@ -19,14 +19,7 @@
 
 #include <memory>
 
-#define NOMINMAX
 #include "D3DUtil.h"
-
-// resrc_ptr and resrc_inst_ptr are wrapper classes made to handle pointers to resources that are passed around the program
-// resrc_ptr has exclusive ownership of the resource. If the resource is re-allocated, all its instances will point to the new location in memory
-// resrc_inst_ptrs acts as a 'one-way reference' of its corresponding resrc_ptr
-// This means resrc_ptrs can modify the value pointed to by a resrc_inst_ptr, but not the other way around
-// resrc_inst_ptrs will always provide access to a resource without exposing ownership
 
 namespace std
 {
@@ -34,19 +27,40 @@ namespace std
 	struct default_delete< ID3D10Effect >
 	{
 	public:
-	  void operator()(ID3D10Effect* ptr)
-	  {
-		ptr->Release();
-	  }
+		void operator()(ID3D10Effect* ptr)
+		{
+			ptr->Release();
+		}
 	};
+
 	template<>
 	struct default_delete< ID3D10ShaderResourceView >
 	{
 	public:
-	  void operator()(ID3D10ShaderResourceView* ptr)
-	  {
-		ptr->Release();
-	  }
+		void operator()(ID3D10ShaderResourceView* ptr)
+		{
+			ptr->Release();
+		}
+	};
+
+	template<>
+	struct default_delete< NxConvexMesh >
+	{
+	public:
+		void operator()(NxConvexMesh* ptr)
+		{
+			NxGetPhysicsSDK()->releaseConvexMesh(*ptr);
+		}
+	};
+	
+	template<>
+	struct default_delete< NxTriangleMesh >
+	{
+	public:
+		void operator()(NxTriangleMesh* ptr)
+		{
+			NxGetPhysicsSDK()->releaseTriangleMesh(*ptr);
+		}
 	};
 }
 

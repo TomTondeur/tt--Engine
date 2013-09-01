@@ -64,7 +64,7 @@ void ModelComponent::Draw(const tt::GameContext& context)
 	auto pMat = dynamic_cast<SkinnedMaterial*>(m_pMaterial.get() );
 	if(pMat != nullptr){
 		pMat->SetBoneTransforms(m_pMeshAnimator->GetBoneTransforms() );
-		pMat->SetLightDirection(D3DXVECTOR3(0,-1,0) );
+		pMat->SetLightDirection(tt::Vector3(0,-1,0) );
 	}
 
 	if(m_pMaterial == nullptr)

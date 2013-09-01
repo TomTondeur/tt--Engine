@@ -17,37 +17,25 @@
 
 #pragma once
 
-#include "stdafx.h"
+#include "BaseColliderComponent.h"
 
-class BinaryReader final{
+class PlaneColliderComponent : public BaseColliderComponent
+{
 public:
-	BinaryReader(const std::tstring& filename);
-	~BinaryReader(void);
+	//Default constructor & destructor
+	PlaneColliderComponent(RigidBodyComponent* pRigidBody, float distance, const tt::Vector3& normal);
+	virtual ~PlaneColliderComponent(void);
 
-	template<typename T> T Read(void)
-	{
-		if(fileStream.eof())
-			throw exception("EOF found! Cannot continue reading file!");
+	//Methods
+	virtual void Initialize(void) override;
 
-		T retVal;
-		fileStream.read(reinterpret_cast<char*>(&retVal),sizeof(T));
-		return retVal;
-	}
-	
-	template<typename T> void ReadArray(T* outArray, size_t size)
-	{
-		fileStream.read(reinterpret_cast<char*>(outArray),sizeof(T) * size);
-	}
-
-	void Advance(size_t nrOfBytesToSkip);
-	
-	std::tstring ReadString(void);	
-	std::tstring ReadNullTerminatedString(void);
-	
 private:
-	std::ifstream fileStream;
+	//Datamembers
+	float m_Distance;
+	tt::Vector3 m_Normal;
+	NxPlaneShapeDesc m_PlaneShapeDesc;
 
-	BinaryReader(void);
-	BinaryReader& operator=(const BinaryReader& src);
-	BinaryReader(const BinaryReader& src);
+	//Disabling default copy constructor & assignment operator
+	PlaneColliderComponent(const PlaneColliderComponent& src);
+	PlaneColliderComponent& operator=(const PlaneColliderComponent& src);
 };

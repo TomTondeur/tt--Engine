@@ -35,8 +35,8 @@ class IGraphicsService : public Service
 {
 public:
 	//Default constructor & destructor
-	IGraphicsService(void){};
-	virtual ~IGraphicsService(void){};
+	IGraphicsService(void){}
+	virtual ~IGraphicsService(void){}
 
 	//Methods
 	virtual void InitWindow(int windowWidth, int windowHeight, TTengine* pEngine)=0;

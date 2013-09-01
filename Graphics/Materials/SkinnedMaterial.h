@@ -12,7 +12,7 @@ public:
 	virtual void UpdateEffectVariables(const tt::GameContext& context) override;
 		
 	void SetDiffuse(const std::tstring& diffuseFilename);
-	void SetLightDirection(D3DXVECTOR3 lightDirection);
+	void SetLightDirection(const tt::Vector3& lightDirection);
 	void SetBoneTransforms(const std::vector<D3DXMATRIX>& boneTransforms);
 	
 	static const int MAX_NR_OF_BONES = 70;

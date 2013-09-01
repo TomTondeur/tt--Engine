@@ -17,18 +17,29 @@
 
 #pragma once
 
-class MeshColliderComponent
+#include "BaseColliderComponent.h"
+
+enum class MeshType : unsigned char{
+	Convex = 0,
+	Concave = 1
+};
+
+class MeshColliderComponent : public BaseColliderComponent
 {
 public:
 	//Default constructor & destructor
-	MeshColliderComponent(void);
+	MeshColliderComponent(RigidBodyComponent* pRigidBody, const std::tstring& filename, MeshType meshType);
 	virtual ~MeshColliderComponent(void);
 
 	//Methods
+	virtual void Initialize(void) override;
 
 private:
 	//Datamembers
-
+	std::tstring m_Filename;
+	MeshType m_MeshType;
+	NxConvexShapeDesc m_ConvexShapeDesc;
+	NxTriangleMeshShapeDesc m_TriMeshShapeDesc;
 
 	//Disabling default copy constructor & assignment operator
 	MeshColliderComponent(const MeshColliderComponent& src);

@@ -166,11 +166,19 @@
       <SubType>
       </SubType>
     </ClInclude>
+    <ClInclude Include="Components\Physics\Colliders\PlaneColliderComponent.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Components\Physics\Colliders\SphereColliderComponent.h">
       <SubType>
       </SubType>
     </ClInclude>
     <ClInclude Include="Components\Physics\ControllerComponent.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Components\Physics\PhysicsMaterial.h">
       <SubType>
       </SubType>
     </ClInclude>
@@ -190,7 +198,19 @@
       <SubType>
       </SubType>
     </ClInclude>
+    <ClInclude Include="Diagnostics\DebugRenderer.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Diagnostics\Exceptions.h" />
+    <ClInclude Include="Components\Physics\Colliders\BaseColliderComponent.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Graphics\Materials\DebugMaterial.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Graphics\Materials\ParticlesMaterial.h">
       <SubType>
       </SubType>
@@ -229,6 +249,7 @@
       <SubType>
       </SubType>
     </ClInclude>
+    <ClInclude Include="Helpers\PhysxUserStream.h" />
     <ClInclude Include="SceneObjects\FreeCamera.h">
       <SubType>
       </SubType>
@@ -261,10 +282,6 @@
     <ClInclude Include="Helpers\D3DUtil.h" />
     <ClInclude Include="Helpers\Namespace.h" />
     <ClInclude Include="Helpers\TemplateUtil.h" />
-    <ClInclude Include="Managers\PhysicsManager.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
     <ClInclude Include="resource.h" />
     <ClInclude Include="SceneObjects\Object3D.h">
       <SubType>
@@ -274,7 +291,15 @@
       <SubType>
       </SubType>
     </ClInclude>
+    <ClInclude Include="Services\Implementations\DefaultPhysicsService.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Services\InputEnums.h" />
+    <ClInclude Include="Services\Interfaces\IPhysicsService.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="TTscene.h">
       <SubType>
       </SubType>
@@ -346,11 +371,19 @@
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="Components\Physics\Colliders\PlaneColliderComponent.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Components\Physics\Colliders\SphereColliderComponent.cpp">
       <SubType>
       </SubType>
     </ClCompile>
     <ClCompile Include="Components\Physics\ControllerComponent.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Components\Physics\PhysicsMaterial.cpp">
       <SubType>
       </SubType>
     </ClCompile>
@@ -367,6 +400,18 @@
       </SubType>
     </ClCompile>
     <ClCompile Include="Components\TransformComponent.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Diagnostics\DebugRenderer.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Components\Physics\Colliders\BaseColliderComponent.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Graphics\Materials\DebugMaterial.cpp">
       <SubType>
       </SubType>
     </ClCompile>
@@ -408,6 +453,7 @@
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="Helpers\PhysxUserStream.cpp" />
     <ClCompile Include="SceneObjects\FreeCamera.cpp">
       <SubType>
       </SubType>
@@ -439,10 +485,6 @@
     <ClCompile Include="Helpers\Namespace.cpp" />
     <ClCompile Include="Entrypoint.cpp" />
     <ClCompile Include="Scenegraph\GameScene.cpp" />
-    <ClCompile Include="Managers\PhysicsManager.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
     <ClCompile Include="Scenegraph\ObjectComponent.cpp" />
     <ClCompile Include="Scenegraph\SceneObject.cpp" />
     <ClCompile Include="SceneObjects\Object3D.cpp">
@@ -453,7 +495,12 @@
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="Services\Implementations\DefaultPhysicsService.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Services\Implementations\Object3DMaterialLoader.cpp" />
+    <ClCompile Include="Services\Implementations\PhysXMeshLoader.cpp" />
     <ClCompile Include="Services\Implementations\ShaderRVLoader.cpp" />
     <ClCompile Include="Services\Implementations\SpriteFontLoader.cpp" />
     <ClCompile Include="Services\Implementations\MaterialLoader.cpp" />

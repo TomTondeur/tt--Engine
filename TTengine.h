@@ -32,9 +32,11 @@
 //------------
 #include "Helpers/Namespace.h"
 #include "Timer.h"
+#include "Helpers/resrc_ptr.hpp"
 
 //Forward declarations
 class AbstractGame;
+class SpriteFont;
 
 //--------------------------------
 // TTengine Declaration
@@ -70,6 +72,7 @@ class TTengine
 		AbstractGame* m_pGame;
 		bool m_bProgramTerminated;
 		tt::GameContext m_GameContext;
+		resource_ptr<SpriteFont> m_pDefaultFont;
 
 		unsigned int m_FrameCounter;
 		float m_TimeElapsedSinceLastSecond;

@@ -96,8 +96,9 @@ namespace tt
 		Vector3(void);
 		explicit Vector3(float f);
 		Vector3(float _x, float _y, float _z);
-		Vector3(const D3DXVECTOR3& v);
-		Vector3(const D3DXVECTOR4& v);
+		explicit Vector3(const NxVec3& v);
+		explicit Vector3(const D3DXVECTOR3& v);
+		explicit Vector3(const D3DXVECTOR4& v);
 				
 		Vector3 operator+(const Vector3& v) const;
 		Vector3& operator+=(const Vector3& v);
@@ -141,7 +142,7 @@ namespace tt
 		Vector4(void);
 		explicit Vector4(float f);
 		Vector4(float _x, float _y, float _z, float _w);
-		Vector4(const D3DXVECTOR4& v);
+		explicit Vector4(const D3DXVECTOR4& v);
 		
 		Vector4 operator+(const Vector4& v) const;
 		Vector4& operator+=(const Vector4& v);
@@ -175,7 +176,7 @@ namespace tt
 				_41, _42, _43, _44;
 
 		Matrix4x4(void);
-		Matrix4x4(const D3DXMATRIX& mat);
+		explicit Matrix4x4(const D3DXMATRIX& mat);
 		Matrix4x4(float __11, float __12, float __13, float __14
 				,float __21, float __22, float __23, float __24
 				,float __31, float __32, float __33, float __34
@@ -206,7 +207,8 @@ namespace tt
 		Quaternion(const Quaternion& quat);
 		Quaternion(float _x, float _y, float _z, float _w);
 		Quaternion(const Vector3& axis, float angle);
-		Quaternion(D3DXQUATERNION quat);
+		explicit Quaternion(const D3DXQUATERNION& quat);
+		explicit Quaternion(const NxQuat& quat);
 		
 		Quaternion operator*(const Quaternion& quat) const;
 		Quaternion& operator*=(const Quaternion& quat);
@@ -219,6 +221,7 @@ namespace tt
 		static Quaternion FromRotationMatrix(Matrix4x4 rotMat);
 		
 		operator D3DXQUATERNION(void) const;
+		operator NxQuat(void) const;
 
 		Vector3 GetAxis(void) const;
 		float GetAngle(void) const;

@@ -17,7 +17,7 @@
 
 #include "BinaryReader.h"
 
-BinaryReader::BinaryReader(const std::tstring& filename):fileStream(filename){}
+BinaryReader::BinaryReader(const std::tstring& filename):fileStream(filename, std::ios::binary){}
 
 BinaryReader::~BinaryReader(void)
 {
@@ -37,7 +37,7 @@ std::tstring BinaryReader::ReadString(void)
 	
 	char strLen;
 	fileStream.read(&strLen, 1);
-	
+
 	str.resize(strLen);
 	fileStream.read(const_cast<char*>(str.c_str()), str.size() );
 	

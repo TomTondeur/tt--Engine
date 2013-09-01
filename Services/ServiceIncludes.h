@@ -22,3 +22,4 @@
 #include "Interfaces/IGraphicsService.h"
 #include "Interfaces/ResourceService.h"
 #include "Interfaces/DebugService.h"
+#include "Interfaces/IPhysicsService.h"

@@ -227,8 +227,7 @@ template<> unique_ptr<Model3D> ResourceService::LoadResource<Model3D>(const std:
 
 				newKey.KeyTime = meshFile.Read<float>();
 				
-				auto nrOfTransforms = meshFile.Read<unsigned int>();
-				for(unsigned int iTransform=0; iTransform < nrOfTransforms; ++iTransform){
+				for(unsigned int iBone=0; iBone < nrOfBones; ++iBone){
 					D3DXMATRIX transform;
 					for(unsigned int row=0; row < 4; ++row)
 						for(unsigned int col=0; col < 3; ++col)

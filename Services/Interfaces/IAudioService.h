@@ -34,8 +34,8 @@ class IAudioService : public Service
 {
 public:
 	//Default constructor & destructor
-	IAudioService(void){};
-	virtual ~IAudioService(void){};
+	IAudioService(void){}
+	virtual ~IAudioService(void){}
 
 	//Methods
 	virtual void PlaySound()=0;

@@ -39,8 +39,8 @@ class ResourceService : public Service
 {
 public:
 	//Default constructor & destructor
-	ResourceService(void){};
-	virtual ~ResourceService(void){};
+	ResourceService(void){}
+	virtual ~ResourceService(void){}
 	
 	//Methods
 	template <typename T> resource_ptr<T> Load(std::tstring filePath, bool bForceReload = false)

@@ -92,7 +92,7 @@ private:
 	ServiceLocator& operator=(const ServiceLocator& src);// = delete;
 };
 
-class MyServiceLocator : public ServiceLocator<IGraphicsService, IInputService, ResourceService, DebugService>
+class MyServiceLocator : public ServiceLocator<IGraphicsService, IInputService, ResourceService, DebugService, IPhysicsService>
 {
 public:
 	virtual ~MyServiceLocator(void);

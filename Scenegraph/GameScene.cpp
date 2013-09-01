@@ -50,6 +50,8 @@ void GameScene::InitializeScene(void)
 
 	for(auto effectPair : m_PostProEffects)
 		effectPair.second->Initialize();
+
+	m_pPhysicsScene = MyServiceLocator::GetInstance()->GetService<IPhysicsService>()->CreateScene();
 }
 
 void GameScene::UpdateScene(const tt::GameContext& context)

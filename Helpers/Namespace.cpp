@@ -205,40 +205,15 @@ const Vector3 Vector3::i = Vector3(1,0,0);
 const Vector3 Vector3::j = Vector3(0,1,0);
 const Vector3 Vector3::k = Vector3(0,0,1);
 
-Vector3::Vector3(void)
-{
-	x = 0;
-	y = 0;
-	z = 0;
-}
-Vector3::Vector3(float f)
-{
-	x = f;
-	y = f;
-	z = f;
-}
+Vector3::Vector3(void)		:x(0), y(0), z(0){}
+Vector3::Vector3(float f)	:x(f), y(f), z(f){}
 
-Vector3::Vector3(float _x, float _y, float _z)
-{
-	x = _x;
-	y = _y;
-	z = _z;
-}
+Vector3::Vector3(float _x, float _y, float _z):x(_x), y(_y), z(_z){}
 
-Vector3::Vector3(const D3DXVECTOR3& v)
-{
-	x = v.x;
-	y = v.y;
-	z = v.z;
-}
+Vector3::Vector3(const NxVec3& v)		:x(v.x), y(v.y), z(v.z){}
+Vector3::Vector3(const D3DXVECTOR3& v)	:x(v.x), y(v.y), z(v.z){}
+Vector3::Vector3(const D3DXVECTOR4& v)	:x(v.x), y(v.y), z(v.z){}
 
-Vector3::Vector3(const D3DXVECTOR4& v)
-{
-	x = v.x;
-	y = v.y;
-	z = v.z;
-}
-		
 Vector3 Vector3::operator+(const Vector3& v) const
 {
 	return Vector3(*this) += v;
@@ -667,9 +642,9 @@ void Matrix4x4::Decompose(Vector3& pos, Quaternion& rot, Vector3& scale) const
 
 	D3DXMatrixDecompose(&_scale,&_rot,&_pos,&transform); //Decompose matrix
 
-	pos = _pos;
-	rot = _rot;
-	scale = _scale;
+	pos =	tt::Vector3(_pos);
+	rot =	tt::Quaternion(_rot);
+	scale = tt::Vector3(_scale);
 }
 
 Matrix4x4 Matrix4x4::Inverse(void) const
@@ -684,29 +659,29 @@ Matrix4x4 Matrix4x4::Inverse(void) const
 //----------
 const Quaternion Quaternion::Identity = Quaternion(0,0,0,1);
 
-Quaternion::Quaternion(void)
-{
-	x=0;
-	y=0;
-	z=0;
-	w=0;
-}
+Quaternion::Quaternion(void): x(0), y(0), z(0), w(0)
+{}
 
-Quaternion::Quaternion(const Quaternion& quat)
-{
-	x=quat.x;
-	y=quat.y;
-	z=quat.z;
-	w=quat.w;
-}
+Quaternion::Quaternion(const Quaternion& quat): x(quat.x),
+												y(quat.y),
+												z(quat.z),
+												w(quat.w)
+{}
 
-Quaternion::Quaternion(float _x, float _y, float _z, float _w)
-{
-	x = _x;
-	y = _y;
-	z = _z;
-	w = _w;
-}
+Quaternion::Quaternion(float _x, float _y, float _z, float _w): x(_x), y(_y), z(_z), w(_w)
+{}
+
+Quaternion::Quaternion(const D3DXQUATERNION& quat): x(quat.x),
+													y(quat.y),
+													z(quat.z),
+													w(quat.w)
+{}
+
+Quaternion::Quaternion(const NxQuat& quat): x(quat.x),
+											y(quat.y),
+											z(quat.z),
+											w(quat.w)
+{}
 
 Quaternion::Quaternion(const Vector3& axis, float angle)
 {/*
@@ -718,14 +693,6 @@ Quaternion::Quaternion(const Vector3& axis, float angle)
 	D3DXQUATERNION quat;
 	D3DXQuaternionRotationAxis(&quat, &static_cast<D3DXVECTOR3>(axis), angle);
 	*this = static_cast<Quaternion>(quat);
-}
-
-Quaternion::Quaternion(D3DXQUATERNION quat)
-{
-	x = quat.x;
-	y = quat.y;
-	z = quat.z;
-	w = quat.w;
 }
 
 Quaternion Quaternion::operator*(const Quaternion& quat) const
@@ -790,15 +757,23 @@ Quaternion::operator D3DXQUATERNION(void) const
 {
 	return D3DXQUATERNION(x,y,z,w);
 }
+
+Quaternion::operator NxQuat(void) const
+{
+	NxQuat ret;
+	ret.setXYZW(x,y,z,w);
+	return ret;
+}
+
 /*
 Vector3 Quaternion::GetAxis(void) const
 {
-	return Vector3(x,y,z);
+
 }
 
 float Quaternion::GetAngle(void) const
 {
-	return w;
+
 }
 */
 

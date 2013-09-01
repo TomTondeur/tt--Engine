@@ -17,18 +17,22 @@
 
 #pragma once
 
-class CapsuleColliderComponent
+#include "BaseColliderComponent.h"
+
+class CapsuleColliderComponent : public BaseColliderComponent
 {
 public:
 	//Default constructor & destructor
-	CapsuleColliderComponent(void);
+	CapsuleColliderComponent(RigidBodyComponent* pRigidBody, float height, float radius);
 	virtual ~CapsuleColliderComponent(void);
 
 	//Methods
+	virtual void Initialize(void) override;
 
 private:
 	//Datamembers
-
+	float m_Height, m_Radius;
+	NxCapsuleShapeDesc m_CapsuleShapeDesc;
 
 	//Disabling default copy constructor & assignment operator
 	CapsuleColliderComponent(const CapsuleColliderComponent& src);

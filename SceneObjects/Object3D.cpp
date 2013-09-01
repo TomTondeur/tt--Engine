@@ -24,7 +24,7 @@
 Object3D::Object3D(void)
 {
 	auto pTransform = new TransformComponent();
-	auto pModel = new ModelComponent(_T("Resources/skinnedBox.bin"),pTransform);
+	auto pModel = new ModelComponent(_T("Resources/box3bones.bin"),pTransform);
 	
 	SetComponent<TransformComponent>(pTransform);
 	SetComponent<ModelComponent>(pModel);
@@ -39,7 +39,7 @@ Object3D::~Object3D(void)
 
 void Object3D::Initialize(void)
 {
-	auto pMat = MyServiceLocator::GetInstance()->GetService<ResourceService>()->Load<Object3DMaterial>( _T("BasicMaterial") );
+	auto pMat = MyServiceLocator::GetInstance()->GetService<ResourceService>()->Load<SkinnedMaterial>( _T("BasicMaterial") );
 	GetComponent<ModelComponent>()->SetMaterial(pMat);
-	//pMat->SetDiffuse(_T("Resources/Vampire_Diffuse.dds"));
+	pMat->SetDiffuse(_T("Resources/Vampire_Diffuse.dds"));
 }

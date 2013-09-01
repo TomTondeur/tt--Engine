@@ -121,7 +121,7 @@
 		LocalAssert(int line=__LINE__) : mLine(line) {} \
 		LocalAssert(bool isOK, const TCHAR* message=_T("")) { \
 			if ( !isOK ) { \
-				tstringstream buffer; \
+				std::tstringstream buffer; \
 				buffer << _T("ERROR!! Assert failed on line ") << LocalAssert().mLine << _T(" in file '") << __FILE__ << _T("'\nMessage: \"") << message << _T("\"\n"); \
 				OutputDebugString(buffer.str().c_str()); \
 				MessageBox(NULL,buffer.str().c_str(),NULL,MB_OK); \

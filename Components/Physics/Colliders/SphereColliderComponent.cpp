@@ -16,10 +16,13 @@
 // along with tt::Engine.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "SphereColliderComponent.h"
+#include "../RigidBodyComponent.h"
 
-SphereColliderComponent::SphereColliderComponent(void)
+SphereColliderComponent::SphereColliderComponent(RigidBodyComponent* pRigidBody, float radius) : BaseColliderComponent(pRigidBody), m_Radius(radius)
 {
-
+	m_SphereShapeDesc.setToDefault();
+	m_SphereShapeDesc.radius = m_Radius;
+	m_SphereShapeDesc.userData = m_pRigidBody;
 }
 
 SphereColliderComponent::~SphereColliderComponent(void)
@@ -29,3 +32,12 @@ SphereColliderComponent::~SphereColliderComponent(void)
 
 //Methods
 
+void SphereColliderComponent::Initialize(void)
+{
+	if(m_bIsTrigger)
+		m_SphereShapeDesc.shapeFlags |= NX_TRIGGER_ENABLE;
+
+	m_SphereShapeDesc.materialIndex = GetMaterialIndex();
+
+	m_pRigidBody->AddShape(&m_SphereShapeDesc);
+}

@@ -16,7 +16,7 @@ void SkinnedMaterial::SetDiffuse(const std::tstring& diffuseFilename)
 	m_pTexture = MyServiceLocator::GetInstance()->GetService<ResourceService>()->Load<ID3D10ShaderResourceView>(diffuseFilename);
 }
 
-void SkinnedMaterial::SetLightDirection(D3DXVECTOR3 lightDirection)
+void SkinnedMaterial::SetLightDirection(const tt::Vector3& lightDirection)
 {
 	m_vecLightDirection = lightDirection;
 }

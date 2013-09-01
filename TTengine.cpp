@@ -35,6 +35,7 @@
 #include "Graphics/GraphicsDevice.h"
 #include "Graphics/SpriteBatch.h"
 #include "Graphics/SpriteFont.h"
+#include "Scenegraph/GameScene.h"
 
 //------------
 // Defines
@@ -112,22 +113,35 @@ DWORD TTengine::GameLoop(void)
 	m_GameContext.GameTimer.Start();
 	m_GameContext.FramesPerSecond = 0;
 
+	IPhysicsService* pPhysics	= MyServiceLocator::GetInstance()->GetService<IPhysicsService>();
+	IGraphicsService* pGraphics = MyServiceLocator::GetInstance()->GetService<IGraphicsService>();
+
 	while(!m_bProgramTerminated){
+		//Update
 		m_pGame->Update(m_GameContext);
 		m_pGame->UpdateGame(m_GameContext);
-			
-		MyServiceLocator::GetInstance()->GetService<IGraphicsService>()->GetGraphicsDevice()->Clear();
 
-		MyServiceLocator::GetInstance()->GetService<ResourceService>()->Load<SpriteFont>(_T("Resources/AgencyFB_12.fnt"))->DrawText(
-			std::tstring(_T("FPS: ")) + to_tstring(m_GameContext.FramesPerSecond) + _T("\nSPF: ") + to_tstring(m_GameContext.GameTimer.GetElapsedSeconds() ), 
-			tt::Vector2(5,0), 
-			tt::Vector4(1,1,0,1) );
+		pPhysics->SetActiveScene(m_pGame->GetActiveScene()->GetPhysicsScene());
+		pPhysics->Simulate(m_GameContext.GameTimer.GetElapsedSeconds()); 
+			
+		pGraphics->GetGraphicsDevice()->Clear();
+
+		//Render FPS
+		m_pDefaultFont->DrawText(std::tstring(_T("FPS: ")) + to_tstring(m_GameContext.FramesPerSecond) + _T("\nSPF: ") + to_tstring(m_GameContext.GameTimer.GetElapsedSeconds() ), 
+								tt::Vector2(5,0), 
+								tt::Vector4(1,1,0,1) );
 		
+		//Draw
 		m_pGame->Draw(m_GameContext);
 		m_pGame->DrawGame(m_GameContext);
+
+		//Render physics
+		pPhysics->FetchResults();
+		pPhysics->RenderDebugInfo(m_GameContext);
 		
-		MyServiceLocator::GetInstance()->GetService<IGraphicsService>()->GetGraphicsDevice()->Present();
+		pGraphics->GetGraphicsDevice()->Present();
 		
+		//Keep track of time
 		m_GameContext.GameTimer.Tick();
 
 		m_TimeElapsedSinceLastSecond += m_GameContext.GameTimer.GetElapsedSeconds();
@@ -148,6 +162,9 @@ void TTengine::Initialize(void)
 {
 	auto pServiceLoc = MyServiceLocator::GetInstance();
 	pServiceLoc->GetService<IGraphicsService>()->InitWindow(m_GameContext.vpInfo.width, m_GameContext.vpInfo.height, this);
+	pServiceLoc->GetService<IPhysicsService>()->Initialize();
+
+	m_pDefaultFont = MyServiceLocator::GetInstance()->GetService<ResourceService>()->Load<SpriteFont>(_T("Resources/AgencyFB_12.fnt"));
 }
 
 LRESULT CALLBACK TTengine::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)

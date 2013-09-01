@@ -17,18 +17,22 @@
 
 #pragma once
 
-class BoxColliderComponent
+#include "BaseColliderComponent.h"
+
+class BoxColliderComponent : public BaseColliderComponent
 {
 public:
 	//Default constructor & destructor
-	BoxColliderComponent(void);
+	BoxColliderComponent(RigidBodyComponent* pRigidBody, const tt::Vector3& dimensions);
 	virtual ~BoxColliderComponent(void);
 
 	//Methods
+	virtual void Initialize(void) override;
 
 private:
 	//Datamembers
-
+	NxBoxShapeDesc m_BoxShapeDesc;
+	tt::Vector3 m_Dimensions;
 
 	//Disabling default copy constructor & assignment operator
 	BoxColliderComponent(const BoxColliderComponent& src);

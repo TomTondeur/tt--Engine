@@ -20,7 +20,7 @@
 #include "../Services/ServiceLocator.h"
 #include "../Services/InputEnums.h"
 
-FreeCamera::FreeCamera(void):m_MovementSpeed(0.05f),m_RotationSpeed(static_cast<float>(D3DX_PI / 10)), m_Yaw(0), m_Pitch(0)
+FreeCamera::FreeCamera(void):m_MovementSpeed(0.5f),m_RotationSpeed(static_cast<float>(D3DX_PI / 10)), m_Yaw(0), m_Pitch(0)
 {
 	auto pTransform = new TransformComponent();
 	SetComponent<TransformComponent>(pTransform);

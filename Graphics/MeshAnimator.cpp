@@ -56,8 +56,12 @@ void MeshAnimator::Update(const tt::GameContext& context)
 	
 	m_BoneTransforms.resize(itPrevTick->BoneTransforms.size());
 
-	for(UINT i = 0; i < itPrevTick->BoneTransforms.size(); ++i)
-		m_BoneTransforms[i] = Lerp(itPrevTick->BoneTransforms[i], itNextTick->BoneTransforms[i], blendFactor);
+	for(UINT i = 0; i < itPrevTick->BoneTransforms.size(); ++i){
+		D3DXMATRIX mat;
+		D3DXMatrixInverse(&mat, nullptr, &m_pModel->m_Skeleton[i].BindPose);
+		m_BoneTransforms[i] = mat * Lerp(itPrevTick->BoneTransforms[i], itNextTick->BoneTransforms[i], blendFactor);
+
+	}
 		
 }
 

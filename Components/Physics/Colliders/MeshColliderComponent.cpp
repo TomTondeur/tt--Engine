@@ -16,16 +16,42 @@
 // along with tt::Engine.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "MeshColliderComponent.h"
+#include "../RigidBodyComponent.h"
+#include "../../../Services/ServiceLocator.h"
 
-MeshColliderComponent::MeshColliderComponent(void)
+MeshColliderComponent::MeshColliderComponent(RigidBodyComponent* pRigidBody, const std::tstring& filename, MeshType meshType):BaseColliderComponent(pRigidBody),
+																																m_Filename(filename),
+																																m_MeshType(meshType)
 {
-
+	m_ConvexShapeDesc.setToDefault(); 
+	m_TriMeshShapeDesc.setToDefault();
+	m_ConvexShapeDesc.userData = m_TriMeshShapeDesc.userData = m_pRigidBody;
 }
 
 MeshColliderComponent::~MeshColliderComponent(void)
-{
-
-}
+{}
 
 //Methods
 
+void MeshColliderComponent::Initialize(void)
+{
+	if(m_MeshType == MeshType::Convex){
+		m_ConvexShapeDesc.meshData = MyServiceLocator::GetInstance()->GetService<ResourceService>()->Load<NxConvexMesh>(m_Filename).get();
+
+		if(m_bIsTrigger)
+			m_ConvexShapeDesc.shapeFlags |= NX_TRIGGER_ENABLE;
+
+		m_ConvexShapeDesc.materialIndex = GetMaterialIndex();
+		
+		m_pRigidBody->AddShape(&m_ConvexShapeDesc);
+	}else{
+		m_TriMeshShapeDesc.meshData = MyServiceLocator::GetInstance()->GetService<ResourceService>()->Load<NxTriangleMesh>(m_Filename).get();
+
+		if(m_bIsTrigger)
+			m_TriMeshShapeDesc.shapeFlags |= NX_TRIGGER_ENABLE;
+
+		m_TriMeshShapeDesc.materialIndex = GetMaterialIndex();
+		
+		m_pRigidBody->AddShape(&m_TriMeshShapeDesc);
+	}
+}
