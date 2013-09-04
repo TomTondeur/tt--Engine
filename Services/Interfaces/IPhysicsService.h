@@ -26,7 +26,7 @@
 #include "NxCapsuleController.h"
 class NxShape;
 class GameScene;
-class GameObject;
+class SceneObject;
 class PhysicsAllocator;
 
 #pragma comment(lib, "PhysXLoader.lib")
@@ -61,7 +61,7 @@ public:
 	virtual void SetActiveScene(NxScene* pScene)=0;
 	virtual NxScene* GetActiveScene(void) const=0;
 
-	virtual GameObject* Pick(const POINT& mousePosition, const tt::GameContext& context) const=0;
+	virtual SceneObject* Pick(const POINT& mousePosition, const tt::GameContext& context) const=0;
 
 private:
 

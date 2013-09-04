@@ -58,20 +58,21 @@ void ModelComponent::Update(const tt::GameContext& context)
 
 void ModelComponent::Draw(const tt::GameContext& context)
 {
-	if(m_pModel->HasAnimData())
-		m_pMeshAnimator->Draw(context);
-	
-	auto pMat = dynamic_cast<SkinnedMaterial*>(m_pMaterial.get() );
-	if(pMat != nullptr){
-		pMat->SetBoneTransforms(m_pMeshAnimator->GetBoneTransforms() );
-		pMat->SetLightDirection(tt::Vector3(0,-1,0) );
-	}
-
 	if(m_pMaterial == nullptr)
 		throw exception();
 
 	if( Cull(context) )
 		return;	
+
+	auto pMat = dynamic_cast<SkinnedMaterial*>(m_pMaterial.get() );
+	if(pMat){
+		if(!m_pModel->HasAnimData())
+			MyServiceLocator::GetInstance()->GetService<DebugService>()->Log(_T("SkinnedMaterial cannot be assigned to a model without animation data"), LogLevel::Error);
+		
+		m_pMeshAnimator->Draw(context);
+		pMat->SetBoneTransforms(m_pMeshAnimator->GetBoneTransforms() );
+		pMat->SetLightDirection(tt::Vector3(0,-1,0) );
+	}
 
 	MyServiceLocator::GetInstance()->GetService<IGraphicsService>()->Draw(m_pModel, m_pTransform->GetWorldMatrix(), m_pMaterial, context);
 }

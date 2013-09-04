@@ -108,7 +108,8 @@ public:
 	template <typename... Types, typename _Fn>
 	void ForEach(_Fn _Func)
 	{
-		_Func(pFirstType);
+		if(pFirstType)
+			_Func(pFirstType);
 		tailTuple.ForEach<_Fn, Types...>(_Func);
 	}
 
@@ -156,7 +157,8 @@ public:
 	template <typename... Types, typename _Fn>
 	void ForEach(_Fn _Func)
 	{
-		_Func(pData);
+		if(pData)
+			_Func(pData);
 	}
 
 private:

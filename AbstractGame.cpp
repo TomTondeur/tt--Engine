@@ -31,6 +31,7 @@
 #include "Helpers/stdafx.h"
 #include "AbstractGame.h"
 #include "Scenegraph/GameScene.h"
+#include "Services/ServiceLocator.h"
 
 //------------
 // Defines
@@ -43,7 +44,7 @@ using namespace std;
 // AbstractGame Implementation
 //---------------------------------
 
-AbstractGame::AbstractGame(void)			// Default constructor
+AbstractGame::AbstractGame(void):m_pActiveScene(nullptr)		// Default constructor
 {
 
 }
@@ -56,8 +57,14 @@ AbstractGame::~AbstractGame(void)			// Destructor
 
 void AbstractGame::InitializeGame(void)
 {
+	auto pPhys = MyServiceLocator::GetInstance()->GetService<IPhysicsService>();
+	auto prevPhysScene = pPhys->GetActiveScene();
+	pPhys->SetActiveScene(pPhys->CreateScene() );
+
 	m_pActiveScene->Initialize();
 	m_pActiveScene->InitializeScene();
+
+	pPhys->SetActiveScene(prevPhysScene);
 }
 
 void AbstractGame::UpdateGame(const tt::GameContext& context)

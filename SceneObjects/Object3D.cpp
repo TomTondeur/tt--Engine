@@ -24,10 +24,13 @@
 Object3D::Object3D(void)
 {
 	auto pTransform = new TransformComponent();
-	auto pModel = new ModelComponent(_T("Resources/box3bones.bin"),pTransform);
+	auto pModel = new ModelComponent(_T("Resources/box3bonesV2.bin"),pTransform);
+	auto pRigidbody = new RigidBodyComponent(this);
 	
 	SetComponent<TransformComponent>(pTransform);
 	SetComponent<ModelComponent>(pModel);
+	SetComponent<RigidBodyComponent>(pRigidbody);
+	SetComponent<MeshColliderComponent>(new MeshColliderComponent(pRigidbody, _T("Resources/box.convexphysx"), MeshType::Convex));
 }
 
 Object3D::~Object3D(void)

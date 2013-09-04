@@ -73,6 +73,8 @@ void TTengine::Run(void)
 	//Initialize engine
 	m_GameContext.vpInfo.width = 1280;
 	m_GameContext.vpInfo.height = 720;
+	m_GameContext.pGame = m_pGame;
+	m_GameContext.FramesPerSecond = 0;
 	Initialize();
 	
 	//Game loop runs on a separate thread. Main thread is reserved for input monitoring and processing Windows Messages
@@ -106,15 +108,14 @@ DWORD TTengine::GameLoopProc(TTengine* pThis)
 
 DWORD TTengine::GameLoop(void)
 {
+	IPhysicsService* pPhysics	= MyServiceLocator::GetInstance()->GetService<IPhysicsService>();
+	IGraphicsService* pGraphics = MyServiceLocator::GetInstance()->GetService<IGraphicsService>();
+
 	//Initialize game
 	m_pGame->Initialize();
 	m_pGame->InitializeGame();
-	m_GameContext.pGame = m_pGame;
+	pPhysics->SetActiveScene(m_pGame->GetActiveScene()->GetPhysicsScene());	
 	m_GameContext.GameTimer.Start();
-	m_GameContext.FramesPerSecond = 0;
-
-	IPhysicsService* pPhysics	= MyServiceLocator::GetInstance()->GetService<IPhysicsService>();
-	IGraphicsService* pGraphics = MyServiceLocator::GetInstance()->GetService<IGraphicsService>();
 
 	while(!m_bProgramTerminated){
 		//Update

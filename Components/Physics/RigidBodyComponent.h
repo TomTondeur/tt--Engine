@@ -19,7 +19,7 @@
 
 #include "../../Helpers/Namespace.h"
 #include "../../Scenegraph/ObjectComponent.h"
-class GameObject;
+class SceneObject;
 
 class NxActor;
 
@@ -56,7 +56,7 @@ class RigidBodyComponent : public ObjectComponent
 
 public:
 	//constructor & destructor
-	RigidBodyComponent(GameObject* pParent);
+	RigidBodyComponent(SceneObject* pParent);
 	virtual ~RigidBodyComponent(void);
 
 	//Overrides
@@ -77,7 +77,7 @@ public:
 	void RemoveConstraints(Constraints constraintsToRemove);
 
 	//Accessors
-	GameObject* GetParent(void) const;
+	SceneObject* GetParent(void) const;
 	float GetMass(void) const;
 	float GetAngularDamping(void) const;
 	float GetDensity(void) const;
@@ -102,7 +102,7 @@ private:
 	Constraints m_Constraints;
 
 	NxActor* m_pActor;
-	GameObject* m_pParentObject;
+	SceneObject* m_pParentObject;
 
 	bool m_bStatic;
 

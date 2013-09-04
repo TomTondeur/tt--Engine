@@ -43,13 +43,23 @@ public:
 	virtual ~ResourceService(void){}
 	
 	//Methods
-	template <typename T> resource_ptr<T> Load(std::tstring filePath, bool bForceReload = false)
+	template <typename T> resource_ptr<T> Load(const std::tstring& filePath, bool bForceReload = false)
 	{
 		return ResourceLoader<T>::Load(filePath, bForceReload);
 	}
 	
 	//This template is specialized in the corresponding .cpp file, do not call this function manually, use the Load function instead
 	template <typename T> static std::unique_ptr<T> LoadResource(const std::tstring& filePath);
+	
+	template <typename T> static void Release(void)
+	{
+		ResourceLoader<T>::Release();
+	}
+
+	template <typename T> static void Release(const std::tstring& filePath)
+	{
+		ResourceLoader<T>::Release(filePath);
+	}
 
 private:
 	//Disabling default copy constructor & assignment operator
@@ -61,7 +71,7 @@ template<typename T>
 class ResourceLoader
 {
 public:
-	static resource_ptr<T> Load(std::tstring filename, bool bForceReload)
+	static resource_ptr<T> Load(const std::tstring& filename, bool bForceReload)
 	{
 		auto it = m_Resources.find(filename);
 		
@@ -71,6 +81,16 @@ public:
 		std::unique_ptr<T>& pResrc = m_Resources.insert(make_pair(filename, ResourceService::LoadResource<T>(filename) ) ).first->second;
 		
 		return resource_ptr<T>(pResrc);
+	}
+	
+	static void Release(void)
+	{
+		m_Resources.clear();
+	}
+
+	static void Release(const std::tstring& filePath)
+	{
+		m_Resources.erase(filePath);
 	}
 
 private:

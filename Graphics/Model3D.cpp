@@ -322,5 +322,5 @@ const AABBox& Model3D::GetAABB(void) const
 
 bool Model3D::HasAnimData(void)
 {
-	return !m_Skeleton.empty();
+	return !m_AnimClips.empty();
 }

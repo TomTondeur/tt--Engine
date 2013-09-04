@@ -73,7 +73,7 @@ public:
 	virtual void SetActiveScene(NxScene* pScene) override;
 	virtual NxScene* GetActiveScene(void) const override;
 
-	virtual GameObject* Pick(const POINT& mousePosition, const tt::GameContext& context) const override;
+	virtual SceneObject* Pick(const POINT& mousePosition, const tt::GameContext& context) const override;
 
 private:
 	NxPhysicsSDK *m_pPhysicsSDK;

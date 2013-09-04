@@ -35,7 +35,8 @@ MeshColliderComponent::~MeshColliderComponent(void)
 
 void MeshColliderComponent::Initialize(void)
 {
-	if(m_MeshType == MeshType::Convex){
+	switch(m_MeshType){
+	case MeshType::Convex:
 		m_ConvexShapeDesc.meshData = MyServiceLocator::GetInstance()->GetService<ResourceService>()->Load<NxConvexMesh>(m_Filename).get();
 
 		if(m_bIsTrigger)
@@ -44,7 +45,8 @@ void MeshColliderComponent::Initialize(void)
 		m_ConvexShapeDesc.materialIndex = GetMaterialIndex();
 		
 		m_pRigidBody->AddShape(&m_ConvexShapeDesc);
-	}else{
+		break;
+	case MeshType::Concave:
 		m_TriMeshShapeDesc.meshData = MyServiceLocator::GetInstance()->GetService<ResourceService>()->Load<NxTriangleMesh>(m_Filename).get();
 
 		if(m_bIsTrigger)
@@ -53,5 +55,6 @@ void MeshColliderComponent::Initialize(void)
 		m_TriMeshShapeDesc.materialIndex = GetMaterialIndex();
 		
 		m_pRigidBody->AddShape(&m_TriMeshShapeDesc);
+		break;
 	}
 }

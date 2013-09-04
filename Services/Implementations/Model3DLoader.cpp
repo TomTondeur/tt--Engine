@@ -123,7 +123,7 @@ template<> unique_ptr<Model3D> ResourceService::LoadResource<Model3D>(const std:
 	}
 	
 	if(vertexFormat & 16){
-	//Read blend indices
+	//Read blend indices & blend weights
 		for(unsigned int i=0; i < nrOfAnimData; ++i){
 			auto nrOfIndices = meshFile.Read<unsigned int>();
 
@@ -133,16 +133,11 @@ template<> unique_ptr<Model3D> ResourceService::LoadResource<Model3D>(const std:
 			auto w = nrOfIndices > 3 ? static_cast<float>( meshFile.Read<unsigned int>() ) : 0.0f;
 
 			pModel->m_BlendIndices.data.push_back(D3DXVECTOR4(x,y,z,w));
-		}
-
-		//Read blend weights
-		for(unsigned int i=0; i < nrOfAnimData; ++i){
-			auto nrOfWeights = meshFile.Read<unsigned int>();
-
-			auto x = nrOfWeights > 0 ? meshFile.Read<float>() : 0.0f;
-			auto y = nrOfWeights > 1 ? meshFile.Read<float>() : 0.0f;
-			auto z = nrOfWeights > 2 ? meshFile.Read<float>() : 0.0f;
-			auto w = nrOfWeights > 3 ? meshFile.Read<float>() : 0.0f;
+			
+			x = nrOfIndices > 0 ? meshFile.Read<float>() : 0.0f;
+			y = nrOfIndices > 1 ? meshFile.Read<float>() : 0.0f;
+			z = nrOfIndices > 2 ? meshFile.Read<float>() : 0.0f;
+			w = nrOfIndices > 3 ? meshFile.Read<float>() : 0.0f;
 
 			pModel->m_BlendWeights.data.push_back(D3DXVECTOR4(x,y,z,w));
 		}

@@ -18,13 +18,13 @@
 #include "RigidBodyComponent.h"
 #include "../../Services/ServiceLocator.h"
 
-RigidBodyComponent::RigidBodyComponent(GameObject* pParent) : 
-					m_Mass(0), m_AngularDamping(0), m_Density(0),
+RigidBodyComponent::RigidBodyComponent(SceneObject* pParent) : 
+					m_Mass(1.0f), m_AngularDamping(0.9f), m_Density(0),
 					m_LinearVelocity(0), m_AngularVelocity(0), m_LinearMomentum(0), m_AngularMomentum(0),
 					m_bConstraintsChanged(false),
 					m_Constraints(Constraints::None),
 					m_pActor(nullptr),
-					m_bStatic(false),
+					m_bStatic(true),
 					m_bInitialized(false),
 					m_pParentObject(pParent)
 {}
@@ -36,6 +36,8 @@ RigidBodyComponent::~RigidBodyComponent(void)
 
 void RigidBodyComponent::Initialize(void)
 {
+	m_bInitialized = true;
+
 	if(m_Shapes.empty())
 		return;
 
@@ -72,8 +74,6 @@ void RigidBodyComponent::Initialize(void)
 
 	//Create actor
 	m_pActor = pScene->createActor(m_ActorDesc);
-	if(!m_pActor)
-		MyServiceLocator::GetInstance()->GetService<DebugService>()->Log(_T("Error creating actor"), LogLevel::Error);
 
 	m_pActor->userData = this;
 	m_bInitialized = true;
@@ -185,7 +185,7 @@ void RigidBodyComponent::RemoveConstraints(Constraints constraints)
 }
 
 //Accessors
-GameObject* RigidBodyComponent::GetParent(void) const
+SceneObject* RigidBodyComponent::GetParent(void) const
 {
 	return m_pParentObject;
 }

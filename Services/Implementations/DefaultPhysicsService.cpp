@@ -55,8 +55,11 @@ DefaultPhysicsService::~DefaultPhysicsService(void)
 	if(m_pControllerManager)
 		NxReleaseControllerManager(m_pControllerManager);
 	
-	if(m_pPhysicsSDK)
+	if(m_pPhysicsSDK){
+		MyServiceLocator::GetInstance()->GetService<ResourceService>()->Release<NxConvexMesh>();
+		MyServiceLocator::GetInstance()->GetService<ResourceService>()->Release<NxTriangleMesh>();
 		m_pPhysicsSDK->release();
+	}
 		
 	delete m_pAllocator;
 	delete m_pDebugRenderer;
@@ -228,7 +231,7 @@ NxScene* DefaultPhysicsService::GetActiveScene(void) const
 	return m_pActiveScene;
 }
 
-GameObject* DefaultPhysicsService::Pick(const POINT& mousePosition, const tt::GameContext& context) const
+SceneObject* DefaultPhysicsService::Pick(const POINT& mousePosition, const tt::GameContext& context) const
 {
 	tt::Vector2 ndcCoords;
 	tt::Vector2 halfDimensions(context.vpInfo.width * .5f, context.vpInfo.height * .5f);

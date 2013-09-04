@@ -39,10 +39,14 @@ GameScene::~GameScene()
 
 	for(auto pEffect : uniquePostproEffects)
 		delete pEffect;
+
+	NxGetPhysicsSDK()->releaseScene(*m_pPhysicsScene);
 }
 	
 void GameScene::InitializeScene(void)
 {
+	m_pPhysicsScene = MyServiceLocator::GetInstance()->GetService<IPhysicsService>()->GetActiveScene();
+
 	for(auto pObj : m_Objects){
 		pObj->Initialize();
 		pObj->InitializeObject();
@@ -50,8 +54,6 @@ void GameScene::InitializeScene(void)
 
 	for(auto effectPair : m_PostProEffects)
 		effectPair.second->Initialize();
-
-	m_pPhysicsScene = MyServiceLocator::GetInstance()->GetService<IPhysicsService>()->CreateScene();
 }
 
 void GameScene::UpdateScene(const tt::GameContext& context)

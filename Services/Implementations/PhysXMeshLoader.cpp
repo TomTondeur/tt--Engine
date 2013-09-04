@@ -20,16 +20,24 @@
 
 template<> unique_ptr<NxConvexMesh> ResourceService::LoadResource<NxConvexMesh>(const std::tstring& filePath)
 {
-	if(std::tifstream(filePath))
-		return unique_ptr<NxConvexMesh>( NxGetPhysicsSDK()->createConvexMesh( UserStream( std::string( filePath.begin(), filePath.end() ),true) ) );
-	else
+	if(!std::tifstream(filePath))
 		throw LoaderException(std::tstring(_T("convex mesh ")) + filePath);
+
+	auto retVal = unique_ptr<NxConvexMesh>( NxGetPhysicsSDK()->createConvexMesh( UserStream( std::string( filePath.begin(), filePath.end() ).c_str(),true) ) );
+	if(retVal == nullptr)
+		throw LoaderException(_T("convex mesh") + filePath, _T("Failed to create convex mesh"));
+
+	return retVal;
 }
 
 template<> unique_ptr<NxTriangleMesh> ResourceService::LoadResource<NxTriangleMesh>(const std::tstring& filePath)
 {
-	if(std::tifstream(filePath))
-		return unique_ptr<NxTriangleMesh>( NxGetPhysicsSDK()->createTriangleMesh( UserStream( std::string( filePath.begin(),filePath.end() ),true) ) );
-	else
+	if(!std::tifstream(filePath))
 		throw LoaderException(std::tstring(_T("triangle mesh ")) + filePath);
+	
+	auto retVal = unique_ptr<NxTriangleMesh>( NxGetPhysicsSDK()->createTriangleMesh( UserStream( std::string( filePath.begin(),filePath.end() ).c_str(),true) ) );
+	if(retVal == nullptr)
+		throw LoaderException(_T("convex mesh") + filePath, _T("Failed to create triangle mesh"));
+
+	return retVal;
 }
