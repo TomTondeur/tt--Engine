@@ -23,8 +23,9 @@
 #include "../Components/ModelComponent.h"
 #include "../Components/Physics/RigidBodyComponent.h"
 #include "../Components/Physics/Colliders/MeshColliderComponent.h"
+#include "../Components/ScriptComponent.h"
 
-class Object3D : public GenericSceneObject<TransformComponent, ModelComponent, RigidBodyComponent, MeshColliderComponent>
+class Object3D : public GenericSceneObject<TransformComponent, ModelComponent, RigidBodyComponent, MeshColliderComponent, ScriptComponent>
 {
 public:
 	//Default constructor & destructor

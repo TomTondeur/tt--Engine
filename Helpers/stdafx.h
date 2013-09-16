@@ -80,10 +80,15 @@
 	#define __TR LR
 	#define to_tstring to_wstring
 
-#define WstringToTstring(x) (x)
+	#define WstringToTstring(x) (x)
 	inline std::tstring StringToTstring(const std::string& str)
 	{
 		return std::tstring(str.begin(),str.end());
+	}
+	#define TstringToWstring(x) (x)
+	inline std::string TstringToString(const std::tstring& str)
+	{
+		return std::string(str.begin(),str.end());
 	}
 #else
 	namespace std
@@ -103,6 +108,11 @@
 	inline std::tstring WstringToTstring(const std::wstring& str)
 	{
 		return std::tstring(str.begin(),str.end());
+	}
+	#define TstringToString(x) (x)
+	inline std::wstring TstringToWstring(const std::tstring& str)
+	{
+		return std::wstring(str.begin(),str.end());
 	}
 
 #endif 

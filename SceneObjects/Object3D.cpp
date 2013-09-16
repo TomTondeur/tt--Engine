@@ -31,6 +31,8 @@ Object3D::Object3D(void)
 	SetComponent<ModelComponent>(pModel);
 	SetComponent<RigidBodyComponent>(pRigidbody);
 	SetComponent<MeshColliderComponent>(new MeshColliderComponent(pRigidbody, _T("Resources/box.convexphysx"), MeshType::Convex));
+
+	SetComponent<ScriptComponent>( new ScriptComponent(_T("Resources/Scripts/TestScript.lua") ) );
 }
 
 Object3D::~Object3D(void)
