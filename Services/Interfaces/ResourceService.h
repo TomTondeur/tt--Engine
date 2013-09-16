@@ -78,9 +78,12 @@ public:
 		if(it != m_Resources.end() && !bForceReload)
 			return resource_ptr<T>(it->second);
 		
-		std::unique_ptr<T>& pResrc = m_Resources.insert(make_pair(filename, ResourceService::LoadResource<T>(filename) ) ).first->second;
-		
-		return resource_ptr<T>(pResrc);
+		if(it != m_Resources.end())
+			m_Resources.erase(filename);
+
+		m_Resources.insert(make_pair(filename, ResourceService::LoadResource<T>(filename)) );
+
+		return Load(filename, false);
 	}
 	
 	static void Release(void)

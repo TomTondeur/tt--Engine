@@ -18,6 +18,7 @@
 #include "Object3D.h"
 
 #include "../Services/ServiceLocator.h"
+#include "../Services/InputEnums.h"
 #include "../Graphics/Materials/Object3DMaterial.h"
 #include "../Graphics/Materials/SkinnedMaterial.h"
 
@@ -31,7 +32,6 @@ Object3D::Object3D(void)
 	SetComponent<ModelComponent>(pModel);
 	SetComponent<RigidBodyComponent>(pRigidbody);
 	SetComponent<MeshColliderComponent>(new MeshColliderComponent(pRigidbody, _T("Resources/box.convexphysx"), MeshType::Convex));
-
 	SetComponent<ScriptComponent>( new ScriptComponent(_T("Resources/Scripts/TestScript.lua") ) );
 }
 
@@ -47,4 +47,16 @@ void Object3D::Initialize(void)
 	auto pMat = MyServiceLocator::GetInstance()->GetService<ResourceService>()->Load<SkinnedMaterial>( _T("BasicMaterial") );
 	GetComponent<ModelComponent>()->SetMaterial(pMat);
 	pMat->SetDiffuse(_T("Resources/Vampire_Diffuse.dds"));
+
+	MyServiceLocator::GetInstance()->GetService<IInputService>()->AddInputAction(InputActionId::ReloadScript, VK_RETURN, KeyState::Pressed);
+}
+
+void Object3D::Update(const tt::GameContext& context)
+{
+	try{
+	if(MyServiceLocator::GetInstance()->GetService<IInputService>()->IsActionTriggered(InputActionId::ReloadScript))
+		GetComponent<ScriptComponent>()->RunScript(true);
+	}catch(exception& e){
+		cout << e.what();
+	}
 }

@@ -26,7 +26,6 @@ ScriptComponent::LuaScript::~LuaScript(void)
 		return;
 
 	lua_close(m_pLuaState);
-	m_pLuaState = nullptr;
 }
 
 ScriptComponent::ScriptComponent(const std::tstring& filename, void (*cb_InitEnvironment)(lua_State* pLuaState) )												
@@ -57,6 +56,20 @@ void ScriptComponent::Initialize(void)
 	// and then using lua_pcall() again to perform the action.
 	if(lua_pcall(m_pScript->m_pLuaState, 0, 0, 0) != 0)
 		throw std::exception( lua_tostring(m_pScript->m_pLuaState, -1) );
+}
+
+void ScriptComponent::RunScript(bool bReload)
+{
+	if(bReload){
+		auto initCB = m_pScript->m_pFnInitEnvironment;
+		lua_close(m_pScript->m_pLuaState);
+		m_pScript->m_pLuaState = nullptr;
+		m_pScript = MyServiceLocator::GetInstance()->GetService<ResourceService>()->Load<LuaScript>(StringToTstring(m_pScript->m_Filename), true);
+		m_pScript->m_pFnInitEnvironment = initCB;
+		Initialize();
+	}
+	else
+		luaL_dofile(m_pScript->m_pLuaState, m_pScript->m_Filename.c_str());
 }
 
 //  The type of the memory-allocation function used by Lua states. The allocator function

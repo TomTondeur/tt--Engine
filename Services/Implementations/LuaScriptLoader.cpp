@@ -22,9 +22,6 @@ template<> unique_ptr<ScriptComponent::LuaScript> ResourceService::LoadResource<
 {
 	auto pScript = new ScriptComponent::LuaScript(TstringToString(filename));
 
-	if(pScript->m_pLuaState)
-		lua_close(pScript->m_pLuaState);
-
 	pScript->m_pLuaState = lua_newstate(&ScriptComponent::LuaAllocate, nullptr);
 
 	if(!pScript->m_pLuaState)

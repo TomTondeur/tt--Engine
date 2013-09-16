@@ -47,8 +47,8 @@ public:
 
 	//Methods
 	virtual void InitializeEnvironment(void (*pInitializeCallback)(lua_State* pLuaState));
-
 	virtual void Initialize(void) override;
+	virtual void RunScript(bool bReload = false);
 	
 	template <typename... _ArgTypes>
 	void CallLuaFunction(const std::string& functionName, _ArgTypes... arguments)
