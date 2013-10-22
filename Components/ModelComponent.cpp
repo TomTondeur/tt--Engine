@@ -42,11 +42,11 @@ ModelComponent::~ModelComponent(void)
 void ModelComponent::Initialize(void)
 {
 	m_pModel = MyServiceLocator::GetInstance()->GetService<ResourceService>()->Load<Model3D>(m_ModelFile);
-
+	
 	if(m_pModel->HasAnimData()){
 		m_pMeshAnimator = new MeshAnimator();
 		m_pMeshAnimator->SetModel(m_pModel.get() );
-		m_pMeshAnimator->SetAnimationClip(_T("TestAnimation"));
+		m_pMeshAnimator->SetAnimationClip(_T("WalkCycle"));
 	}
 }
 
@@ -60,10 +60,10 @@ void ModelComponent::Draw(const tt::GameContext& context)
 {
 	if(m_pMaterial == nullptr)
 		throw exception();
-
+	
 	if( Cull(context) )
 		return;	
-
+	
 	auto pMat = dynamic_cast<SkinnedMaterial*>(m_pMaterial.get() );
 	if(pMat){
 		if(!m_pModel->HasAnimData())

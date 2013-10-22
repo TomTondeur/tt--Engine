@@ -68,7 +68,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Program Files %28x86%29\NVIDIA Corporation\NVIDIA PhysX SDK\v2.8.3\SDKs\Physics\include;C:\Program Files %28x86%29\NVIDIA Corporation\NVIDIA PhysX SDK\v2.8.3\SDKs\NxCharacter\include;C:\Program Files %28x86%29\NVIDIA Corporation\NVIDIA PhysX SDK\v2.8.3\SDKs\Cooking\include;C:\Program Files %28x86%29\NVIDIA Corporation\NVIDIA PhysX SDK\v2.8.3\SDKs\PhysXLoader\include;C:\Program Files %28x86%29\NVIDIA Corporation\NVIDIA PhysX SDK\v2.8.3\SDKs\Foundation\include;$(DXSDK_DIR)\include;$(ProjectDir)\lua-5.2.1\include;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Program Files %28x86%29\NVIDIA Corporation\NVIDIA PhysX SDK\v2.8.3\SDKs\Physics\include;C:\Program Files %28x86%29\NVIDIA Corporation\NVIDIA PhysX SDK\v2.8.3\SDKs\NxCharacter\include;C:\Program Files %28x86%29\NVIDIA Corporation\NVIDIA PhysX SDK\v2.8.3\SDKs\Cooking\include;C:\Program Files %28x86%29\NVIDIA Corporation\NVIDIA PhysX SDK\v2.8.3\SDKs\PhysXLoader\include;C:\Program Files %28x86%29\NVIDIA Corporation\NVIDIA PhysX SDK\v2.8.3\SDKs\Foundation\include;$(DXSDK_DIR)\include;$(ProjectDir)\..\lua-5.2.1\include;$(ProjectDir)\..\LuaLink;$(IncludePath)</IncludePath>
     <LibraryPath>$(DXSDK_DIR)\lib\x86;C:\Program Files %28x86%29\NVIDIA Corporation\NVIDIA PhysX SDK\v2.8.3\SDKs\lib\Win32;C:\Program Files %28x86%29\NVIDIA Corporation\NVIDIA PhysX SDK\v2.8.3\SDKs\lib\win64;C:\Users\user\DAE\2012-2013\_PROJECTS\TTengine\lua-5.2.1;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -92,7 +92,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>winmm.lib;lua52.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -228,7 +228,15 @@
       </SubType>
     </ClInclude>
     <ClInclude Include="Graphics\Materials\SkinnedMaterial.h" />
+    <ClInclude Include="Graphics\Materials\SkyboxMaterial.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Graphics\Materials\SpriteMaterial.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Graphics\Materials\TerrainMaterial.h">
       <SubType>
       </SubType>
     </ClInclude>
@@ -292,6 +300,14 @@
       </SubType>
     </ClInclude>
     <ClInclude Include="SceneObjects\ParticleSystem.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="SceneObjects\Skybox.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="SceneObjects\Terrain.h">
       <SubType>
       </SubType>
     </ClInclude>
@@ -436,7 +452,15 @@
       </SubType>
     </ClCompile>
     <ClCompile Include="Graphics\Materials\SkinnedMaterial.cpp" />
+    <ClCompile Include="Graphics\Materials\SkyboxMaterial.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Graphics\Materials\SpriteMaterial.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Graphics\Materials\TerrainMaterial.cpp">
       <SubType>
       </SubType>
     </ClCompile>
@@ -503,6 +527,14 @@
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="SceneObjects\Skybox.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="SceneObjects\Terrain.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Services\Implementations\DefaultPhysicsService.cpp">
       <SubType>
       </SubType>
@@ -541,6 +573,11 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Properties.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\LuaLink\LuaLink.vcxproj">
+      <Project>{c53a1957-c271-4d37-b5d7-e032014aeb14}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

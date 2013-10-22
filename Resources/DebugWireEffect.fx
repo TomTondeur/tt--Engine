@@ -10,7 +10,7 @@ RasterizerState Debug
 
 DepthStencilState NoDepth
 {
-	DepthEnable = FALSE;
+	DepthEnable = TRUE;//FALSE;
 };
 
 struct VS_INPUT{

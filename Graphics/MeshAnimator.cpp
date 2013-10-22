@@ -60,15 +60,17 @@ void MeshAnimator::Update(const tt::GameContext& context)
 		D3DXMATRIX mat;
 		D3DXMatrixInverse(&mat, nullptr, &m_pModel->m_Skeleton[i].BindPose);
 		m_BoneTransforms[i] = mat * Lerp(itPrevTick->BoneTransforms[i], itNextTick->BoneTransforms[i], blendFactor);
-
 	}
 		
 }
-
+#include "../Graphics/Materials/DebugMaterial.h"
 //currently empty, can be used to visualize bone transforms later
 void MeshAnimator::Draw(const tt::GameContext& context)
-{
-
+{/*
+	auto pModel = MyServiceLocator::GetInstance()->GetService<ResourceService>()->Load<Model3D>(_T("Resources/bone.bin"));
+	auto pMat = MyServiceLocator::GetInstance()->GetService<ResourceService>()->Load<DebugMaterial>(_T("BoneMat"));
+	for(auto& bone : m_BoneTransforms)
+		MyServiceLocator::GetInstance()->GetService<IGraphicsService>()->Draw(pModel, tt::Matrix4x4(bone), pMat, context);*/
 }
 
 void MeshAnimator::SetModel(Model3D* pModel)

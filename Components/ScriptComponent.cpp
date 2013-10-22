@@ -18,92 +18,44 @@
 #include "ScriptComponent.h"
 #include "../Services/ServiceLocator.h"
 
-ScriptComponent::LuaScript::LuaScript(std::string filename):m_Filename(filename), m_pLuaState(nullptr), m_pFnInitEnvironment(nullptr){}
+using namespace LuaLink;
 
-ScriptComponent::LuaScript::~LuaScript(void)
-{
-	if(!m_pLuaState)
-		return;
-
-	lua_close(m_pLuaState);
-}
-
-ScriptComponent::ScriptComponent(const std::tstring& filename, void (*cb_InitEnvironment)(lua_State* pLuaState) )												
+ScriptComponent::ScriptComponent(const std::tstring& filename)												
 {
 	m_pScript = MyServiceLocator::GetInstance()->GetService<ResourceService>()->Load<LuaScript>(filename);
-	m_pScript->m_pFnInitEnvironment = cb_InitEnvironment;
+	auto slashIdx = filename.find_last_of(_T('/'));
+	m_ShortFilename = TstringToString(filename.substr(slashIdx+1, filename.find_last_of(_T('.')) - slashIdx - 1));
 }
 
 ScriptComponent::~ScriptComponent(void){}
 
 //Methods
-void ScriptComponent::InitializeEnvironment(void (*pInitializeCallback)(lua_State* pLuaState))
+void ScriptComponent::Load(void(*initializeEnvironmentFn)(void), bool bOpenLibs, bool bResetState)
 {
-	m_pScript->m_pFnInitEnvironment = pInitializeCallback;
+	m_pScript->Load(initializeEnvironmentFn, bOpenLibs, bResetState);
 }
 
 void ScriptComponent::Initialize(void)
 {
-	if(m_pScript->m_pFnInitEnvironment)
-		m_pScript->m_pFnInitEnvironment(m_pScript->m_pLuaState);
-	
-	// should return 0 if successful otherwise will return the following:
-	//   LUA_ERRRUN unable to run the script.
-	// this initial call will run the script loaded and prep the various functions
-	// and variables.  It is necessary to call this once in order to run the script
-	// so that all the global variables for functions and table names will be set.
-	// after this call, we can perform various actions by setting up the Lua stack
-	// and then using lua_pcall() again to perform the action.
-	if(lua_pcall(m_pScript->m_pLuaState, 0, 0, 0) != 0)
-		throw std::exception( lua_tostring(m_pScript->m_pLuaState, -1) );
+	m_pScript->Initialize();
+	try{
+		LuaScript::Call<void>::LuaStaticMethod(m_ShortFilename,"Initialize");
+	}catch(LuaCallException&)
+	{
+		std::tstringstream ss; 
+		ss << _T("Script ") << StringToTstring(m_ShortFilename) << _T(" does not contain a defintion for ") << StringToTstring(m_ShortFilename) << _T(":Initialize()");
+		MyServiceLocator::GetInstance()->GetService<DebugService>()->Log(ss.str(), LogLevel::Warning);
+	}
 }
 
-void ScriptComponent::RunScript(bool bReload)
+void ScriptComponent::Update(const tt::GameContext& context)
 {
-	if(bReload){
-		auto initCB = m_pScript->m_pFnInitEnvironment;
-		lua_close(m_pScript->m_pLuaState);
-		m_pScript->m_pLuaState = nullptr;
-		m_pScript = MyServiceLocator::GetInstance()->GetService<ResourceService>()->Load<LuaScript>(StringToTstring(m_pScript->m_Filename), true);
-		m_pScript->m_pFnInitEnvironment = initCB;
-		Initialize();
+	try{
+		LuaScript::Call<void>::LuaStaticMethod(m_ShortFilename,"Update",context.GameTimer.GetElapsedSeconds());
+	}catch(LuaCallException&)
+	{
+		std::tstringstream ss; 
+		ss << _T("Script ") << StringToTstring(m_ShortFilename) << _T(" does not contain a defintion for ") << StringToTstring(m_ShortFilename) << _T(":Update(float dTime)");
+		MyServiceLocator::GetInstance()->GetService<DebugService>()->Log(ss.str(), LogLevel::Warning);
 	}
-	else
-		luaL_dofile(m_pScript->m_pLuaState, m_pScript->m_Filename.c_str());
-}
-
-//  The type of the memory-allocation function used by Lua states. The allocator function
-//  must provide a functionality similar to realloc, but not exactly the same. Its arguments
-//  are:
-//     ud, an opaque pointer passed to lua_newstate;
-//     ptr, a pointer to the block being allocated/reallocated/freed;
-//     osize, the original size of the block;
-//     nsize, the new size of the block.
-//
-//  ptr is NULL if and only if osize is zero. When nsize is zero, the allocator
-//  must return NULL; if osize is not zero, it should free the block pointed to by ptr. When nsize
-//  is not zero, the allocator returns NULL if and only if it cannot fill the request. When nsize
-//  is not zero and osize is zero, the allocator should behave like malloc. When nsize and osize
-//  are not zero, the allocator behaves like realloc().
-//
-//  Lua assumes that the allocator never fails when osize >= nsize.
-//
-//  See also this documentation http://www.lua.org/manual/5.2/manual.html#lua_Alloc
-//
-void* ScriptComponent::LuaAllocate(void *ud, void *ptr, size_t osize, size_t nsize)
-{
-	void *pOut = nullptr;
-
-	if (osize && nsize && ptr) {
-		if (osize < nsize)
-			pOut = realloc (ptr, nsize);
-		else
-			pOut = ptr;
-	}
-	else if (nsize == 0)
-		free(ptr);
-	else
-		pOut = malloc (nsize);
-
-	return pOut;
 }

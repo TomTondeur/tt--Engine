@@ -39,6 +39,12 @@ SamplerState samPoint
     AddressV = WRAP;
 };
 
+RasterizerState Solid
+{
+	FillMode = SOLID;
+	CullMode = BACK;
+};
+
 //SHADER STRUCTS
 //**************
 struct GS_INPUT
@@ -110,5 +116,6 @@ technique10 Default {
 		SetVertexShader(	CompileShader(vs_4_0, MainVS()));
 		SetGeometryShader(	CompileShader(gs_4_0, MainGS()));
 		SetPixelShader(		CompileShader(ps_4_0, MainPS()));
+		SetRasterizerState(Solid);
 	}
 }

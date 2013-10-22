@@ -22,6 +22,7 @@
 #include "../../Graphics/Materials/TextMaterial.h"
 #include "../../Graphics/Materials/ParticlesMaterial.h"
 #include "../../Graphics/Materials/SkinnedMaterial.h"
+#include "../../Graphics/Materials/DebugMaterial.h"
 
 template<> unique_ptr<SpriteMaterial> ResourceService::LoadResource<SpriteMaterial>(const std::tstring& filename)
 {
@@ -56,4 +57,11 @@ template<> unique_ptr<SkinnedMaterial> ResourceService::LoadResource<SkinnedMate
 	auto ptr = new SkinnedMaterial();
 	ptr->LoadEffect();
 	return unique_ptr<SkinnedMaterial>(ptr);
+}
+
+template<> unique_ptr<DebugMaterial> ResourceService::LoadResource<DebugMaterial>(const std::tstring& filename)
+{
+	auto ptr = new DebugMaterial();
+	ptr->LoadEffect();
+	return unique_ptr<DebugMaterial>(ptr);
 }

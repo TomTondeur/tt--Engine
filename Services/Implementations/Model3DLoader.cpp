@@ -127,10 +127,10 @@ template<> unique_ptr<Model3D> ResourceService::LoadResource<Model3D>(const std:
 		for(unsigned int i=0; i < nrOfAnimData; ++i){
 			auto nrOfIndices = meshFile.Read<unsigned int>();
 
-			auto x = nrOfIndices > 0 ? static_cast<float>( meshFile.Read<unsigned int>() ) : 0.0f;
-			auto y = nrOfIndices > 1 ? static_cast<float>( meshFile.Read<unsigned int>() ) : 0.0f;
-			auto z = nrOfIndices > 2 ? static_cast<float>( meshFile.Read<unsigned int>() ) : 0.0f;
-			auto w = nrOfIndices > 3 ? static_cast<float>( meshFile.Read<unsigned int>() ) : 0.0f;
+			auto x = nrOfIndices > 0 ? static_cast<float>( meshFile.Read<unsigned int>() ) : -1.0f;
+			auto y = nrOfIndices > 1 ? static_cast<float>( meshFile.Read<unsigned int>() ) : -1.0f;
+			auto z = nrOfIndices > 2 ? static_cast<float>( meshFile.Read<unsigned int>() ) : -1.0f;
+			auto w = nrOfIndices > 3 ? static_cast<float>( meshFile.Read<unsigned int>() ) : -1.0f;
 
 			pModel->m_BlendIndices.data.push_back(D3DXVECTOR4(x,y,z,w));
 			
@@ -143,9 +143,7 @@ template<> unique_ptr<Model3D> ResourceService::LoadResource<Model3D>(const std:
 		}
 	}
 	
-	
-	pModel->m_TexCoords.resize(nrOfTexCoordChannels);
-	
+
 	//Read vertices
 	for(unsigned int i=0; i < nrOfVertices; ++i)
 	{

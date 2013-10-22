@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TTengine", "TTengine.vcxproj", "{072EE9AE-A65E-4D24-A726-B6C9B420EBD8}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LuaLink", "..\LuaLink\LuaLink.vcxproj", "{C53A1957-C271-4D37-B5D7-E032014AEB14}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -19,11 +21,14 @@ Global
 		{072EE9AE-A65E-4D24-A726-B6C9B420EBD8}.Release|Win32.Build.0 = Release|Win32
 		{072EE9AE-A65E-4D24-A726-B6C9B420EBD8}.Release|x64.ActiveCfg = Release|x64
 		{072EE9AE-A65E-4D24-A726-B6C9B420EBD8}.Release|x64.Build.0 = Release|x64
+		{C53A1957-C271-4D37-B5D7-E032014AEB14}.Debug|Win32.ActiveCfg = Debug|Win32
+		{C53A1957-C271-4D37-B5D7-E032014AEB14}.Debug|Win32.Build.0 = Debug|Win32
+		{C53A1957-C271-4D37-B5D7-E032014AEB14}.Debug|x64.ActiveCfg = Debug|Win32
+		{C53A1957-C271-4D37-B5D7-E032014AEB14}.Release|Win32.ActiveCfg = Release|Win32
+		{C53A1957-C271-4D37-B5D7-E032014AEB14}.Release|Win32.Build.0 = Release|Win32
+		{C53A1957-C271-4D37-B5D7-E032014AEB14}.Release|x64.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(Performance) = preSolution
-		HasPerformanceSessions = true
 	EndGlobalSection
 EndGlobal

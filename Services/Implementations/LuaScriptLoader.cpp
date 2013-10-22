@@ -17,37 +17,9 @@
 
 #include "../Interfaces/ResourceService.h"
 #include "../../Components/ScriptComponent.h"
+using namespace LuaLink;
 
-template<> unique_ptr<ScriptComponent::LuaScript> ResourceService::LoadResource<ScriptComponent::LuaScript>(const std::tstring& filename)
+template<> unique_ptr<LuaScript> ResourceService::LoadResource<LuaScript>(const std::tstring& filename)
 {
-	auto pScript = new ScriptComponent::LuaScript(TstringToString(filename));
-
-	pScript->m_pLuaState = lua_newstate(&ScriptComponent::LuaAllocate, nullptr);
-
-	if(!pScript->m_pLuaState)
-		throw exception("Unable to create new lua state");
-	
-	luaL_openlibs(pScript->m_pLuaState);
-	
-	// should return 0 if successful otherwise will return the following:
-	//   LUA_ERRFILE  unable to open the file from luaL_loadfile()
-	//   LUA_ERRSYNTAX  syntax error in the lua code in the file from lua_load()
-	//   LUA_ERRMEM  if there is a memory allocation error from lua_load()
-	switch( luaL_loadfile(pScript->m_pLuaState, pScript->m_Filename.c_str() ) ){
-	case LUA_ERRFILE:
-		throw exception( ("Unable to open file " + pScript->m_Filename + ":\n" + lua_tostring(pScript->m_pLuaState, -1) ).c_str() );
-		break;
-	case LUA_ERRSYNTAX:
-		throw exception( ("Syntax error encountered in " + pScript->m_Filename + ":\n" + lua_tostring(pScript->m_pLuaState, -1) ).c_str() );
-		break;
-	case LUA_ERRMEM:
-		throw exception( ("Memory allocation error encountered in " + pScript->m_Filename + ":\n" + lua_tostring(pScript->m_pLuaState, -1) ).c_str() );
-		break;
-	case 0:
-		break;
-	default:
-		throw exception( ("Unknown error encountered while loading:\n" + pScript->m_Filename + lua_tostring(pScript->m_pLuaState, -1) ).c_str() );
-	}
-
-	return std::unique_ptr<ScriptComponent::LuaScript>(pScript);
+	return std::unique_ptr<LuaScript>(new LuaScript(TstringToString(filename)));
 }

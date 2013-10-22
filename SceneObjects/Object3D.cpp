@@ -22,17 +22,20 @@
 #include "../Graphics/Materials/Object3DMaterial.h"
 #include "../Graphics/Materials/SkinnedMaterial.h"
 
-Object3D::Object3D(void)
+Object3D::Object3D(const std::tstring& meshFile)
 {
 	auto pTransform = new TransformComponent();
-	auto pModel = new ModelComponent(_T("Resources/box3bonesV2.bin"),pTransform);
+	auto pModel = new ModelComponent(meshFile,pTransform);
 	auto pRigidbody = new RigidBodyComponent(this);
 	
 	SetComponent<TransformComponent>(pTransform);
+
 	SetComponent<ModelComponent>(pModel);
+	/*
 	SetComponent<RigidBodyComponent>(pRigidbody);
 	SetComponent<MeshColliderComponent>(new MeshColliderComponent(pRigidbody, _T("Resources/box.convexphysx"), MeshType::Convex));
-	SetComponent<ScriptComponent>( new ScriptComponent(_T("Resources/Scripts/TestScript.lua") ) );
+	
+	SetComponent<ScriptComponent>( new ScriptComponent(_T("Resources/Scripts/TestScript.lua") ) );*/
 }
 
 Object3D::~Object3D(void)
@@ -46,17 +49,12 @@ void Object3D::Initialize(void)
 {
 	auto pMat = MyServiceLocator::GetInstance()->GetService<ResourceService>()->Load<SkinnedMaterial>( _T("BasicMaterial") );
 	GetComponent<ModelComponent>()->SetMaterial(pMat);
-	pMat->SetDiffuse(_T("Resources/Vampire_Diffuse.dds"));
+	pMat->SetDiffuse(_T("Resources/Textures/TEX_Char_Goblin_Body_dif.png"));
 
 	MyServiceLocator::GetInstance()->GetService<IInputService>()->AddInputAction(InputActionId::ReloadScript, VK_RETURN, KeyState::Pressed);
 }
 
 void Object3D::Update(const tt::GameContext& context)
 {
-	try{
-	if(MyServiceLocator::GetInstance()->GetService<IInputService>()->IsActionTriggered(InputActionId::ReloadScript))
-		GetComponent<ScriptComponent>()->RunScript(true);
-	}catch(exception& e){
-		cout << e.what();
-	}
+
 }

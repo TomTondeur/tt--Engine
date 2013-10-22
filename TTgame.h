@@ -23,7 +23,6 @@
 //                        /____/               
 //
 // TTgame.h : Sample Game class
-// Copyright © 2013 Tom Tondeur
 //
 
 #pragma once

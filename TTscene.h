@@ -15,6 +15,16 @@
 // You should have received a copy of the GNU General Public License
 // along with tt::Engine.  If not, see <http://www.gnu.org/licenses/>.
 
+//    __  __      ______            _          
+//   / /_/ /__ _ / ____/___  ____ _(_)___  ___ 
+//  / __/ __(_|_) __/ / __ \/ __ `/ / __ \/ _ \
+// / /_/ /__ _ / /___/ / / / /_/ / / / / /  __/
+// \__/\__(_|_)_____/_/ /_/\__, /_/_/ /_/\___/ 
+//                        /____/               
+//
+// TTscene.h : Sample Scene class
+//
+
 #pragma once
 
 #include "Scenegraph/GameScene.h"

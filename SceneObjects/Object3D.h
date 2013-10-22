@@ -29,7 +29,7 @@ class Object3D : public GenericSceneObject<TransformComponent, ModelComponent, R
 {
 public:
 	//Default constructor & destructor
-	Object3D(void);
+	Object3D(const std::tstring& meshFile);
 	virtual ~Object3D(void);
 
 	//Methods
