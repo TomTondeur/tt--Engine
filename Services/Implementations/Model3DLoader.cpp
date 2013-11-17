@@ -193,15 +193,26 @@ template<> unique_ptr<Model3D> ResourceService::LoadResource<Model3D>(const std:
 		for(unsigned int i=0; i < nrOfBones; ++i){
 			Bone newBone;
 			newBone.Name = meshFile.ReadString();
-			
+			/*
 			for(unsigned int row=0; row < 4; ++row)
 				for(unsigned int col=0; col < 3; ++col)
 					newBone.BindPose.m[row][col] = meshFile.Read<float>();
 
 			newBone.BindPose._14 = newBone.BindPose._24 = newBone.BindPose._34 = 0;
 			newBone.BindPose._44 = 1;
-
+			*/
+			newBone.BindPose.Data[0].x = meshFile.Read<float>();
+			newBone.BindPose.Data[0].y = meshFile.Read<float>();
+			newBone.BindPose.Data[0].z = meshFile.Read<float>();
+			newBone.BindPose.Data[0].w = meshFile.Read<float>();
+			
+			newBone.BindPose.Data[1].x = meshFile.Read<float>();
+			newBone.BindPose.Data[1].y = meshFile.Read<float>();
+			newBone.BindPose.Data[1].z = meshFile.Read<float>();
+			newBone.BindPose.Data[1].w = meshFile.Read<float>();
+			
 			pModel->m_Skeleton.push_back(newBone);
+			
 		}
 		
 		//Read AnimClips
@@ -221,6 +232,7 @@ template<> unique_ptr<Model3D> ResourceService::LoadResource<Model3D>(const std:
 				newKey.KeyTime = meshFile.Read<float>();
 				
 				for(unsigned int iBone=0; iBone < nrOfBones; ++iBone){
+					/*
 					D3DXMATRIX transform;
 					for(unsigned int row=0; row < 4; ++row)
 						for(unsigned int col=0; col < 3; ++col)
@@ -228,8 +240,21 @@ template<> unique_ptr<Model3D> ResourceService::LoadResource<Model3D>(const std:
 
 					transform._14 = transform._24 = transform._34 = 0;
 					transform._44 = 1;
-
 					newKey.BoneTransforms.push_back(transform);
+					*/
+					tt::DualQuaternion newDQ;
+					newDQ.Data[0].x = meshFile.Read<float>();
+					newDQ.Data[0].y = meshFile.Read<float>();
+					newDQ.Data[0].z = meshFile.Read<float>();
+					newDQ.Data[0].w = meshFile.Read<float>();
+					
+					newDQ.Data[1].x = meshFile.Read<float>();
+					newDQ.Data[1].y = meshFile.Read<float>();
+					newDQ.Data[1].z = meshFile.Read<float>();
+					newDQ.Data[1].w = meshFile.Read<float>();
+					
+					newKey.BoneTransforms.push_back(newDQ);					
+					
 				}
 
 				newClip.Keys.push_back(newKey);

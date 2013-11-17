@@ -71,6 +71,7 @@ void ModelComponent::Draw(const tt::GameContext& context)
 		
 		m_pMeshAnimator->Draw(context);
 		pMat->SetBoneTransforms(m_pMeshAnimator->GetBoneTransforms() );
+		pMat->SetDualQuats(m_pMeshAnimator->GetDualQuats() );
 		pMat->SetLightDirection(tt::Vector3(0,-1,0) );
 	}
 

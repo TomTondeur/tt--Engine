@@ -14,6 +14,7 @@ public:
 	void SetDiffuse(const std::tstring& diffuseFilename);
 	void SetLightDirection(const tt::Vector3& lightDirection);
 	void SetBoneTransforms(const std::vector<D3DXMATRIX>& boneTransforms);
+	void SetDualQuats(const std::vector<tt::DualQuaternion>& boneTransforms);
 	
 	static const int MAX_NR_OF_BONES = 70;
 private:
@@ -22,6 +23,8 @@ private:
 	resource_ptr<ID3D10ShaderResourceView> m_pTexture;
 
 	std::vector<D3DXMATRIX> m_vecBoneTransforms;
+
+	std::vector<tt::DualQuaternion> m_vecDualQuats;
 	
 	// -------------------------
 	// Disabling default copy constructor and default 

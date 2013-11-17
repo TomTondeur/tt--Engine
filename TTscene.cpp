@@ -57,11 +57,10 @@ void TTscene::Initialize(void)
 	AddSceneObject(pCam);
 	SetActiveCamera(pCam->GetComponent<CameraComponent>());
 	AddSceneObject(new Object3D(_T("Resources/goblin.ttmesh")));
-	//AddSceneObject(new Object3D(_T("Resources/skewedBoxHierarchy.bin")));
 	AddSceneObject(new Skybox());
 	
 	//AddSceneObject(new ParticleSystem() );
-	//AddSceneObject( new Terrain( tt::Vector3(10,3,10), 6, _T("Resources/Textures/HeightMap_128x128x16.raw") ) );
+	//AddSceneObject( new Terrain( tt::Vector3(100,30,100), 6, _T("Resources/Textures/HeightMap_128x128x16.raw") ) );
 
 	MyServiceLocator::GetInstance()->GetService<IInputService>()->AddInputAction(InputActionId::ToggleVSync, 'V', KeyState::Pressed);
 }

@@ -15,7 +15,8 @@ cbuffer cbPerObject
 	float4x4 matWorld : World;
 	float4x4 matWorldViewProj : WorldViewProjection;
 	float3 vLightDir : LightDirection;
-	float4x4 matBones[70] : BoneTransforms;
+	//float4x4 matBones[70] : BoneTransforms;
+	float2x4 g_dualquat[70] : DualQuats;
 };
 
 Texture2D m_Texture : DiffuseTexture;
@@ -57,12 +58,12 @@ struct VS_OUTPUT
 VS_OUTPUT VS_Anim(VS_INPUT input)
 {
 	VS_OUTPUT output = (VS_OUTPUT)0;
-
+	/*
 	float4 position = float4(input.Position, 1);
 	float4 transformedPosition = float4(0,0,0,1);
 	float3 normal = input.Normal;
-	float3 transformedNormal = float3(0,0,0);	
-
+	*/float3 transformedNormal = float3(0,0,0);	
+	/*
 	for(int i=0; i < 4; ++i)
 	{
 		int boneIndex = (int)input.BlendIndices[i];
@@ -73,8 +74,52 @@ VS_OUTPUT VS_Anim(VS_INPUT input)
 			transformedPosition.w = 1;
 		}
 	}
+	*/
+	// <NVIDIA>
+	float2x4 dual = (float2x4)0;
+	float2x4 m = g_dualquat[input.BlendIndices.x];
+	float4 dq0 = (float1x4)m ;     
+    
+	dual = input.BlendWeight.x * m ;
 
-	output.Position = mul(transformedPosition, matWorldViewProj);
+	m = g_dualquat[input.BlendIndices.y];
+	float4 dq = (float1x4)m ;   
+	if (dot( dq0, dq ) < 0)        
+		dual -= input.BlendWeight.y * m;
+	else 
+		dual += input.BlendWeight.y * m;
+        
+    m = g_dualquat[input.BlendIndices.z];
+    dq = (float1x4)m ;          
+    if (dot( dq0, dq ) < 0)        
+		dual -= input.BlendWeight.z * m;
+    else 
+		dual += input.BlendWeight.z * m;
+            
+            
+    m = g_dualquat[input.BlendIndices.w];
+    dq = (float1x4)m ;              
+    if (dot( dq0, dq ) < 0)        
+		dual -= input.BlendWeight.w * m;
+    else                
+		dual += input.BlendWeight.w * m;    
+   
+    float4 Pos;
+    float3 Norm, position, translation; 
+
+    // fast dqs 
+    float length = sqrt(dual[0].w * dual[0].w + dual[0].x * dual[0].x + dual[0].y * dual[0].y + dual[0].z * dual[0].z);
+    dual = dual / length ; 
+    position = input.Position.xyz + 2.0 * cross(dual[0].xyz, cross(dual[0].xyz, input.Position.xyz) + dual[0].w * input.Position.xyz);
+    translation = 2.0 * (dual[0].w * dual[1].xyz - dual[1].w * dual[0].xyz + cross(dual[0].xyz, dual[1].xyz)); 
+    position += translation; 
+    
+    Pos = float4(position,1);
+    Norm = input.Normal.xyz + 2.0 * cross(dual[0].xyz, cross(dual[0].xyz,input.Normal.xyz) + dual[0].w * input.Normal.xyz); 
+    float4 vAnimatedPos = Pos; 
+    // </NVIDIA>
+
+	output.Position = mul(vAnimatedPos, matWorldViewProj);
 	output.Normal = mul(transformedNormal, (float3x3)matWorld);
 	output.TexCoord = input.TexCoord;
 

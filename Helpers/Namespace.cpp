@@ -695,24 +695,76 @@ Quaternion::Quaternion(const Vector3& axis, float angle)
 	*this = static_cast<Quaternion>(quat);
 }
 
+Quaternion Quaternion::operator+(const Quaternion& quat) const
+{
+	return Quaternion(x + quat.x, y + quat.y, z + quat.z, w + quat.w);
+}
+
+Quaternion& Quaternion::operator+=(const Quaternion& quat)
+{
+	x += quat.x;
+	y += quat.y;
+	z += quat.z;
+	w += quat.w;
+
+	return *this;
+}
+
+Quaternion Quaternion::operator-(const Quaternion& quat) const
+{
+	return Quaternion(x - quat.x, y - quat.y, z - quat.z, w - quat.w);
+}
+
+Quaternion& Quaternion::operator-=(const Quaternion& quat)
+{
+	x -= quat.x;
+	y -= quat.y;
+	z -= quat.z;
+	w -= quat.w;
+
+	return *this;
+}
+		
 Quaternion Quaternion::operator*(const Quaternion& quat) const
-{/*
+{
 	Quaternion out;
-	
+	/*
 	//Quaternion multiplication: http://www.euclideanspace.com/maths/algebra/realNormedAlgebra/quaternions/code/index.htm#mul
 	out.x =  x * quat.w + y * quat.z - z * quat.y + w * quat.x;
 	out.y = -x * quat.z + y * quat.w + z * quat.x + w * quat.y;
 	out.z =  x * quat.y - y * quat.x + z * quat.w + w * quat.z;
-	out.w = -x * quat.x - y * quat.y - z * quat.z + w * quat.w;*/
+	out.w = -x * quat.x - y * quat.y - z * quat.z + w * quat.w;
+	return out;*/
 	D3DXQUATERNION outQuat;
 	D3DXQuaternionMultiply(&outQuat, &static_cast<D3DXQUATERNION>(*this), &static_cast<D3DXQUATERNION>(quat));
 
 	return static_cast<Quaternion>(outQuat);
+	
 }
 
 Quaternion& Quaternion::operator*=(const Quaternion& quat)
 {
 	return *this = *this * quat;
+}
+
+Quaternion Quaternion::operator*(float f) const
+{
+	return Quaternion(x*f, y*f, z*f, w*f);
+}
+
+Quaternion& Quaternion::operator*=(float f)
+{
+	return *this = *this * f;
+}
+
+Quaternion Quaternion::operator/(float f) const
+{
+	return *this * (1/f);
+}
+
+Quaternion& Quaternion::operator/=(float f)
+{
+	return *this = *this / f;
 }
 
 bool Quaternion::operator==(const Quaternion& quat)
@@ -753,6 +805,23 @@ Quaternion Quaternion::FromRotationMatrix(Matrix4x4 rotMat)
 	return static_cast<Quaternion>(quat);
 } 
 
+Quaternion Quaternion::Inverse(const Quaternion& quat)
+{
+	//Conjugate / norm²
+	//norm = sqrt(x²+y²+z²+w²) => norm² = x²+y²+z²+w²
+	return Conjugate(quat) / (quat.x * quat.x + quat.y * quat.y + quat.z * quat.z + quat.w * quat.w);
+}
+
+Quaternion Quaternion::Conjugate(const Quaternion& quat)
+{
+	return Quaternion(-quat.x, -quat.y, -quat.z, quat.w);
+}
+
+Quaternion Quaternion::InnerProduct(const Quaternion& q1, const Quaternion& q2)
+{
+	return Quaternion(q1.x * q2.x, q1.y * q2.y, q1.z * q2.z, q1.w * q2.w);
+}
+
 Quaternion::operator D3DXQUATERNION(void) const
 {
 	return D3DXQUATERNION(x,y,z,w);
@@ -764,18 +833,6 @@ Quaternion::operator NxQuat(void) const
 	ret.setXYZW(x,y,z,w);
 	return ret;
 }
-
-/*
-Vector3 Quaternion::GetAxis(void) const
-{
-
-}
-
-float Quaternion::GetAngle(void) const
-{
-
-}
-*/
 
 Vector3 Quaternion::GetYawPitchRoll(void) const
 {

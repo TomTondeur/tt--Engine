@@ -27,7 +27,23 @@ bool MeshAnimator::SetAnimationClip(const std::tstring& name)
 		return true;
 	}
 }
-	
+
+tt::Vector3 ToVec3(const tt::Quaternion& q)
+{
+	return tt::Vector3(q.x, q.y, q.z);
+}
+
+tt::Quaternion ExtractPos(const tt::DualQuaternion& dq)
+{
+	return tt::Quaternion::Inverse(dq.Data[0]) * (dq.Data[1]*2);
+}
+
+tt::DualQuaternion Combine(const tt::DualQuaternion& lhs, const tt::DualQuaternion& rhs)
+{
+	//Example: lhs = invBindpose, rhs = transform
+	return tt::DualQuaternion(lhs.Data[0] * rhs.Data[0]*-1, ToVec3(tt::Quaternion::Inverse(rhs.Data[0]) * ExtractPos(lhs) * rhs.Data[0] + ExtractPos(rhs)));
+}
+
 //Calculate the bonetransforms
 void MeshAnimator::Update(const tt::GameContext& context)
 {
@@ -55,11 +71,18 @@ void MeshAnimator::Update(const tt::GameContext& context)
 	float blendFactor = (targetTick - itPrevTick->KeyTime) / (itNextTick->KeyTime - itPrevTick->KeyTime);
 	
 	m_BoneTransforms.resize(itPrevTick->BoneTransforms.size());
+	m_DualQuats.resize(m_BoneTransforms.size());
 
-	for(UINT i = 0; i < itPrevTick->BoneTransforms.size(); ++i){
-		D3DXMATRIX mat;
-		D3DXMatrixInverse(&mat, nullptr, &m_pModel->m_Skeleton[i].BindPose);
-		m_BoneTransforms[i] = mat * Lerp(itPrevTick->BoneTransforms[i], itNextTick->BoneTransforms[i], blendFactor);
+	for(UINT i = 0; i < itPrevTick->BoneTransforms.size(); ++i)
+	{		
+		tt::DualQuaternion bindposeInv = tt::DualQuaternion::Inverse(m_pModel->m_Skeleton[i].BindPose)*-1;
+	
+		auto trans1 = itPrevTick->BoneTransforms[i];
+		auto trans2 = itNextTick->BoneTransforms[i];
+	
+		auto dlb = tt::DualQuaternion::DLB(trans1, trans2, blendFactor);
+		
+		m_DualQuats[i] = Combine(bindposeInv, dlb);
 	}
 		
 }
@@ -81,4 +104,9 @@ void MeshAnimator::SetModel(Model3D* pModel)
 const vector<D3DXMATRIX>& MeshAnimator::GetBoneTransforms(void) const 
 {
 	return m_BoneTransforms;
+}
+
+const vector<tt::DualQuaternion>& MeshAnimator::GetDualQuats(void) const
+{
+	return m_DualQuats;
 }

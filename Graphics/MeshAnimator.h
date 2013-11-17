@@ -6,13 +6,15 @@ class Model3D;
 struct Bone
 {
 	tstring Name;
-	D3DXMATRIX BindPose;
+	//D3DXMATRIX BindPose;
+	tt::DualQuaternion BindPose;
 };
 
 struct AnimationKey
 {
 	float KeyTime;
-	vector<D3DXMATRIX> BoneTransforms;
+	//vector<D3DXMATRIX> BoneTransforms;
+	vector<tt::DualQuaternion> BoneTransforms;
 };
 
 struct AnimationClip
@@ -42,11 +44,15 @@ public:
 	// return the bone transforms
 	const vector<D3DXMATRIX>& GetBoneTransforms(void) const;
 
+	//return the dual quaternions
+	const vector<tt::DualQuaternion>& GetDualQuats(void) const;
+
 private:
 	static const int TICKS_PER_SECOND = 2800;
 
 	Model3D* m_pModel;
 	std::vector<D3DXMATRIX> m_BoneTransforms;
+	std::vector<tt::DualQuaternion> m_DualQuats;
 	AnimationClip m_CurrentClip;
 
 private:

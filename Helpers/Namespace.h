@@ -210,8 +210,18 @@ namespace tt
 		explicit Quaternion(const D3DXQUATERNION& quat);
 		explicit Quaternion(const NxQuat& quat);
 		
+		Quaternion operator+(const Quaternion& quat) const;
+		Quaternion& operator+=(const Quaternion& quat);
+		Quaternion operator-(const Quaternion& quat) const;
+		Quaternion& operator-=(const Quaternion& quat);
+		
 		Quaternion operator*(const Quaternion& quat) const;
 		Quaternion& operator*=(const Quaternion& quat);
+		
+		Quaternion operator*(float f) const;
+		Quaternion& operator*=(float f);
+		Quaternion operator/(float f) const;
+		Quaternion& operator/=(float f);
 
 		bool operator==(const Quaternion& quat);
 		bool operator!=(const Quaternion& quat);
@@ -220,17 +230,91 @@ namespace tt
 		static Quaternion FromEuler(float yaw, float pitch, float roll);
 		static Quaternion FromRotationMatrix(Matrix4x4 rotMat);
 		
+		static Quaternion Inverse(const Quaternion& quat);
+		static Quaternion Conjugate(const Quaternion& quat);
+		static Quaternion InnerProduct(const Quaternion& q1, const Quaternion& q2);
+
 		operator D3DXQUATERNION(void) const;
 		operator NxQuat(void) const;
 
-		Vector3 GetAxis(void) const;
-		float GetAngle(void) const;
 		Vector3 GetYawPitchRoll(void) const;
 		Quaternion& Normalize(void);
 
 		static const Quaternion Identity;
 	};
 
+	struct DualNumber
+	{
+		float a, b;
+
+		//Ctors
+
+		DualNumber(void);
+		DualNumber(float _a, float _b);
+		DualNumber(const DualNumber& src);
+
+		//Operators
+		DualNumber operator+(const DualNumber& rhs);
+		DualNumber& operator+=(const DualNumber& rhs);
+
+		DualNumber operator-(const DualNumber& rhs);
+		DualNumber& operator-=(const DualNumber& rhs);
+		
+		DualNumber operator*(const DualNumber& rhs);
+		DualNumber& operator*=(const DualNumber& rhs);
+		
+		DualNumber operator/(const DualNumber& rhs);
+		DualNumber& operator/=(const DualNumber& rhs);
+
+		DualNumber operator*(float f);
+		DualNumber& operator*=(float f);
+		
+		DualNumber operator/(float f);
+		DualNumber& operator/=(float f);
+
+		//Member functions
+		DualNumber& Invert(void);
+
+		//Static member functions
+		static DualNumber Inverse(const DualNumber& n);
+		static DualNumber Sqrt(const DualNumber& n);
+
+		//Static members
+		static const DualNumber Identity;
+	};
+	
+	struct DualQuaternion
+	{
+		Quaternion Data[2];
+	
+		DualQuaternion(void);
+		DualQuaternion(const Quaternion& rotation, const Vector3& translation);// convert unit quaternion and translation to unit dual quaternion
+		DualQuaternion(const DualQuaternion& src);
+
+		DualQuaternion& operator=(const DualQuaternion& src);
+		
+		DualQuaternion operator+(const DualQuaternion& dualQuat) const;
+		DualQuaternion& operator+=(const DualQuaternion& dualQuat);
+
+		DualQuaternion operator*(const DualQuaternion& dualQuat) const;
+		DualQuaternion& operator*=(const DualQuaternion& dualQuat);
+		
+		DualQuaternion operator/(const DualNumber& dualNum) const;
+		DualQuaternion& operator/=(const DualNumber& dualNum);
+		
+		DualQuaternion operator*(float f) const;
+		DualQuaternion& operator*=(float f);
+		
+		DualNumber Norm(void) const;
+		DualQuaternion& Normalize(void);
+
+		static DualQuaternion Conjugate(const DualQuaternion& dualQuat);
+		static DualQuaternion Inverse(const DualQuaternion& dualQuat);
+		static DualQuaternion DLB(const DualQuaternion& q1, const DualQuaternion& q2, float t);
+
+		static const DualQuaternion Identity;
+	};
+	
 	struct ViewportInfo{
 		ViewportInfo(void);
 		ViewportInfo(unsigned short _width, unsigned short _height);

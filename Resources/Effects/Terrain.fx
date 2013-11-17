@@ -135,9 +135,9 @@ void SampleHeightMapGS(triangle GS_DATA vertices[3], inout TriangleStream<GS_FIN
 	v1.Pos.y = g_HeightMap.Load(int3(v1.Pos.x*dim.x, v1.Pos.z*dim.y, 0)) * g_HeightMapScale;
 	v2.Pos.y = g_HeightMap.Load(int3(v2.Pos.x*dim.x, v2.Pos.z*dim.y, 0)) * g_HeightMapScale;
 
-	v0.Normal += GetNormal(v0.Pos, 1.0f/dim, dim);
-	v1.Normal += GetNormal(v1.Pos, 1.0f/dim, dim);
-	v2.Normal += GetNormal(v2.Pos, 1.0f/dim, dim);
+	v0.Normal = GetNormal(v0.Pos, 1.0f/dim, dim);
+	v1.Normal = GetNormal(v1.Pos, 1.0f/dim, dim);
+	v2.Normal = GetNormal(v2.Pos, 1.0f/dim, dim);
 
 	ioStream.Append(v0);
 	ioStream.Append(v1);
@@ -168,8 +168,8 @@ technique10 TechSampleHeightMap
 //****************
 RasterizerState Wireframe
 {
-	FillMode = SOLID;
-	CullMode = BACK;
+	FillMode = WIREFRAME;
+	CullMode = NONE;
 };
 
 //****************
@@ -204,7 +204,7 @@ PS_DATA DrawVS(GS_FINALDATA inVert)
 float4 DrawPS(PS_DATA inVert) : SV_TARGET
 {
 	float l = saturate(dot( inVert.Normal, float3(0,1,0)));
-	return float4(l, l, l, 1);
+	return float4(1, 1, 1, 1);
 }
 
 //************

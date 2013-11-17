@@ -485,6 +485,8 @@
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="Helpers\DualNumber.cpp" />
+    <ClCompile Include="Helpers\DualQuaternion.cpp" />
     <ClCompile Include="Helpers\PhysxUserStream.cpp" />
     <ClCompile Include="SceneObjects\FreeCamera.cpp">
       <SubType>
