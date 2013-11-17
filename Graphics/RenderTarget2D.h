@@ -37,12 +37,16 @@ public:
 
 	ID3D10ShaderResourceView* GetColorMap(void);
 	ID3D10ShaderResourceView* GetDepthMap(void);
+	
+	ID3D10Texture2D* GetColorBuffer(void);
+	ID3D10Texture2D* GetDepthBuffer(void);
 
 private:
 	//Datamembers
 	ID3D10RenderTargetView* m_pRenderTargetView;
 	ID3D10DepthStencilView* m_pDepthStencilView;
 	
+	ID3D10Texture2D* m_pColorTexture;
 	ID3D10Texture2D* m_pDepthStencilTexture;
 	
 	ID3D10ShaderResourceView* m_pColorMapShaderResourceView;

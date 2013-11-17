@@ -58,23 +58,7 @@ struct VS_OUTPUT
 VS_OUTPUT VS_Anim(VS_INPUT input)
 {
 	VS_OUTPUT output = (VS_OUTPUT)0;
-	/*
-	float4 position = float4(input.Position, 1);
-	float4 transformedPosition = float4(0,0,0,1);
-	float3 normal = input.Normal;
-	*/float3 transformedNormal = float3(0,0,0);	
-	/*
-	for(int i=0; i < 4; ++i)
-	{
-		int boneIndex = (int)input.BlendIndices[i];
 
-		if(boneIndex > -1){
-			transformedPosition += input.BlendWeight[i] * mul(position, matBones[boneIndex]);
-			transformedNormal += input.BlendWeight[i] * mul(normal, (float3x3)matBones[boneIndex]);
-			transformedPosition.w = 1;
-		}
-	}
-	*/
 	// <NVIDIA>
 	float2x4 dual = (float2x4)0;
 	float2x4 m = g_dualquat[input.BlendIndices.x];
@@ -120,7 +104,7 @@ VS_OUTPUT VS_Anim(VS_INPUT input)
     // </NVIDIA>
 
 	output.Position = mul(vAnimatedPos, matWorldViewProj);
-	output.Normal = mul(transformedNormal, (float3x3)matWorld);
+	output.Normal = mul(Norm, (float3x3)matWorld);
 	output.TexCoord = input.TexCoord;
 
 	return output;
@@ -142,7 +126,6 @@ float3 CalculateDiffuse(float3 normal, float2 texCoord)
 
 float4 PS(VS_OUTPUT input):SV_TARGET
 {
-	// TODO: CALCULATE DIFFUSE
 	input.Normal = normalize(input.Normal);
 	
 	float3 diffuse = CalculateDiffuse(input.Normal, input.TexCoord);
@@ -157,6 +140,42 @@ technique10 SkinnedAnimationTechnique
 		SetVertexShader( CompileShader ( vs_4_0, VS_Anim() ));
 		SetGeometryShader( NULL );
 		SetPixelShader( CompileShader ( ps_4_0, PS() ));
+		SetRasterizerState(Solid);
+		SetBlendState(NoBlend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xffffffff);
+	}
+}
+
+//****************
+//DEFERRED SHADING
+//****************
+
+struct PS_OUTPUT
+{
+	float4 Position : SV_TARGET0;
+	float4 Normal : SV_TARGET1;
+};
+
+PS_OUTPUT PS_Deferred(VS_OUTPUT input)
+{
+	input.Normal = normalize(input.Normal);
+	
+	float3 diffuse = CalculateDiffuse(input.Normal, input.TexCoord);
+
+	PS_OUTPUT mrtOut = (PS_OUTPUT)0;
+
+	mrtOut.Position = float4(diffuse,1);
+	mrtOut.Normal = float4(diffuse,1);
+
+	return mrtOut;
+}
+
+technique10 TechDeferred
+{
+	pass one
+	{
+		SetVertexShader( CompileShader( vs_4_0, VS_Anim() ) );
+		SetGeometryShader(NULL);
+		SetPixelShader( CompileShader( ps_4_0, PS_Deferred() ) );
 		SetRasterizerState(Solid);
 		SetBlendState(NoBlend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xffffffff);
 	}

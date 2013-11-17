@@ -58,3 +58,7 @@ void Object3D::Update(const tt::GameContext& context)
 {
 
 }
+void Object3D::Draw(const tt::GameContext& context)
+{
+	GetComponent<ModelComponent>()->DrawDeferred(context);
+}

@@ -21,6 +21,7 @@
 
 RenderTarget2D::RenderTarget2D(void) :	m_pRenderTargetView(nullptr),
 										m_pDepthStencilView(nullptr),	
+										m_pColorTexture(nullptr),
 										m_pDepthStencilTexture(nullptr),	
 										m_pColorMapShaderResourceView(nullptr),
 										m_pDepthMapShaderResourceView(nullptr)
@@ -30,6 +31,7 @@ RenderTarget2D::RenderTarget2D(void) :	m_pRenderTargetView(nullptr),
 
 RenderTarget2D::~RenderTarget2D(void)
 {
+	m_pColorTexture->Release();
 	m_pDepthStencilTexture->Release();
 	m_pRenderTargetView->Release();
 	m_pDepthStencilView->Release();
@@ -58,16 +60,15 @@ void RenderTarget2D::Create(unsigned int width, unsigned int height)
 	textureDesc.MiscFlags = D3D10_RESOURCE_MISC_GENERATE_MIPS;
 	textureDesc.Usage = D3D10_USAGE_DEFAULT;
 
-	ID3D10Texture2D* pRenderTargetTexture;
-	HR( pD3DDevice->CreateTexture2D(&textureDesc, nullptr, &pRenderTargetTexture) );
+	HR( pD3DDevice->CreateTexture2D(&textureDesc, nullptr, &m_pColorTexture) );
 	
-	Create(pRenderTargetTexture);
-
-	pRenderTargetTexture->Release();
+	Create(m_pColorTexture);
 }
 
 void RenderTarget2D::Create(ID3D10Texture2D* pRenderTargetBuffer)
 {
+	m_pColorTexture = pRenderTargetBuffer;
+
 	auto pD3DDevice = MyServiceLocator::GetInstance()->GetService<IGraphicsService>()->GetGraphicsDevice()->GetDevice();
 	
 	D3D10_TEXTURE2D_DESC rtBuff;
@@ -130,4 +131,14 @@ ID3D10ShaderResourceView* RenderTarget2D::GetColorMap(void)
 ID3D10ShaderResourceView* RenderTarget2D::GetDepthMap(void)
 {
 	return m_pDepthMapShaderResourceView;
+}
+
+ID3D10Texture2D* RenderTarget2D::GetColorBuffer(void)
+{
+	return m_pColorTexture;
+}
+
+ID3D10Texture2D* RenderTarget2D::GetDepthBuffer(void)
+{
+	return m_pDepthStencilTexture;
 }

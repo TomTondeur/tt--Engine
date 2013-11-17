@@ -29,9 +29,12 @@ public:
 	virtual ~DefaultGraphicsService(void);
 
 	//Methods
+	
 	virtual void InitWindow(int windowWidth, int windowHeight, TTengine* pEngine) override;	
-
+	
 	virtual void Draw(resource_ptr<Model3D> pModel, const tt::Matrix4x4& worldMat, resource_ptr<Material> pMat, const tt::GameContext& context) override;
+	virtual void DrawDeferred(resource_ptr<Model3D> pModel, const tt::Matrix4x4& worldMat, resource_ptr<Material> pMat, const tt::GameContext& context) override;
+	
 	virtual Sprite RenderPostProcessing(const tt::GameContext& context, std::multimap<unsigned int, PostProcessingEffect*, std::greater_equal<unsigned int> >& postProEffects) override;
 
 	virtual GraphicsDevice* GetGraphicsDevice(void) const override;
@@ -44,8 +47,18 @@ private:
 	Window* m_pWindow;
 	SpriteBatch* m_pSpriteBatch;
 
+	//Swapchain for post-processing
 	RenderTarget2D* m_pSwapRT1;
 	RenderTarget2D* m_pSwapRT2;
+
+	//G-buffers for deferred shading
+	ID3D10Texture2D* m_pPositionTexture;
+	ID3D10RenderTargetView* m_pPositionRT;
+	ID3D10Texture2D* m_pNormalTexture;
+	ID3D10RenderTargetView* m_pNormalRT;
+	ID3D10DepthStencilView* m_pDeferredDepthStencilView;
+
+	void InitializeGBuffers(void);
 
 	//Disabling default copy constructor & assignment operator
 	DefaultGraphicsService(const DefaultGraphicsService& src);
