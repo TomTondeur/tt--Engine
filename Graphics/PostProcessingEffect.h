@@ -26,18 +26,21 @@ class Material;
 class PostProcessingEffect
 {
 public:
-	//Default constructor & destructor
+	//Constructors & destructor
+
 	PostProcessingEffect(resource_ptr<Material> pMaterial);
+	PostProcessingEffect(Material* pMaterial);
 	virtual ~PostProcessingEffect(void);
 
 	//Methods
 	void Initialize(void);
 
-	void Draw(const tt::GameContext& context, RenderTarget2D* pInputRT);
+	void Draw(const tt::GameContext& context, RenderTarget2D* pInputRT = nullptr);
 
 private:
 	//Datamembers
 	resource_ptr<Material> m_pMaterial;
+	Material* m_pMaterialAlt;
 
 	static ID3D10Buffer* s_pVertexBuffer;
 	static unsigned int s_VertexBufferStride;

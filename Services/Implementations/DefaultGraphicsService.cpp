@@ -24,7 +24,10 @@
 #include "../../Graphics/SpriteBatch.h"
 #include "../../Graphics/RenderTarget2D.h"
 #include "../../Graphics/PostProcessingEffect.h"
+#include "../../Graphics/Materials/PostProcessing/CompositeDeferredMaterial.h"
 #include "../../Components/SpriteComponent.h"
+
+#include "../../Graphics/Materials/PostProcessing/CompositeDeferredMaterial.h"
 
 DefaultGraphicsService::DefaultGraphicsService(void):m_pGraphicsDevice(nullptr)
 													,m_pWindow(nullptr)
@@ -36,6 +39,11 @@ DefaultGraphicsService::DefaultGraphicsService(void):m_pGraphicsDevice(nullptr)
 													,m_pNormalTexture(nullptr)
 													,m_pNormalRT(nullptr)
 													,m_pDeferredDepthStencilView(nullptr)
+													,m_bUseDeferredShading(false)
+													,m_pCompositeDeferredShadingPostProEffect(nullptr)
+													,m_pCompositeDeferredShadingMaterial(nullptr)
+													,m_pPositionSRV(nullptr)
+													,m_pNormalSRV(nullptr)
 {
 
 }
@@ -50,9 +58,16 @@ DefaultGraphicsService::~DefaultGraphicsService(void)
 	
 	m_pPositionTexture->Release();
 	m_pPositionRT->Release();
+	m_pPositionSRV->Release();
+
 	m_pNormalTexture->Release();
 	m_pNormalRT->Release();
+	m_pNormalSRV->Release();
+	
 	m_pDeferredDepthStencilView->Release();
+
+	delete m_pCompositeDeferredShadingPostProEffect;
+	delete m_pCompositeDeferredShadingMaterial;
 }
 
 //Methods
@@ -91,18 +106,22 @@ void DefaultGraphicsService::Draw(resource_ptr<Model3D> pModel, const tt::Matrix
     }
 }
 
-void DefaultGraphicsService::DrawDeferred(resource_ptr<Model3D> pModel, const tt::Matrix4x4& worldMat, resource_ptr<Material> pMat, const tt::GameContext& context)
+void DefaultGraphicsService::PrepareDeferredShading(void)
 {
 	auto pD3DDevice = m_pGraphicsDevice->GetDevice();
 
-	//Get RT
-	auto pOldRT = m_pGraphicsDevice->GetRenderTarget();
-
 	//Clear G-Buffers
-	float clearColor[] = {0.0f,0.0f,0.0f,0.0f};
+	float clearColor[] = {1.0f,0.0f,0.0f,0.0f};
 	pD3DDevice->ClearRenderTargetView(m_pPositionRT, clearColor);
 	pD3DDevice->ClearRenderTargetView(m_pNormalRT, clearColor);
 	pD3DDevice->ClearDepthStencilView(m_pDeferredDepthStencilView, D3D10_CLEAR_DEPTH|D3D10_CLEAR_STENCIL, 1.0f, 0);
+}
+
+void DefaultGraphicsService::DrawDeferred(resource_ptr<Model3D> pModel, const tt::Matrix4x4& worldMat, resource_ptr<Material> pMat, const tt::GameContext& context)
+{
+	m_bUseDeferredShading = true;
+
+	auto pD3DDevice = m_pGraphicsDevice->GetDevice();
 
 	//Set G-buffers
 	ID3D10RenderTargetView* targets[] = {m_pPositionRT, m_pNormalRT};
@@ -112,43 +131,24 @@ void DefaultGraphicsService::DrawDeferred(resource_ptr<Model3D> pModel, const tt
 	pMat->SetActiveTechnique(_T("TechDeferred"));
 
 	//Draw
-	//Update shader variables
-	pMat->Update(context, worldMat);
-
-	// Set input layout	
-	pD3DDevice->IASetInputLayout( pMat->GetInputLayout()->pInputLayout );
-
-    // Set vertex buffer
-    UINT offset = 0;
-	auto &vertexDataInfo = pModel->GetVertexBufferInfo(pMat);
-
-	pD3DDevice->IASetVertexBuffers(0, 1, &vertexDataInfo.pVertexBuffer , &vertexDataInfo.VertexStride, &offset);
-   	
-	// Set index buffer
-	pD3DDevice->IASetIndexBuffer(pModel->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, 0);
-
-    // Set primitive topology
-    pD3DDevice->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-	// Apply technique & draw
-	auto tech = pMat->GetActiveTechnique();
-    D3D10_TECHNIQUE_DESC techDesc;
-	tech->GetDesc(&techDesc);
-
-    for(UINT p = 0; p < techDesc.Passes; ++p)
-    {
-        tech->GetPassByIndex(p)->Apply(0);
-		pD3DDevice->DrawIndexed(pModel->GetNrOfIndices(), 0, 0); 
-    }
+	Draw(pModel, worldMat, pMat, context);
 	
-
-	//Draw to file
-	D3DX10SaveTextureToFile(m_pPositionTexture, D3DX10_IMAGE_FILE_FORMAT::D3DX10_IFF_JPG, L"TexPos.jpg");
-	D3DX10SaveTextureToFile(m_pNormalTexture, D3DX10_IMAGE_FILE_FORMAT::D3DX10_IFF_JPG, L"TexNorm.jpg");
-
 	//Restore RT & tech
 	m_pGraphicsDevice->ResetRenderTarget();
 	pMat->SetActiveTechnique(0);
+}
+
+void DefaultGraphicsService::CompositeDeferredShading(const tt::GameContext& context)
+{
+	if(!m_bUseDeferredShading)
+		return;
+	
+	m_bUseDeferredShading = false;
+	
+	m_pCompositeDeferredShadingMaterial->SetVariable(_T("G_COLOR"), m_pPositionSRV);
+	m_pCompositeDeferredShadingMaterial->SetVariable(_T("G_NORMAL"), m_pNormalSRV);
+
+	m_pCompositeDeferredShadingPostProEffect->Draw(context);
 }
 
 Sprite DefaultGraphicsService::RenderPostProcessing(const tt::GameContext& context, std::multimap<unsigned int, PostProcessingEffect*, std::greater_equal<unsigned int> >& postProEffects)
@@ -211,10 +211,17 @@ void DefaultGraphicsService::InitWindow(int windowWidth, int windowHeight, TTeng
 
 	//Initialize render targets used for deferred shading
 	InitializeGBuffers();
+
+	m_pCompositeDeferredShadingMaterial = new CompositeDeferredMaterial();
+	m_pCompositeDeferredShadingMaterial->LoadEffect();
+	m_pCompositeDeferredShadingPostProEffect = new PostProcessingEffect(m_pCompositeDeferredShadingMaterial);
+	m_pCompositeDeferredShadingPostProEffect->Initialize();
 }
 
 void DefaultGraphicsService::InitializeGBuffers(void)
 {
+	auto pD3DDevice = m_pGraphicsDevice->GetDevice();
+
 	D3D10_TEXTURE2D_DESC texDesc;
 	texDesc.BindFlags = D3D10_BIND_RENDER_TARGET | D3D10_BIND_SHADER_RESOURCE;
 	texDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
@@ -228,11 +235,11 @@ void DefaultGraphicsService::InitializeGBuffers(void)
 	texDesc.CPUAccessFlags = NULL;
 	texDesc.MiscFlags = D3D10_RESOURCE_MISC_GENERATE_MIPS;
 	
-	m_pGraphicsDevice->GetDevice()->CreateTexture2D(&texDesc, nullptr, &m_pPositionTexture);
-	m_pGraphicsDevice->GetDevice()->CreateRenderTargetView(m_pPositionTexture, nullptr, &m_pPositionRT);
+	pD3DDevice->CreateTexture2D(&texDesc, nullptr, &m_pPositionTexture);
+	pD3DDevice->CreateRenderTargetView(m_pPositionTexture, nullptr, &m_pPositionRT);
 	
-	m_pGraphicsDevice->GetDevice()->CreateTexture2D(&texDesc, nullptr, &m_pNormalTexture);
-	m_pGraphicsDevice->GetDevice()->CreateRenderTargetView(m_pNormalTexture, nullptr, &m_pNormalRT);
+	pD3DDevice->CreateTexture2D(&texDesc, nullptr, &m_pNormalTexture);
+	pD3DDevice->CreateRenderTargetView(m_pNormalTexture, nullptr, &m_pNormalRT);
 
 	//Depth-stencil view
 	
@@ -246,10 +253,14 @@ void DefaultGraphicsService::InitializeGBuffers(void)
 	depthStencilViewDesc.Texture2D.MipSlice = 0;
 
 	ID3D10Texture2D* dsTex;
-	m_pGraphicsDevice->GetDevice()->CreateTexture2D(&texDesc, nullptr, &dsTex);
-	m_pGraphicsDevice->GetDevice()->CreateDepthStencilView(dsTex, &depthStencilViewDesc, &m_pDeferredDepthStencilView);
+	pD3DDevice->CreateTexture2D(&texDesc, nullptr, &dsTex);
+	pD3DDevice->CreateDepthStencilView(dsTex, &depthStencilViewDesc, &m_pDeferredDepthStencilView);
 	dsTex->Release();
 
+	//Shader resource views
+	
+	pD3DDevice->CreateShaderResourceView(m_pPositionTexture, nullptr, &m_pPositionSRV);
+	pD3DDevice->CreateShaderResourceView(m_pNormalTexture, nullptr, &m_pNormalSRV);
 }
 
 Window* DefaultGraphicsService::GetWindow(void) const

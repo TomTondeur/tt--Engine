@@ -42,8 +42,11 @@ public:
 	virtual void InitWindow(int windowWidth, int windowHeight, TTengine* pEngine)=0;
 
 	virtual void Draw(resource_ptr<Model3D> pModel, const tt::Matrix4x4& worldMat, resource_ptr<Material> pMat, const tt::GameContext& context)=0;
+
+	virtual void PrepareDeferredShading(void)=0;
 	virtual void DrawDeferred(resource_ptr<Model3D> pModel, const tt::Matrix4x4& worldMat, resource_ptr<Material> pMat, const tt::GameContext& context)=0;
 
+	virtual void CompositeDeferredShading(const tt::GameContext& context)=0;
 	virtual Sprite RenderPostProcessing(const tt::GameContext& context, std::multimap<unsigned int, PostProcessingEffect*, std::greater_equal<unsigned int> >& postProEffects)=0;
 
 	virtual GraphicsDevice* GetGraphicsDevice(void) const=0;

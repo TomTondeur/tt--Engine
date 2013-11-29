@@ -26,7 +26,7 @@ Object3D::Object3D(const std::tstring& meshFile)
 {
 	auto pTransform = new TransformComponent();
 	auto pModel = new ModelComponent(meshFile,pTransform);
-	auto pRigidbody = new RigidBodyComponent(this);
+	//auto pRigidbody = new RigidBodyComponent(this);
 	
 	SetComponent<TransformComponent>(pTransform);
 

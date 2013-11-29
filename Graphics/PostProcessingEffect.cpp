@@ -34,7 +34,12 @@ struct PostProcessingVertex
 ID3D10Buffer* PostProcessingEffect::s_pVertexBuffer = nullptr;
 unsigned int PostProcessingEffect::s_VertexBufferStride = 3*4 + 2*4; //NrOfVertices * (PosFloatComponents * 4 bytes + TexCoordFloatComponents * 4 bytes)
 
-PostProcessingEffect::PostProcessingEffect(resource_ptr<Material> pMaterial):m_pMaterial(pMaterial)
+PostProcessingEffect::PostProcessingEffect(resource_ptr<Material> pMaterial):m_pMaterial(pMaterial),m_pMaterialAlt(nullptr)
+{
+
+}
+
+PostProcessingEffect::PostProcessingEffect(Material* pMaterial):m_pMaterialAlt(pMaterial)
 {
 
 }
@@ -48,8 +53,10 @@ PostProcessingEffect::~PostProcessingEffect(void)
 
 void PostProcessingEffect::Initialize(void)
 {
+	auto pMat = m_pMaterialAlt == nullptr ? m_pMaterial.get() : m_pMaterialAlt;
+
 	//Check if InputLayout is valid
-	auto ilDesc = m_pMaterial->GetInputLayout()->InputLayoutDesc;
+	auto ilDesc = pMat->GetInputLayout()->InputLayoutDesc;
 
 	if(ilDesc.size() != 2 
 		|| ilDesc[0].Semantic != InputLayoutSemantic::Position
@@ -81,25 +88,30 @@ void PostProcessingEffect::Initialize(void)
 
 void PostProcessingEffect::Draw(const tt::GameContext& context, RenderTarget2D* pInputRT)
 {
-	if(m_pMaterial->ContainsVariable(_T("ColorMap") ) )
-		m_pMaterial->SetVariable(_T("ColorMap"), pInputRT->GetColorMap() );
-	if(m_pMaterial->ContainsVariable(_T("DepthMap") ) )
-		m_pMaterial->SetVariable(_T("DepthMap"), pInputRT->GetDepthMap() );
+	Material* pMat = m_pMaterialAlt == nullptr ? m_pMaterial.get() : m_pMaterialAlt;
 
-	m_pMaterial->UpdateEffectVariables(context);
+	if(pInputRT)
+	{
+		if(pMat->ContainsVariable(_T("ColorMap") ) )
+			pMat->SetVariable(_T("ColorMap"), pInputRT->GetColorMap() );
+		if(pMat->ContainsVariable(_T("DepthMap") ) )
+			pMat->SetVariable(_T("DepthMap"), pInputRT->GetDepthMap() );
+	}
+	
+	pMat->UpdateEffectVariables(context);
 
 	//Drawcall
 	auto pD3DDevice = MyServiceLocator::GetInstance()->GetService<IGraphicsService>()->GetGraphicsDevice()->GetDevice();
 
-	pD3DDevice->IASetInputLayout(m_pMaterial->GetInputLayout()->pInputLayout);
+	pD3DDevice->IASetInputLayout(pMat->GetInputLayout()->pInputLayout);
 	pD3DDevice->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 	unsigned int offset=0;
 	pD3DDevice->IASetVertexBuffers(0, 1, &s_pVertexBuffer, &s_VertexBufferStride, &offset);
 
 	D3D10_TECHNIQUE_DESC techDesc;
-	m_pMaterial->GetActiveTechnique()->GetDesc(&techDesc);
+	pMat->GetActiveTechnique()->GetDesc(&techDesc);
 	for(unsigned int p=0; p < techDesc.Passes; ++p){
-		m_pMaterial->GetActiveTechnique()->GetPassByIndex(p)->Apply(0);
+		pMat->GetActiveTechnique()->GetPassByIndex(p)->Apply(0);
 		pD3DDevice->Draw(4, 0);
 	}
 }

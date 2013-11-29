@@ -99,7 +99,10 @@ VS_OUTPUT VS_Anim(VS_INPUT input)
     position += translation; 
     
     Pos = float4(position,1);
-    Norm = input.Normal.xyz + 2.0 * cross(dual[0].xyz, cross(dual[0].xyz,input.Normal.xyz) + dual[0].w * input.Normal.xyz); 
+    
+	float3 t = 2 * cross(dual[0].xyz, input.Normal);
+	Norm = input.Normal + dual[0].w * t + cross(dual[0].xyz, t); 
+
     float4 vAnimatedPos = Pos; 
     // </NVIDIA>
 
@@ -119,7 +122,7 @@ float3 CalculateDiffuse(float3 normal, float2 texCoord)
 	intensity = pow(intensity, 1.5); //apply lambert power
 	retColor *= intensity;
 	
-	retColor *= m_Texture.Sample(samLinear,texCoord);
+	retColor *= m_Texture.Sample(samLinear,texCoord).xyz;
 	
 	return retColor;
 }
@@ -151,20 +154,18 @@ technique10 SkinnedAnimationTechnique
 
 struct PS_OUTPUT
 {
-	float4 Position : SV_TARGET0;
+	float4 Color : SV_TARGET0;
 	float4 Normal : SV_TARGET1;
 };
 
 PS_OUTPUT PS_Deferred(VS_OUTPUT input)
 {
-	input.Normal = normalize(input.Normal);
-	
-	float3 diffuse = CalculateDiffuse(input.Normal, input.TexCoord);
-
 	PS_OUTPUT mrtOut = (PS_OUTPUT)0;
 
-	mrtOut.Position = float4(diffuse,1);
-	mrtOut.Normal = float4(diffuse,1);
+	mrtOut.Color = float4(m_Texture.Sample(samLinear,input.TexCoord).xyz, 1);
+
+	input.Normal = (normalize(input.Normal) + float3(1,1,1)) * .5f;
+	mrtOut.Normal = float4(input.Normal,1);
 
 	return mrtOut;
 }
