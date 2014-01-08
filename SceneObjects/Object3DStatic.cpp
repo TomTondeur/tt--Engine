@@ -43,8 +43,8 @@ void Object3DStatic::Initialize(void)
 
 void Object3DStatic::Draw(const tt::GameContext& context)
 {
-	GetComponent<ModelComponent>()->Draw(context);
-	//GetComponent<ModelComponent>()->DrawDeferred(context);
+	//GetComponent<ModelComponent>()->Draw(context);
+	GetComponent<ModelComponent>()->DrawDeferred(context);
 }
 
 void Object3DStatic::GenerateShadows(const tt::GameContext& context)

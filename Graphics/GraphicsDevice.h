@@ -42,6 +42,7 @@ public:
 
 	void EnableVSync(bool b);
 	void ToggleVSync(void);
+	void SetViewPort(const D3D10_VIEWPORT& vp); 
 
 private:
 	void CreateDeviceAndSwapChain(); 

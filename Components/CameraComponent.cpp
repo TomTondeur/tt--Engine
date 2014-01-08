@@ -42,7 +42,7 @@ CameraComponent::~CameraComponent(void)
 
 void CameraComponent::Update(const tt::GameContext& context)
 {
-	float aspect = context.vpInfo.width / (float)context.vpInfo.height;
+	float aspect = context.vpInfo.width / 3 / (float)context.vpInfo.height;
 
 	D3DXMATRIX matProj;
 

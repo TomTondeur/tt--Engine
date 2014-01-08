@@ -204,6 +204,16 @@ void DefaultGraphicsService::CompositeDeferredShading(const tt::GameContext& con
 	m_pGraphicsDevice->ResetRenderTarget();
 	m_pGraphicsDevice->Clear();
 
+	D3D10_VIEWPORT vp1;
+	vp1.TopLeftX = context.vpInfo.width*2/3;
+	vp1.TopLeftY = 0;
+	vp1.Width = context.vpInfo.width/3;
+	vp1.Height = context.vpInfo.height;
+	vp1.MinDepth = 0;
+	vp1.MaxDepth = 1;
+
+	m_pGraphicsDevice->SetViewPort(vp1);
+
 	auto viewProjInv = (context.pGame->GetActiveScene()->GetActiveCamera()->GetView() * context.pGame->GetActiveScene()->GetActiveCamera()->GetProjection()).Inverse();
 
 	m_pCompositeDeferredShadingMaterial->SetVariable(_T("LightViewProjection"), Material::s_DominantDirectionalLightViewProjection);
@@ -218,6 +228,32 @@ void DefaultGraphicsService::CompositeDeferredShading(const tt::GameContext& con
 	m_pCompositeDeferredShadingMaterial->SetVariable(_T("G_COLOR"), nullptr);
 	m_pCompositeDeferredShadingMaterial->SetVariable(_T("G_NORMAL"), nullptr);
 	m_pCompositeDeferredShadingMaterial->GetActiveTechnique()->GetPassByIndex(0)->Apply(0);
+	
+	vp1.TopLeftX = 0;
+	vp1.Width = context.vpInfo.width;
+	m_pGraphicsDevice->SetViewPort(vp1);
+	
+	m_pSpriteBatch->Flush(context);
+	
+	vp1.Width = context.vpInfo.width/3;
+	m_pGraphicsDevice->SetViewPort(vp1);
+
+	auto colorSprite = Sprite(tt::Matrix4x4::Identity);
+	colorSprite.pTexture = m_pPositionSRV;
+	m_pSpriteBatch->Draw(colorSprite);
+	m_pSpriteBatch->Flush(context);
+
+	vp1.TopLeftX = context.vpInfo.width/3;
+	m_pGraphicsDevice->SetViewPort(vp1);
+
+	colorSprite.pTexture = m_pNormalSRV;
+	m_pSpriteBatch->Draw(colorSprite);
+	m_pSpriteBatch->Flush(context);
+
+	//Reset viewport
+	vp1.TopLeftX = 0;
+	vp1.Width = context.vpInfo.width;
+	m_pGraphicsDevice->SetViewPort(vp1);
 }
 
 Sprite DefaultGraphicsService::RenderPostProcessing(const tt::GameContext& context, std::multimap<unsigned int, PostProcessingEffect*, std::greater_equal<unsigned int> >& postProEffects)

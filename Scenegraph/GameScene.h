@@ -32,6 +32,7 @@
 
 class CameraComponent;
 class PostProcessingEffect;
+class SpriteFont;
 
 class GameScene
 {
@@ -64,6 +65,7 @@ private:
 	NxScene* m_pPhysicsScene;
 	CameraComponent* m_pActiveCamera;
 	static GameScene* s_pActiveScene;
+	SpriteFont* m_pDefaultFont;
 
 	std::multimap<unsigned int, PostProcessingEffect*, std::greater_equal<unsigned int> > m_PostProEffects;
 

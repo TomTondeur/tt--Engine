@@ -24,10 +24,11 @@
 #include "../Graphics/RenderTarget2D.h"
 #include "../Graphics/SpriteBatch.h"
 #include "../Services/ServiceLocator.h"
+#include "../Graphics/SpriteFont.h"
 
 GameScene* GameScene::s_pActiveScene = nullptr;
 
-GameScene::GameScene():m_pPhysicsScene(nullptr), m_pActiveCamera(nullptr){}
+GameScene::GameScene():m_pPhysicsScene(nullptr), m_pActiveCamera(nullptr), m_pDefaultFont(nullptr){}
 GameScene::~GameScene()
 {
 	for(auto pObj : m_Objects)
@@ -45,6 +46,8 @@ GameScene::~GameScene()
 	
 void GameScene::InitializeScene(void)
 {
+	m_pDefaultFont = MyServiceLocator::GetInstance()->GetService<ResourceService>()->Load<SpriteFont>(_T("Resources/AgencyFB_12.fnt")).get();
+	
 	m_pPhysicsScene = MyServiceLocator::GetInstance()->GetService<IPhysicsService>()->GetActiveScene();
 
 	for(auto pObj : m_Objects){
@@ -83,6 +86,11 @@ void GameScene::DrawScene(const tt::GameContext& context)
 	
 	pGfxService->CompositeDeferredShading(context);
 	
+	//Render FPS
+	m_pDefaultFont->DrawText(std::tstring(_T("FPS: ")) + to_tstring(context.FramesPerSecond) + _T("\nSPF: ") + to_tstring(context.GameTimer.GetElapsedSeconds() ), 
+							tt::Vector2(5,0), 
+							tt::Vector4(1,1,0,1) );
+		
 	pGfxService->GetSpriteBatch()->Flush(context);
 
 	auto particlesSprite = ParticleEmitterComponent::RenderDeferred(context);

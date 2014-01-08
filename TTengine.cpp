@@ -127,11 +127,6 @@ DWORD TTengine::GameLoop(void)
 			
 		pGraphics->GetGraphicsDevice()->Clear();
 
-		//Render FPS
-		m_pDefaultFont->DrawText(std::tstring(_T("FPS: ")) + to_tstring(m_GameContext.FramesPerSecond) + _T("\nSPF: ") + to_tstring(m_GameContext.GameTimer.GetElapsedSeconds() ), 
-								tt::Vector2(5,0), 
-								tt::Vector4(1,1,0,1) );
-		
 		//Draw
 		m_pGame->Draw(m_GameContext);
 		m_pGame->DrawGame(m_GameContext);
@@ -164,8 +159,6 @@ void TTengine::Initialize(void)
 	auto pServiceLoc = MyServiceLocator::GetInstance();
 	pServiceLoc->GetService<IGraphicsService>()->InitWindow(m_GameContext.vpInfo.width, m_GameContext.vpInfo.height, this);
 	pServiceLoc->GetService<IPhysicsService>()->Initialize();
-
-	m_pDefaultFont = MyServiceLocator::GetInstance()->GetService<ResourceService>()->Load<SpriteFont>(_T("Resources/AgencyFB_12.fnt"));
 }
 
 LRESULT CALLBACK TTengine::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)

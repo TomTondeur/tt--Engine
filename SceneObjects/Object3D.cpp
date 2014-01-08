@@ -60,8 +60,8 @@ void Object3D::Update(const tt::GameContext& context)
 }
 void Object3D::Draw(const tt::GameContext& context)
 {
-	GetComponent<ModelComponent>()->Draw(context);
-	//GetComponent<ModelComponent>()->DrawDeferred(context);
+	//GetComponent<ModelComponent>()->Draw(context);
+	GetComponent<ModelComponent>()->DrawDeferred(context);
 }
 
 void Object3D::GenerateShadows(const tt::GameContext& context)

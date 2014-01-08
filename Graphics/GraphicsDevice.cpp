@@ -142,7 +142,12 @@ void GraphicsDevice::CreateRenderTarget()
 	pBackbuffer->Release();
 }
 
-void GraphicsDevice::SetViewPort()
+void GraphicsDevice::SetViewPort(const D3D10_VIEWPORT& vp)
+{
+	m_pD3DDevice->RSSetViewports(1, &vp);
+}
+
+void GraphicsDevice::SetViewPort(void)
 {
 	//Initialize viewport
 
