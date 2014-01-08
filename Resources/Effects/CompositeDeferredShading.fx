@@ -1,3 +1,13 @@
+static const float SHADOW_EPSILON = 0.04f;
+static const float SMAP_WIDTH = 1280.0f;
+static const float SMAP_HEIGHT = 720.0f;
+static const float SMAP_DX = 1.0f / SMAP_WIDTH;
+static const float SMAP_DY = 1.0f / SMAP_HEIGHT;
+
+float4x4 matWorldLightViewProjection : LightViewProjection;
+float4x4 matInvViewProjection : InverseViewProjection;
+//Texture2D g_texShadowMap : ShadowMapSRV;
+
 Texture2D g_TexColor : G_COLOR;
 Texture2D g_TexNormal : G_NORMAL;
 
@@ -55,13 +65,13 @@ float3 CalculateDiffuse(float3 normal, float3 color)
 
 float4 PS(PS_INPUT input) : SV_TARGET
 {
-	float4 diffuse = g_TexColor.Sample(samLinear, input.TexCoord);
+	float3 diffuse = g_TexColor.Sample(samLinear, input.TexCoord).rgb;
 	float3 normal = g_TexNormal.Sample(samLinear, input.TexCoord).xyz;
 	normal = (normal - float3(1,1,1)) * 2; //Restore normal from 0 - 1 to -1 - 1 range
-	
+
 	float3 finalRGB = CalculateDiffuse(normal, diffuse.rgb);
 	
-	return float4(finalRGB, diffuse.a);
+	return float4(finalRGB, 1);
 }
 
 RasterizerState NoCull

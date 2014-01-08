@@ -24,6 +24,9 @@
 #include "../Components/CameraComponent.h"
 #include "../AbstractGame.h"
 #include "../Scenegraph/GameScene.h"
+#include "RenderTarget2D.h"
+
+tt::Matrix4x4 Material::s_DominantDirectionalLightViewProjection = tt::Matrix4x4::Identity;
 
 Material::Material(const std::tstring& effectFileName):m_EffectFileName(effectFileName), m_pActiveTechnique(nullptr)
 {
@@ -86,6 +89,20 @@ void Material::Update(const tt::GameContext& context, const tt::Matrix4x4& world
 
 	if(ContainsVariable(_T("WorldViewProjection")))
 		SetVariable(_T("WorldViewProjection"), worldMat * viewMat * projMat);
+	
+	if(ContainsVariable(_T("ShadowMapSRV")))
+		SetVariable(_T("ShadowMapSRV"), MyServiceLocator::GetInstance()->GetService<IGraphicsService>()->GetShadowMapRenderTarget()->GetDepthMap());
+	
+	if(ContainsVariable(_T("LightViewProjection")))
+		SetVariable(_T("LightViewProjection"), worldMat * s_DominantDirectionalLightViewProjection);
+
+	UpdateEffectVariables(context);
+}
+
+void Material::GenerateShadows(const tt::GameContext& context, const tt::Matrix4x4& worldMat)
+{
+	if(ContainsVariable(_T("LightViewProjection")))
+		SetVariable(_T("LightViewProjection"), worldMat * s_DominantDirectionalLightViewProjection);
 
 	UpdateEffectVariables(context);
 }
@@ -216,4 +233,9 @@ void Material::SetVariable(const std::tstring& semantic, void* pRawValue, unsign
 bool Material::ContainsVariable(const std::tstring& semantic)
 {
 	return m_EffectVariables.find(semantic) != m_EffectVariables.end();
+}
+
+void Material::SetDominantDirectionalLightViewProjection(const tt::Matrix4x4& lightMat)
+{
+	s_DominantDirectionalLightViewProjection = lightMat;
 }

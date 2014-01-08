@@ -33,5 +33,5 @@ Object3DMaterial::~Object3DMaterial(void)
 void Object3DMaterial::UpdateEffectVariables(const tt::GameContext& context)
 {
 	SetVariable(_T("DIRECTION"), tt::Vector3(0,-1,0));
-	SetVariable(_T("TEXTURE_DIFFUSE"), MyServiceLocator::GetInstance()->GetService<ResourceService>()->Load<ID3D10ShaderResourceView>(_T("Resources/Textures/TEX_Char_Goblin_Body_dif.png")).get());
+	SetVariable(_T("TEXTURE_DIFFUSE"), MyServiceLocator::GetInstance()->GetService<ResourceService>()->Load<ID3D10ShaderResourceView>(_T("Resources/Textures/Concrete.dds")).get());
 }

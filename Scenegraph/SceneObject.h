@@ -48,6 +48,8 @@ public:
 	virtual void Update(const tt::GameContext& context);
 	virtual void Draw(const tt::GameContext& context);
 
+	virtual void GenerateShadows(const tt::GameContext& context);
+
 private:
 
 	SceneObject(const SceneObject& src);

@@ -100,6 +100,11 @@ void ModelComponent::DrawDeferred(const tt::GameContext& context)
 	MyServiceLocator::GetInstance()->GetService<IGraphicsService>()->DrawDeferred(m_pModel, m_pTransform->GetWorldMatrix(), m_pMaterial, context);
 }
 
+void ModelComponent::GenerateShadows(const tt::GameContext& context)
+{
+	MyServiceLocator::GetInstance()->GetService<IGraphicsService>()->GenerateShadows(m_pModel, m_pTransform->GetWorldMatrix(), m_pMaterial, context);
+}
+
 void ModelComponent::SetMaterial(resource_ptr<Material> pMat)
 {
 	m_pMaterial = pMat;

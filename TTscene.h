@@ -30,6 +30,7 @@
 #include "Scenegraph/GameScene.h"
 
 class PostProcessingEffect;
+class FreeCamera;
 
 class TTscene : public GameScene
 {
@@ -46,6 +47,7 @@ public:
 private:
 	//Datamembers
 	PostProcessingEffect* pPostProEffect;
+	FreeCamera* m_pCam;
 
 	//Disabling default copy constructor & assignment operator
 	TTscene(const TTscene& src);

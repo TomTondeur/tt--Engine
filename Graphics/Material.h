@@ -37,6 +37,7 @@ public:
 	//Methods
 	void LoadEffect(void);
 	void Update(const tt::GameContext& context, const tt::Matrix4x4& worldMat);
+	void GenerateShadows(const tt::GameContext& context, const tt::Matrix4x4& worldMat);
 	virtual void UpdateEffectVariables(const tt::GameContext& context)=0;
 	virtual void InitializeEffectVariables(void);
 
@@ -58,6 +59,9 @@ public:
 
 	bool ContainsVariable(const std::tstring& semantic);
 
+	static void SetDominantDirectionalLightViewProjection(const tt::Matrix4x4& lightMat);
+	
+	static tt::Matrix4x4 s_DominantDirectionalLightViewProjection;
 private:
 	//Datamembers
 	std::tstring m_EffectFileName;
@@ -71,6 +75,7 @@ private:
 	
 	EffectTechnique* GetTechnique(unsigned int index);
 	EffectTechnique* GetTechnique(const std::tstring& name);
+
 	
 	//Disabling default copy constructor & assignment operator
 	Material(const Material& src);

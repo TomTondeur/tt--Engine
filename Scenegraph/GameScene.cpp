@@ -68,15 +68,21 @@ void GameScene::DrawScene(const tt::GameContext& context)
 {
 	auto pGfxService = MyServiceLocator::GetInstance()->GetService<IGraphicsService>();
 	
+	pGfxService->PrepareShadowGeneration();
+	for(auto pObj : m_Objects)
+		pObj->GenerateShadows(context);
+	
+	pGfxService->GetGraphicsDevice()->ResetRenderTarget();
+	
 	pGfxService->PrepareDeferredShading();
-
+	
 	for(auto pObj : m_Objects){
 		pObj->Draw(context);
-		pObj->DrawObject(context);
+		//pObj->DrawObject(context);
 	}
 	
 	pGfxService->CompositeDeferredShading(context);
-
+	
 	pGfxService->GetSpriteBatch()->Flush(context);
 
 	auto particlesSprite = ParticleEmitterComponent::RenderDeferred(context);

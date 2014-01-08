@@ -22,4 +22,11 @@ void ParticleSystem::Initialize(void)
 	auto pMat = MyServiceLocator::GetInstance()->GetService<ResourceService>()->Load<ParticlesMaterial>(_T("Resources/Particles/Particles.fx") );
 
 	SetComponent<ParticleEmitterComponent>(new ParticleEmitterComponent(pMat, pTransform) );
+
+	pTransform->Translate(200,100,0);
+}
+
+void ParticleSystem::Draw(const tt::GameContext& context)
+{
+	GetComponent<ParticleEmitterComponent>()->Draw(context);
 }

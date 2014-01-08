@@ -34,6 +34,7 @@ DefaultGraphicsService::DefaultGraphicsService(void):m_pGraphicsDevice(nullptr)
 													,m_pSpriteBatch(nullptr)
 													,m_pSwapRT1(nullptr)
 													,m_pSwapRT2(nullptr)
+													,m_pShadowMapRenderTarget(nullptr)
 													,m_pPositionTexture(nullptr)
 													,m_pPositionRT(nullptr)
 													,m_pNormalTexture(nullptr)
@@ -53,6 +54,9 @@ DefaultGraphicsService::~DefaultGraphicsService(void)
 	delete m_pGraphicsDevice;
 	delete m_pWindow;
 	delete m_pSpriteBatch;
+
+	delete m_pShadowMapRenderTarget;
+
 	delete m_pSwapRT1;
 	delete m_pSwapRT2;
 	
@@ -106,12 +110,61 @@ void DefaultGraphicsService::Draw(resource_ptr<Model3D> pModel, const tt::Matrix
     }
 }
 
+void DefaultGraphicsService::PrepareShadowGeneration(void)
+{
+	m_pGraphicsDevice->SetRenderTarget(m_pShadowMapRenderTarget);
+	m_pGraphicsDevice->Clear();
+}
+
+void DefaultGraphicsService::GenerateShadows(resource_ptr<Model3D> pModel, const tt::Matrix4x4& worldMat, resource_ptr<Material> pMat, const tt::GameContext& context)
+{
+	auto pD3DDevice = m_pGraphicsDevice->GetDevice();
+
+	// Set technique & draw
+	pMat->SetActiveTechnique(_T("TechShadowGen"));
+
+	//Draw
+	//
+
+	//Update shader variables
+	pMat->GenerateShadows(context, worldMat);
+
+	// Set input layout	
+	pD3DDevice->IASetInputLayout( pMat->GetInputLayout()->pInputLayout );
+
+    // Set vertex buffer
+    UINT offset = 0;
+	auto &vertexDataInfo = pModel->GetVertexBufferInfo(pMat);
+
+	pD3DDevice->IASetVertexBuffers(0, 1, &vertexDataInfo.pVertexBuffer , &vertexDataInfo.VertexStride, &offset);
+   	
+	// Set index buffer
+	pD3DDevice->IASetIndexBuffer(pModel->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, 0);
+
+    // Set primitive topology
+    pD3DDevice->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	// Apply technique & draw
+	auto tech = pMat->GetActiveTechnique();
+    D3D10_TECHNIQUE_DESC techDesc;
+	tech->GetDesc(&techDesc);
+
+    for(UINT p = 0; p < techDesc.Passes; ++p)
+    {
+        tech->GetPassByIndex(p)->Apply(0);
+		pD3DDevice->DrawIndexed(pModel->GetNrOfIndices(), 0, 0); 
+    }
+	
+	//Restore RT & tech
+	pMat->SetActiveTechnique(0);
+}
+
 void DefaultGraphicsService::PrepareDeferredShading(void)
 {
 	auto pD3DDevice = m_pGraphicsDevice->GetDevice();
 
 	//Clear G-Buffers
-	float clearColor[] = {1.0f,0.0f,0.0f,0.0f};
+	float clearColor[] = {0.0f,0.0f,0.0f,0.0f};
 	pD3DDevice->ClearRenderTargetView(m_pPositionRT, clearColor);
 	pD3DDevice->ClearRenderTargetView(m_pNormalRT, clearColor);
 	pD3DDevice->ClearDepthStencilView(m_pDeferredDepthStencilView, D3D10_CLEAR_DEPTH|D3D10_CLEAR_STENCIL, 1.0f, 0);
@@ -133,10 +186,13 @@ void DefaultGraphicsService::DrawDeferred(resource_ptr<Model3D> pModel, const tt
 	//Draw
 	Draw(pModel, worldMat, pMat, context);
 	
-	//Restore RT & tech
-	m_pGraphicsDevice->ResetRenderTarget();
+	//Restore tech
 	pMat->SetActiveTechnique(0);
 }
+
+#include "../../AbstractGame.h"
+#include "../../Scenegraph/GameScene.h"
+#include "../../Components/CameraComponent.h"
 
 void DefaultGraphicsService::CompositeDeferredShading(const tt::GameContext& context)
 {
@@ -144,11 +200,24 @@ void DefaultGraphicsService::CompositeDeferredShading(const tt::GameContext& con
 		return;
 	
 	m_bUseDeferredShading = false;
+
+	m_pGraphicsDevice->ResetRenderTarget();
+	m_pGraphicsDevice->Clear();
+
+	auto viewProjInv = (context.pGame->GetActiveScene()->GetActiveCamera()->GetView() * context.pGame->GetActiveScene()->GetActiveCamera()->GetProjection()).Inverse();
+
+	m_pCompositeDeferredShadingMaterial->SetVariable(_T("LightViewProjection"), Material::s_DominantDirectionalLightViewProjection);
+	m_pCompositeDeferredShadingMaterial->SetVariable(_T("InverseViewProjection"), viewProjInv);
+	//m_pCompositeDeferredShadingMaterial->SetVariable(_T("ShadowMapSRV"), m_pShadowMapRenderTarget->GetDepthMap());
 	
 	m_pCompositeDeferredShadingMaterial->SetVariable(_T("G_COLOR"), m_pPositionSRV);
 	m_pCompositeDeferredShadingMaterial->SetVariable(_T("G_NORMAL"), m_pNormalSRV);
 
 	m_pCompositeDeferredShadingPostProEffect->Draw(context);
+
+	m_pCompositeDeferredShadingMaterial->SetVariable(_T("G_COLOR"), nullptr);
+	m_pCompositeDeferredShadingMaterial->SetVariable(_T("G_NORMAL"), nullptr);
+	m_pCompositeDeferredShadingMaterial->GetActiveTechnique()->GetPassByIndex(0)->Apply(0);
 }
 
 Sprite DefaultGraphicsService::RenderPostProcessing(const tt::GameContext& context, std::multimap<unsigned int, PostProcessingEffect*, std::greater_equal<unsigned int> >& postProEffects)
@@ -191,6 +260,11 @@ Sprite DefaultGraphicsService::RenderPostProcessing(const tt::GameContext& conte
 	return postProSprite;
 }
 
+RenderTarget2D* DefaultGraphicsService::GetShadowMapRenderTarget() const
+{
+	return m_pShadowMapRenderTarget;
+}
+
 GraphicsDevice* DefaultGraphicsService::GetGraphicsDevice(void) const
 {
 	return m_pGraphicsDevice;
@@ -216,6 +290,10 @@ void DefaultGraphicsService::InitWindow(int windowWidth, int windowHeight, TTeng
 	m_pCompositeDeferredShadingMaterial->LoadEffect();
 	m_pCompositeDeferredShadingPostProEffect = new PostProcessingEffect(m_pCompositeDeferredShadingMaterial);
 	m_pCompositeDeferredShadingPostProEffect->Initialize();
+
+	//Initialize shadow map rendertarget
+	m_pShadowMapRenderTarget = new RenderTarget2D();
+	m_pShadowMapRenderTarget->Create(windowWidth, windowHeight);
 }
 
 void DefaultGraphicsService::InitializeGBuffers(void)
@@ -255,7 +333,7 @@ void DefaultGraphicsService::InitializeGBuffers(void)
 	ID3D10Texture2D* dsTex;
 	pD3DDevice->CreateTexture2D(&texDesc, nullptr, &dsTex);
 	pD3DDevice->CreateDepthStencilView(dsTex, &depthStencilViewDesc, &m_pDeferredDepthStencilView);
-	dsTex->Release();
+	//dsTex->Release();
 
 	//Shader resource views
 	

@@ -29,7 +29,7 @@ CameraComponent::CameraComponent(TransformComponent* pParentTransform):m_MatView
 	m_Attributes.fov = static_cast<float>(D3DX_PI)*.33f;
 	m_Attributes.orthoSize = 25.0f;
 	m_Attributes.usePerspective = true;
-	m_Attributes.zNear = 1.0f;
+	m_Attributes.zNear = 20.0f;
 	m_Attributes.zFar = 2500.0f;
 }
 

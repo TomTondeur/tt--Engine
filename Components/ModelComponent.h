@@ -39,6 +39,8 @@ public:
 	virtual void Draw(const tt::GameContext& context) override;
 	virtual void DrawDeferred(const tt::GameContext& context);
 
+	virtual void GenerateShadows(const tt::GameContext& context);
+
 	void SetMaterial(resource_ptr<Material> pMat);
 	const TransformComponent* GetTransform(void) const;
 	

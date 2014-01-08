@@ -25,16 +25,15 @@
 #include "../Components/Physics/Colliders/MeshColliderComponent.h"
 #include "../Components/ScriptComponent.h"
 
-class Object3D : public GenericSceneObject<TransformComponent, ModelComponent, RigidBodyComponent, MeshColliderComponent, ScriptComponent>
+class Object3DStatic : public GenericSceneObject<TransformComponent, ModelComponent>
 {
 public:
 	//Default constructor & destructor
-	Object3D(const std::tstring& meshFile);
-	virtual ~Object3D(void);
-
+	Object3DStatic(const std::tstring& meshFile);
+	virtual ~Object3DStatic(void);
+	
 	//Methods
 	virtual void Initialize(void) override;
-	virtual void Update(const tt::GameContext& context) override;
 	virtual void Draw(const tt::GameContext& context) override;
 	
 	virtual void GenerateShadows(const tt::GameContext& context) override;
@@ -44,6 +43,6 @@ private:
 
 
 	//Disabling default copy constructor & assignment operator
-	Object3D(const Object3D& src);
-	Object3D& operator=(const Object3D& src);
+	Object3DStatic(const Object3DStatic& src);
+	Object3DStatic& operator=(const Object3DStatic& src);
 };

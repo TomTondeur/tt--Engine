@@ -24,3 +24,8 @@ void Skybox::Initialize(void)
 	SetComponent<TransformComponent>(pTransform);
 	SetComponent<ModelComponent>(pModelComp);
 }
+
+void Skybox::Draw(const tt::GameContext& context)
+{
+	GetComponent<ModelComponent>()->Draw(context);
+}

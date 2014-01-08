@@ -34,6 +34,9 @@ public:
 	virtual void InitWindow(int windowWidth, int windowHeight, TTengine* pEngine) override;	
 	
 	virtual void Draw(resource_ptr<Model3D> pModel, const tt::Matrix4x4& worldMat, resource_ptr<Material> pMat, const tt::GameContext& context) override;
+	
+	virtual void PrepareShadowGeneration(void) override;
+	virtual void GenerateShadows(resource_ptr<Model3D> pModel, const tt::Matrix4x4& worldMat, resource_ptr<Material> pMat, const tt::GameContext& context) override;
 
 	virtual void PrepareDeferredShading(void) override;
 	virtual void DrawDeferred(resource_ptr<Model3D> pModel, const tt::Matrix4x4& worldMat, resource_ptr<Material> pMat, const tt::GameContext& context) override;
@@ -41,6 +44,7 @@ public:
 	virtual void CompositeDeferredShading(const tt::GameContext& context) override;
 	virtual Sprite RenderPostProcessing(const tt::GameContext& context, std::multimap<unsigned int, PostProcessingEffect*, std::greater_equal<unsigned int> >& postProEffects) override;
 
+	virtual RenderTarget2D* GetShadowMapRenderTarget() const override;
 	virtual GraphicsDevice* GetGraphicsDevice(void) const override;
 	virtual Window* GetWindow(void) const override;
 	virtual SpriteBatch* GetSpriteBatch(void) const override;
@@ -54,6 +58,9 @@ private:
 	//Swapchain for post-processing
 	RenderTarget2D* m_pSwapRT1;
 	RenderTarget2D* m_pSwapRT2;
+
+	//shadow map rendertarget
+	RenderTarget2D* m_pShadowMapRenderTarget;
 
 	//DirectX resources for deferred shading
 	ID3D10Texture2D* m_pPositionTexture;

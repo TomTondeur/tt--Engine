@@ -13,6 +13,7 @@ public:
 
 	//Methods
 	virtual void Initialize(void) override;
+	virtual void Draw(const tt::GameContext& context) override;
 
 private:
 	//Datamembers

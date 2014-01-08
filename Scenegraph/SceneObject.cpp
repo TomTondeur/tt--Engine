@@ -25,3 +25,4 @@ SceneObject::~SceneObject(){}
 void SceneObject::Initialize(void){}	
 void SceneObject::Update(const tt::GameContext& context){}
 void SceneObject::Draw(const tt::GameContext& context){}
+void SceneObject::GenerateShadows(const tt::GameContext& context){}

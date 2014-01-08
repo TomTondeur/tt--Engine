@@ -29,6 +29,7 @@
 
 #include "SceneObjects/FreeCamera.h"
 #include "SceneObjects/Object3D.h"
+#include "SceneObjects/Object3DStatic.h"
 #include "SceneObjects/ParticleSystem.h"
 #include "SceneObjects/Skybox.h"
 #include "SceneObjects/Terrain.h"
@@ -53,10 +54,11 @@ TTscene::~TTscene(void)
 
 void TTscene::Initialize(void)
 {
-	auto pCam = new FreeCamera();
-	AddSceneObject(pCam);
-	SetActiveCamera(pCam->GetComponent<CameraComponent>());
+	m_pCam = new FreeCamera();
+	AddSceneObject(m_pCam);
+	SetActiveCamera(m_pCam->GetComponent<CameraComponent>());
 	AddSceneObject(new Object3D(_T("Resources/goblin.ttmesh")));
+	AddSceneObject(new Object3DStatic(_T("Resources/Models/environment.ttmesh")));
 	AddSceneObject(new Skybox());
 	
 	//AddSceneObject(new ParticleSystem() );
@@ -71,6 +73,14 @@ void TTscene::Update(const tt::GameContext& context)
 		tcout << _T("Toggle") << endl;
 		MyServiceLocator::GetInstance()->GetService<IGraphicsService>()->GetGraphicsDevice()->ToggleVSync();
 	}
+
+	D3DXMATRIX tempView, tempProj;	
+	D3DXMatrixLookAtLH(&tempView, &D3DXVECTOR3(100,200,100), &D3DXVECTOR3(0,0,0), &D3DXVECTOR3(0,0,1));
+	D3DXMatrixOrthoLH(&tempProj, 500, 500, 10, 1000);
+	auto lightView = tt::Matrix4x4(tempView);
+	auto lightProj = tt::Matrix4x4(tempProj);
+
+	Material::SetDominantDirectionalLightViewProjection(lightView * lightProj);
 }
 
 void TTscene::Draw(const tt::GameContext& context)
