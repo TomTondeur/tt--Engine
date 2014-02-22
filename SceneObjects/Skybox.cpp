@@ -3,6 +3,7 @@
 #include "../Graphics/Materials/SkyboxMaterial.h"
 #include "../Services/ServiceLocator.h"
 using namespace std;
+extern int tt::g_SceneIndex;
 Skybox::Skybox(void)
 {}
 
@@ -27,5 +28,8 @@ void Skybox::Initialize(void)
 
 void Skybox::Draw(const tt::GameContext& context)
 {
+	if(tt::g_SceneIndex == 0)
+		return;
+
 	GetComponent<ModelComponent>()->Draw(context);
 }

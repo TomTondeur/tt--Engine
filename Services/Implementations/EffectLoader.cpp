@@ -29,7 +29,11 @@ template<> unique_ptr<ID3D10Effect> ResourceService::LoadResource<ID3D10Effect>(
 				 NULL,
 				 NULL,
 				 "fx_4_0",
+#ifndef NDEBUG
 				 D3D10_SHADER_DEBUG|D3D10_SHADER_SKIP_OPTIMIZATION|D3D10_SHADER_WARNINGS_ARE_ERRORS|D3D10_SHADER_PACK_MATRIX_ROW_MAJOR, //HLSL Flags: http://msdn.microsoft.com/en-us/library/windows/desktop/bb172416%28v=vs.85%29.aspx
+#else
+				 D3D10_SHADER_OPTIMIZATION_LEVEL3|D3D10_SHADER_IEEE_STRICTNESS|D3D10_SHADER_PACK_MATRIX_ROW_MAJOR,
+#endif
 				 0,
 				 MyServiceLocator::GetInstance()->GetService<IGraphicsService>()->GetGraphicsDevice()->GetDevice(),
 				 NULL,

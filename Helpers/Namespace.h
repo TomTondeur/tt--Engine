@@ -332,6 +332,8 @@ namespace tt
 		//DeltaTime
 		//Camera
 	};
+
+	extern int g_SceneIndex;
 };
 
 tt::Vector3 operator*(float f,const tt::Vector3& v);

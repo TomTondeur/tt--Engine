@@ -44,7 +44,7 @@ Object3D::~Object3D(void)
 }
 
 //Methods
-
+extern int tt::g_SceneIndex;
 void Object3D::Initialize(void)
 {
 	auto pMat = MyServiceLocator::GetInstance()->GetService<ResourceService>()->Load<SkinnedMaterial>( _T("BasicMaterial") );
@@ -60,11 +60,14 @@ void Object3D::Update(const tt::GameContext& context)
 }
 void Object3D::Draw(const tt::GameContext& context)
 {
-	//GetComponent<ModelComponent>()->Draw(context);
-	GetComponent<ModelComponent>()->DrawDeferred(context);
+	if(tt::g_SceneIndex == 3)
+		GetComponent<ModelComponent>()->DrawDeferred(context);
+	else if(tt::g_SceneIndex > 1)
+		GetComponent<ModelComponent>()->Draw(context);
 }
 
 void Object3D::GenerateShadows(const tt::GameContext& context)
 {
-	GetComponent<ModelComponent>()->GenerateShadows(context);
+	if(tt::g_SceneIndex == 4)
+		GetComponent<ModelComponent>()->GenerateShadows(context);
 }

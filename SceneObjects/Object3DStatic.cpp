@@ -34,7 +34,7 @@ Object3DStatic::~Object3DStatic(void)
 }
 
 //Methods
-
+extern int tt::g_SceneIndex;
 void Object3DStatic::Initialize(void)
 {
 	auto pMat = MyServiceLocator::GetInstance()->GetService<ResourceService>()->Load<Object3DMaterial>( _T("BasicMaterial") );	
@@ -43,11 +43,14 @@ void Object3DStatic::Initialize(void)
 
 void Object3DStatic::Draw(const tt::GameContext& context)
 {
-	//GetComponent<ModelComponent>()->Draw(context);
-	GetComponent<ModelComponent>()->DrawDeferred(context);
+	if(tt::g_SceneIndex == 3)
+		GetComponent<ModelComponent>()->DrawDeferred(context);
+	else if(tt::g_SceneIndex > 1)
+		GetComponent<ModelComponent>()->Draw(context);
 }
 
 void Object3DStatic::GenerateShadows(const tt::GameContext& context)
 {
-	GetComponent<ModelComponent>()->GenerateShadows(context);
+	if(tt::g_SceneIndex == 4)
+		GetComponent<ModelComponent>()->GenerateShadows(context);
 }

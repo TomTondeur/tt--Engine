@@ -74,9 +74,9 @@ void DefaultPhysicsService::Initialize(void)
 
 #ifndef NDEBUG
 	m_pPhysicsSDK->getFoundationSDK().getRemoteDebugger()->connect ("localhost", 5425);
+#endif
 	m_pDebugRenderer = new DebugRenderer();
 	m_pDebugRenderer->Initialize();
-#endif
 
 	m_pAllocator = new PhysicsAllocator();
 	m_pControllerManager = NxCreateControllerManager(m_pAllocator);
@@ -121,7 +121,7 @@ void DefaultPhysicsService::FetchResults(void)
 
 void DefaultPhysicsService::RenderDebugInfo(const tt::GameContext& context)
 {
-	#ifndef NDEBUG
+	//#ifndef NDEBUG
 		auto pRenderables = m_pActiveScene->getDebugRenderable();
 		auto pCurrLine = pRenderables->getLines();
 		unsigned int nrOfLines = static_cast<unsigned int>(pRenderables->getNbLines());
@@ -140,7 +140,7 @@ void DefaultPhysicsService::RenderDebugInfo(const tt::GameContext& context)
 		}
 
 		m_pDebugRenderer->Flush(context);
-	#endif
+	//#endif
 }
 
 NxPhysicsSDK* DefaultPhysicsService::GetPhysicsSDK(void)

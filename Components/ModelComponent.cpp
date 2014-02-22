@@ -60,10 +60,10 @@ void ModelComponent::Draw(const tt::GameContext& context)
 {
 	if(m_pMaterial == nullptr)
 		throw exception();
-	
+	/*
 	if( Cull(context) )
 		return;	
-	
+	*/
 	auto pMat = dynamic_cast<SkinnedMaterial*>(m_pMaterial.get() );
 	if(pMat){
 		if(!m_pModel->HasAnimData())

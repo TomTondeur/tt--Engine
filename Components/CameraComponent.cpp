@@ -39,10 +39,12 @@ CameraComponent::~CameraComponent(void)
 }
 
 //Methods
-
+extern bool g_bAutoCam;
 void CameraComponent::Update(const tt::GameContext& context)
 {
-	float aspect = context.vpInfo.width / 3 / (float)context.vpInfo.height;
+	float aspect = context.vpInfo.width / (float)context.vpInfo.height;
+
+	if(tt::g_SceneIndex == 3)aspect/=3;
 
 	D3DXMATRIX matProj;
 
@@ -57,15 +59,24 @@ void CameraComponent::Update(const tt::GameContext& context)
 
 	m_MatProj = static_cast<Matrix4x4>(matProj);
 	
-	D3DXVECTOR3 vEyePt = m_pParentTransform->GetWorldPosition();
-	D3DXQUATERNION rotQuat = m_pParentTransform->GetWorldRotation();
-	D3DXVECTOR3 vLookat, vUpVec;
-	D3DXMATRIX rotTransform, outMat;
+	D3DXMATRIX outMat;
+	
+	if(g_bAutoCam)
+	{
+		auto totalTime = context.GameTimer.GetTotalSeconds();
+		D3DXMatrixLookAtLH(&outMat, &D3DXVECTOR3(sinf(totalTime)*200, 100, cosf(totalTime)*200), &D3DXVECTOR3(0,0,0), &D3DXVECTOR3(0,1,0));
+	}else
+	{
+		D3DXVECTOR3 vEyePt = m_pParentTransform->GetWorldPosition();
+		D3DXQUATERNION rotQuat = m_pParentTransform->GetWorldRotation();
+		D3DXVECTOR3 vLookat, vUpVec;
+		D3DXMATRIX rotTransform;//, outMat;
 
-	D3DXMatrixRotationQuaternion(&rotTransform,&rotQuat);
-	D3DXVec3TransformCoord(&vLookat, &D3DXVECTOR3(0,0,1), &rotTransform);
-	D3DXVec3TransformCoord(&vUpVec, &D3DXVECTOR3(0,1,0), &rotTransform);
-	D3DXMatrixLookAtLH(&outMat, &vEyePt, &(vEyePt+vLookat), &vUpVec);
+		D3DXMatrixRotationQuaternion(&rotTransform,&rotQuat);
+		D3DXVec3TransformCoord(&vLookat, &D3DXVECTOR3(0,0,1), &rotTransform);
+		D3DXVec3TransformCoord(&vUpVec, &D3DXVECTOR3(0,1,0), &rotTransform);
+		D3DXMatrixLookAtLH(&outMat, &vEyePt, &(vEyePt+vLookat), &vUpVec);
+	}
 	m_MatView = tt::Matrix4x4(outMat);
 
 	D3DXMatrixInverse(&outMat,NULL,&outMat);

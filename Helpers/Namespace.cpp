@@ -874,3 +874,5 @@ ViewportInfo::ViewportInfo(unsigned short _width, unsigned short _height)
 	width = _width;
 	height = _height;
 }
+
+int tt::g_SceneIndex=0;
